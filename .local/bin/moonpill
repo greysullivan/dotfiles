@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+from datetime import datetime
+from lunarcalendar import Converter, Solar
+from rich.console import Console
+import os
+
+console = Console()
+
+# --- CONFIG
+moon_color = "#555555"     # dimmed grey for inactive phases
+date_color = "#c0a0ff"     # lavender accent
+highlight = "#00ffff"      # bright cyan for current phase
+
+# Determine moon phase via lunarcalendar
+today = datetime.now()
+solar = Solar(today.year, today.month, today.day)
+lunar = Converter.Solar2Lunar(solar)
+phase_index = lunar.day % 8
+phases = ["🌑","🌒","🌓","🌔","🌕","🌖","🌗","🌘"]
+
+os.system("clear")
+
+# Print moon phases
+for i, m in enumerate(phases):
+    if i == phase_index:
+        console.print(f"  [bold {highlight}]● {m}[/]", justify="center")
+    else:
+        console.print(f"  [{moon_color}]{m}[/]", justify="center")
+
+# Print date
+console.print(f"\n[{date_color}]{today.strftime('%b • %d').lower()}[/]", justify="center")

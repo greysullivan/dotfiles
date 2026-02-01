@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# screen width (pixels)
+SW=$(xdotool getdisplaygeometry | awk '{print $1}')
+# screen height (pixels)
+SH=$(xdotool getdisplaygeometry | awk '{print $2}')
+
+# window size estimate (font 10, 26 columns, 4 lines)
+WW=$((26 * 7))      # ≈ 7px per char
+WH=$((4 * 18))      # ≈ 18px per line
+
+# center horizontally
+X=$(( (SW - WW) / 2 ))
+# anchor bottom above panel if needed
+Y=$(( SH - WH - 40 ))
+
+wmctrl -r "mpris-hud" -e "0,$X,$Y,$WW,$WH"

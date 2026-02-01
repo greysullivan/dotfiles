@@ -1,0 +1,2 @@
+#!/bin/bash
+retroarch -L "$HOME/.config/retroarch/cores/mgba_libretro.so" "$HOME/Downloads/Mother 3 (Eng. Translation 1.1)/Mother 3 (Eng. Translation 1.1).gba"

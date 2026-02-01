@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Cava Float
+Comment=Transparent cava visualizer at bottom
+Exec=/home/grey/.local/bin/cava-float
+OnlyShowIn=XFCE;
+StartupNotify=false
+Terminal=false
+Hidden=false

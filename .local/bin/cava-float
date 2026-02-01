@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+TITLE="cava-float"
+
+# Kill existing instance
+wmctrl -c "$TITLE" 2>/dev/null || true
+sleep 0.2
+
+# Launch kitty with transparent background in a fully independent session
+setsid -f kitty --title "$TITLE" --class "$TITLE" \
+  -o background_opacity=0.01 \
+  -o hide_window_decorations=yes \
+  -o window_padding_width=4 \
+  -o remember_window_size=no \
+  -o initial_window_width=150c \
+  -o initial_window_height=3c \
+  -o confirm_os_window_close=0 \
+  -e /usr/bin/cava
+
+# Wait for window to appear
+sleep 0.4
+
+# Focus the window and snap it to position with Alt+Super+Up
+xdotool search --name "$TITLE" windowactivate --sync
+xdotool key alt+super+Up

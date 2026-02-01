@@ -1,0 +1,34 @@
+# settings
+
+(GimpGegl-gegl-shadows-highlights-config "2026-02-01 10:30:22"
+    (time 1769895022)
+    (gimp-opacity 0.753)
+    (shadows -14.300000000000001)
+    (highlights -55.350000000000001)
+    (whitepoint -4.3760000000000003)
+    (radius 108.65000000000001)
+    (compress 0)
+    (shadows-ccorrect 32.979999999999997)
+    (highlights-ccorrect 20.77))
+(GimpGegl-gegl-shadows-highlights-config "2026-02-01 09:59:14"
+    (time 1769893154)
+    (shadows 0)
+    (highlights 0)
+    (whitepoint 0)
+    (radius 100)
+    (compress 50)
+    (shadows-ccorrect 100)
+    (highlights-ccorrect 50))
+(GimpGegl-gegl-shadows-highlights-config "2026-02-01 09:58:02"
+    (time 1769893082)
+    (gimp-mode luma-lighten-only)
+    (gimp-opacity 0.504)
+    (shadows 6.75)
+    (highlights -45.829999999999998)
+    (whitepoint 10)
+    (radius 57.369999999999997)
+    (compress 66.109999999999999)
+    (shadows-ccorrect 44.75)
+    (highlights-ccorrect 47.270000000000003))
+
+# end of settings

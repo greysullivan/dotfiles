@@ -1,0 +1,9 @@
+#!/bin/bash
+# sovereign claude execution — XFCE safe
+
+export GTK_USE_PORTAL=1
+export ELECTRON_DISABLE_GPU=1
+export ELECTRON_NO_ATTACH_CONSOLE=1
+export XDG_CURRENT_DESKTOP=XFCE
+
+exec /usr/bin/claude

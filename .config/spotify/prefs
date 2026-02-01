@@ -1,0 +1,12 @@
+autologin.username="1243713783"
+autologin.saved_credentials="{\"1243713783\":[\"1243713783\",\"QBNA3Z6uTqKNhX6Wr6pPuyyzNxjf8X0Cz2ELpzQ66vU8/jJ4MIY/JaoHxNnpsS5AxOU38xPs06wptzvy2mCP3g/ZR4b4W7MlyNL/mtsLSOsJks255073r7usGDKrvgIhXFPOIhRpwYDoUi2pobeQTZIfp4ebGisBqGg5ra0lgkF/guKUqHItRJrD8u144ucua2x3mr0a3HvADp8/yT2OC9cnVE61cK3qRNarF8SSIJououc03klO7fgcC81lNtmt\"]}"
+autologin.canonical_username="1243713783"
+autologin.blob="QBNA3Z6uTqKNhX6Wr6pPuyyzNxjf8X0Cz2ELpzQ66vU8/jJ4MIY/JaoHxNnpsS5AxOU38xPs06wptzvy2mCP3g/ZR4b4W7MlyNL/mtsLSOsJks255073r7usGDKrvgIhXFPOIhRpwYDoUi2pobeQTZIfp4ebGisBqGg5ra0lgkF/guKUqHItRJrD8u144ucua2x3mr0a3HvADp8/yT2OC9cnVE61cK3qRNarF8SSIJououc03klO7fgcC81lNtmt"
+app.window.state.saved=true
+app.window.position.width=1440
+es.send-on-startup=true
+core.clock_delta=0
+app.window.position.saved=true
+app.autostart-mode="off"
+storage.last-location="/home/grey/.cache/spotify/Storage"
+app.last-launched-version="1.2.79.427.g80eb4a07"

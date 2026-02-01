@@ -1,0 +1,24 @@
+#!/bin/bash
+# Launch an application without window decorations
+
+if [ -z "$1" ]; then
+    echo "Usage: noborder <command> [args...]"
+    exit 1
+fi
+
+# Launch the application
+"$@" &
+APP_PID=$!
+
+# Wait for window to appear (up to 10 seconds)
+for i in {1..100}; do
+    WIN_ID=$(xdotool search --pid "$APP_PID" 2>/dev/null | head -1)
+    if [ -n "$WIN_ID" ]; then
+        # Remove window decorations
+        xprop -id "$WIN_ID" -f _MOTIF_WM_HINTS 32c -set _MOTIF_WM_HINTS "0x2, 0x0, 0x0, 0x0, 0x0"
+        exit 0
+    fi
+    sleep 0.1
+done
+
+echo "Warning: Could not find window for PID $APP_PID"

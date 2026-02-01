@@ -1,0 +1,6 @@
+appearance.compactpanels=yes
+appearance.defaultpanel=calendar
+appearance.calendarview=monthly
+appearance.layout=0
+general.confirmdelete=no
+general.confirmquit=no

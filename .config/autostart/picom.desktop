@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Picom
+Comment=X11 compositor with rounded corners
+Exec=picom --config /home/grey/.config/picom/picom.conf
+Terminal=false
+StartupNotify=false
+X-GNOME-Autostart-enabled=true

@@ -1,0 +1,119 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "logo": {
+    "source": "manjaro",
+    "color": {
+      "1": "#D4B8EC",
+      "2": "#B68BD0"
+    }
+  },
+  "modules": [
+    {
+      "type": "title",
+      "color": {
+        "user": "#C9B8E8",
+        "at": "#B68BD0",
+        "host": "#C9B8E8"
+      }
+    },
+    {
+      "type": "separator",
+      "string": "─",
+      "color": "#B68BD0"
+    },
+    {
+      "type": "os",
+      "key": "OS",
+      "keyColor": "#DBC4EA"
+    },
+    {
+      "type": "host",
+      "key": "Host",
+      "keyColor": "#DBC4EA",
+      "format": "MacBook Air (13-inch,Early 2015/2017)"
+    },
+    {
+      "type": "kernel",
+      "key": "Kernel",
+      "keyColor": "#DBC4EA"
+    },
+    {
+      "type": "uptime",
+      "key": "Uptime",
+      "keyColor": "#DBC4EA"
+    },
+    {
+      "type": "packages",
+      "key": "Packages",
+      "keyColor": "#DBC4EA"
+    },
+    {
+      "type": "shell",
+      "key": "Shell",
+      "keyColor": "#DBC4EA"
+    },
+    {
+      "type": "display",
+      "key": "Display",
+      "keyColor": "#DBC4EA"
+    },
+    {
+      "type": "de",
+      "key": "DE",
+      "keyColor": "#DBC4EA"
+    },
+    {
+      "type": "wm",
+      "key": "WM",
+      "keyColor": "#DBC4EA"
+    },
+    {
+      "type": "wmtheme",
+      "key": "WM Theme",
+      "keyColor": "#DBC4EA"
+    },
+    {
+      "type": "theme",
+      "key": "Theme",
+      "keyColor": "#DBC4EA"
+    },
+    {
+      "type": "icons",
+      "key": "Icons",
+      "keyColor": "#DBC4EA"
+    },
+    {
+      "type": "font",
+      "key": "Font",
+      "keyColor": "#DBC4EA"
+    },
+    {
+      "type": "terminal",
+      "key": "Terminal",
+      "keyColor": "#DBC4EA"
+    },
+    {
+      "type": "terminalfont",
+      "key": "Terminal Font",
+      "keyColor": "#DBC4EA"
+    },
+    {
+      "type": "memory",
+      "key": "Memory",
+      "keyColor": "#DBC4EA"
+    },
+    {
+      "type": "disk",
+      "key": "Disk (/)",
+      "keyColor": "#DBC4EA"
+    },
+    {
+      "type": "locale",
+      "key": "Locale",
+      "keyColor": "#DBC4EA"
+    },
+    {
+      "type": "break"
+    }
+  ]
+}

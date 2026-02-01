@@ -1,0 +1,2 @@
+[General]
+commands="@ByteArray({\"5738b314_60ab_4519_99d0_93b9591d5ab3\":{\"command\":\"brave\",\"name\":\"browser\"},\"76221a84_8b97_4b14_8a6f_84e376b7d663\":{\"command\":\"tty-clock -c -C 7 -b -B\",\"name\":\"tty-clock\"},\"e6b54410_048b_418d_98c6_f95057bae940\":{\"command\":\"cc\",\"name\":\"claude\"},\"f6cc0142_d7cc_4851_a882_8ddaa1517c91\":{\"command\":\"btop\",\"name\":\"btop\"}})"

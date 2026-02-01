@@ -1,0 +1,110 @@
+#!/bin/bash
+# xfwm4 tiling script with window gaps
+# Usage: xfwm4-tile-with-gaps <position>
+# Positions: nw, ne, sw, se, n, s, e, w
+
+GAP=10  # Gap size in pixels (adjust here: 8-12px recommended)
+
+# Debug logging
+LOG="/tmp/xfwm4-tile-gaps.log"
+echo "=== $(date) ===" >> "$LOG"
+echo "Called with position: $1" >> "$LOG"
+
+# Get active window ID
+WINDOW=$(xdotool getactivewindow)
+if [ -z "$WINDOW" ]; then
+    echo "ERROR: No active window" >> "$LOG"
+    exit 1
+fi
+echo "Window ID: $WINDOW" >> "$LOG"
+
+# Get screen dimensions (accounting for panels)
+read SCREEN_X SCREEN_Y SCREEN_W SCREEN_H < <(wmctrl -d | grep '*' | awk '{print $9}' | sed 's/[x,]/ /g')
+
+# If wmctrl didn't give us geometry, fall back to xrandr
+if [ -z "$SCREEN_W" ] || [ "$SCREEN_W" -eq 0 ]; then
+    read SCREEN_W SCREEN_H < <(xrandr | grep -w connected | grep -oP '\d+x\d+' | head -1 | sed 's/x/ /')
+    SCREEN_X=0
+    SCREEN_Y=0
+fi
+
+# Get panel/workarea info (xfwm4 usable space)
+read WA_X WA_Y WA_W WA_H < <(xprop -root _NET_WORKAREA | awk '{print $3, $4, $5, $6}' | sed 's/,//g')
+
+# Use workarea if available, otherwise use screen dimensions
+X=${WA_X:-$SCREEN_X}
+Y=${WA_Y:-$SCREEN_Y}
+W=${WA_W:-$SCREEN_W}
+H=${WA_H:-$SCREEN_H}
+
+# Calculate half dimensions with gaps
+HALF_W=$(( (W - GAP * 3) / 2 ))
+HALF_H=$(( (H - GAP * 3) / 2 ))
+
+# Calculate positions based on direction
+case "$1" in
+    nw|up_left)  # Top-left quarter
+        NEW_X=$((X + GAP))
+        NEW_Y=$((Y + GAP))
+        NEW_W=$HALF_W
+        NEW_H=$HALF_H
+        ;;
+    ne|up_right)  # Top-right quarter
+        NEW_X=$((X + HALF_W + GAP * 2))
+        NEW_Y=$((Y + GAP))
+        NEW_W=$HALF_W
+        NEW_H=$HALF_H
+        ;;
+    sw|down_left)  # Bottom-left quarter
+        NEW_X=$((X + GAP))
+        NEW_Y=$((Y + HALF_H + GAP * 2))
+        NEW_W=$HALF_W
+        NEW_H=$HALF_H
+        ;;
+    se|down_right)  # Bottom-right quarter
+        NEW_X=$((X + HALF_W + GAP * 2))
+        NEW_Y=$((Y + HALF_H + GAP * 2))
+        NEW_W=$HALF_W
+        NEW_H=$HALF_H
+        ;;
+    w|left)  # Left half
+        NEW_X=$((X + GAP))
+        NEW_Y=$((Y + GAP))
+        NEW_W=$HALF_W
+        NEW_H=$((H - GAP * 2))
+        ;;
+    e|right)  # Right half
+        NEW_X=$((X + HALF_W + GAP * 2))
+        NEW_Y=$((Y + GAP))
+        NEW_W=$HALF_W
+        NEW_H=$((H - GAP * 2))
+        ;;
+    n|up)  # Top half
+        NEW_X=$((X + GAP))
+        NEW_Y=$((Y + GAP))
+        NEW_W=$((W - GAP * 2))
+        NEW_H=$HALF_H
+        ;;
+    s|down)  # Bottom half
+        NEW_X=$((X + GAP))
+        NEW_Y=$((Y + HALF_H + GAP * 2))
+        NEW_W=$((W - GAP * 2))
+        NEW_H=$HALF_H
+        ;;
+    *)
+        echo "Usage: $0 {nw|ne|sw|se|n|s|e|w|up_left|up_right|down_left|down_right|left|right|up|down}"
+        exit 1
+        ;;
+esac
+
+# Log calculated values
+echo "Workarea: X=$X Y=$Y W=$W H=$H" >> "$LOG"
+echo "Calculated: X=$NEW_X Y=$NEW_Y W=$NEW_W H=$NEW_H" >> "$LOG"
+
+# Unmaximize window first (if maximized)
+wmctrl -ir "$WINDOW" -b remove,maximized_vert,maximized_horz
+
+# Move and resize window with gravity flag (0 = NW gravity)
+echo "Executing: wmctrl -ir $WINDOW -e 0,$NEW_X,$NEW_Y,$NEW_W,$NEW_H" >> "$LOG"
+wmctrl -ir "$WINDOW" -e "0,$NEW_X,$NEW_Y,$NEW_W,$NEW_H"
+echo "Done" >> "$LOG"

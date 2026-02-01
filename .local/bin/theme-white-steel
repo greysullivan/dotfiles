@@ -1,0 +1,61 @@
+#!/bin/bash
+# white-steel theme apply script
+# Auto-chmod if needed
+[[ ! -x "$0" ]] && chmod +x "$0" && exec "$0" "$@"
+
+THEME_DIR="$HOME/.local/share/greythemes/white-steel"
+
+echo "Applying white-steel theme..."
+
+# 1. Copy terminal config to kitty
+mkdir -p "$HOME/.config/kitty"
+cp "$THEME_DIR/terminal.conf" "$HOME/.config/kitty/current-theme.conf"
+
+# Update kitty.conf to include the theme if not already included
+if [ -f "$HOME/.config/kitty/kitty.conf" ]; then
+    if ! grep -q "include current-theme.conf" "$HOME/.config/kitty/kitty.conf"; then
+        echo "include current-theme.conf" >> "$HOME/.config/kitty/kitty.conf"
+    fi
+else
+    echo "include current-theme.conf" > "$HOME/.config/kitty/kitty.conf"
+fi
+
+# 2. Copy fastfetch config
+mkdir -p "$HOME/.config/fastfetch"
+cp "$THEME_DIR/fastfetch.jsonc" "$HOME/.config/fastfetch/config.jsonc"
+
+# 3. Copy btop theme
+mkdir -p "$HOME/.config/btop/themes"
+cp "$THEME_DIR/btop.theme" "$HOME/.config/btop/themes/white-steel.theme"
+
+# 4. Update btop config to use white-steel theme
+if [ -f "$HOME/.config/btop/btop.conf" ]; then
+    # Update existing theme setting or add it
+    if grep -q "^color_theme" "$HOME/.config/btop/btop.conf"; then
+        sed -i 's/^color_theme.*$/color_theme = "white-steel"/' "$HOME/.config/btop/btop.conf"
+    else
+        echo 'color_theme = "white-steel"' >> "$HOME/.config/btop/btop.conf"
+    fi
+else
+    mkdir -p "$HOME/.config/btop"
+    echo 'color_theme = "white-steel"' > "$HOME/.config/btop/btop.conf"
+fi
+
+# 5. Copy cava config
+mkdir -p "$HOME/.config/cava"
+cp "$THEME_DIR/cava_config" "$HOME/.config/cava/config"
+
+# 6. Apply XFCE settings
+if [ -f "$THEME_DIR/xfce.txt" ]; then
+    bash "$THEME_DIR/xfce.txt"
+fi
+
+# 7. Restart btop and cava if running
+pkill -USR1 btop 2>/dev/null
+pkill -9 cava 2>/dev/null
+
+# Reload kitty config for all instances
+killall -SIGUSR1 kitty 2>/dev/null
+
+echo "white-steel theme applied successfully!"
+echo "Restart terminal instances to see full changes."

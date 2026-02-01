@@ -1,0 +1,188 @@
+/*******************************************************************************
+ * grey-manjarov1 Rofi Theme
+ * Black + White
+ * Minimal, clean, fast
+ *******************************************************************************/
+
+* {
+    /* Color definitions - Grey theme with background transparency */
+    bg-col:  rgba(229, 229, 229, 0.90);
+    bg-col-light: rgba(218, 218, 218, 0.90);
+    border-col: #d1d1d1;
+    selected-col: rgba(213, 213, 213, 0.65);
+    neon-green: #000000;
+    fg-col: #2e2e2e;
+    fg-col2: #000000;
+    grey: #919191;
+
+    /* Base settings */
+    background-color: transparent;
+    text-color: @fg-col;
+    font: "Fira Code Bold 11";
+}
+
+window {
+    transparency: "real";
+    background-color: @bg-col;
+    border: 2px;
+    border-color: @border-col;
+    border-radius: 8px;
+    width: 750px;
+    padding: 8px;
+    location: center;
+    anchor: center;
+}
+
+mainbox {
+    background-color: transparent;
+    spacing: 8px;
+    padding: 4px;
+}
+
+inputbar {
+    background-color: @bg-col-light;
+    border: 2px;
+    border-color: @border-col;
+    border-radius: 6px;
+    padding: 10px 12px;
+    spacing: 8px;
+    children: [prompt, entry];
+}
+
+prompt {
+    background-color: transparent;
+    text-color: @neon-green;
+    font: "Fira Code Bold 12";
+}
+
+entry {
+    background-color: transparent;
+    text-color: @fg-col;
+    placeholder: "Search...";
+    placeholder-color: @grey;
+    cursor: text;
+}
+
+listview {
+    background-color: transparent;
+    columns: 1;
+    lines: 8;
+    spacing: 4px;
+    cycle: true;
+    dynamic: true;
+    scrollbar: false;
+    padding: 4px 0px;
+}
+
+element {
+    background-color: transparent;
+    text-color: @fg-col;
+    orientation: horizontal;
+    border-radius: 4px;
+    padding: 8px 12px;
+    spacing: 8px;
+}
+
+element-icon {
+    background-color: transparent;
+    size: 24px;
+}
+
+element-text {
+    background-color: transparent;
+    text-color: inherit;
+    vertical-align: 0.5;
+}
+
+element normal.normal {
+    background-color: transparent;
+    text-color: @fg-col;
+}
+
+element normal.urgent {
+    background-color: transparent;
+    text-color: #FF5555;
+}
+
+element normal.active {
+    background-color: transparent;
+    text-color: @neon-green;
+}
+
+element selected.normal {
+    background-color: @selected-col;
+    text-color: @neon-green;
+    border: 2px;
+    border-color: @border-col;
+}
+
+element selected.urgent {
+    background-color: @selected-col;
+    text-color: #FF5555;
+    border: 2px;
+    border-color: #FF5555;
+}
+
+element selected.active {
+    background-color: @selected-col;
+    text-color: @neon-green;
+    border: 2px;
+    border-color: @neon-green;
+}
+
+element alternate.normal {
+    background-color: transparent;
+    text-color: @fg-col;
+}
+
+element alternate.urgent {
+    background-color: transparent;
+    text-color: #FF5555;
+}
+
+element alternate.active {
+    background-color: transparent;
+    text-color: @neon-green;
+}
+
+message {
+    background-color: @bg-col-light;
+    border: 2px;
+    border-color: @border-col;
+    border-radius: 6px;
+    padding: 8px;
+}
+
+textbox {
+    background-color: transparent;
+    text-color: @fg-col;
+}
+
+error-message {
+    background-color: @bg-col;
+    border: 2px;
+    border-color: #FF5555;
+    border-radius: 6px;
+    padding: 12px;
+}
+
+mode-switcher {
+    background-color: transparent;
+    spacing: 8px;
+    padding: 4px 0px;
+}
+
+button {
+    background-color: @bg-col-light;
+    text-color: @fg-col;
+    border: 1px;
+    border-color: @grey;
+    border-radius: 4px;
+    padding: 6px 12px;
+}
+
+button selected {
+    background-color: @selected-col;
+    text-color: @neon-green;
+    border-color: @border-col;
+}

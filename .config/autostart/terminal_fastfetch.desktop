@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Terminal Fastfetch
+Comment=Terminal running fastfetch in top-left quadrant
+Exec=xfce4-terminal --geometry 90x25 -e "bash -c 'fastfetch; exec bash'"
+OnlyShowIn=XFCE;
+StartupNotify=false
+Terminal=false
+Hidden=false

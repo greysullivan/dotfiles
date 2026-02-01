@@ -1,0 +1,26 @@
+[Configuration]
+MiscAlwaysShowTabs=FALSE
+MiscBell=FALSE
+MiscBordersDefault=TRUE
+MiscCursorBlinks=FALSE
+MiscCursorShape=TERMINAL_CURSOR_SHAPE_BLOCK
+MiscDefaultGeometry=80x24
+MiscInheritGeometry=FALSE
+MiscMenubarDefault=TRUE
+MiscMouseAutohide=FALSE
+MiscToolbarDefault=FALSE
+MiscConfirmClose=TRUE
+MiscCycleTabs=TRUE
+MiscTabCloseButtons=TRUE
+MiscTabCloseMiddleClick=TRUE
+MiscTabPosition=GTK_POS_TOP
+MiscHighlightUrls=TRUE
+FontName=DejaVu Sans Mono 10
+ScrollingLines=999999
+BackgroundMode=TERMINAL_BACKGROUND_TRANSPARENT
+BackgroundDarkness=0.800000
+ScrollingOnOutput=FALSE
+ColorForeground=#d1d1e0
+ColorBackground=#1a1a2e
+ColorCursor=#b19cd9
+ColorPalette=#1a1a2e;#d65d8e;#b19cd9;#d4a5e8;#8b9dc3;#c792ea;#7fdbca;#d1d1e0;#6e6c7e;#f28fad;#ddb6f2;#f5c2e7;#96cdfb;#ddb6f2;#b5e8e0;#f8f8f2

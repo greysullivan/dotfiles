@@ -1,0 +1,65 @@
+set $mod Mod4
+
+font pango:JetBrains Mono 10
+
+set $bg #1a1a2e
+set $fg #e0def4
+set $accent #6e5494
+set $inactive #2d2d44
+set $urgent #c94f6d
+
+client.focused          $accent $accent $fg $accent $accent
+client.unfocused        $inactive $bg $fg $inactive $inactive
+client.focused_inactive $inactive $bg $fg $inactive $inactive
+client.urgent           $urgent $urgent $fg $urgent $urgent
+
+gaps inner 8
+gaps outer 4
+
+default_border pixel 1
+default_floating_border pixel 1
+hide_edge_borders smart
+
+floating_modifier $mod
+
+set $ws0 "clock"
+set $ws1 "work"
+set $ws2 "open"
+
+# clock window: floating and fullscreen via i3 rules
+for_window [title="tty-clock"] floating enable, fullscreen enable
+
+exec --no-startup-id i3-msg workspace $ws0
+exec --no-startup-id xfce4-terminal -e "tty-clock -c -s -C 5"
+exec --no-startup-id picom -b
+exec --no-startup-id feh --bg-fill ~/.config/i3/wallpaper.png
+exec --no-startup-id xss-lock -- i3lock -c 1a1a2e
+
+# spatial transition: enter moves from clock to work
+bindsym Return workspace $ws1
+
+bindsym $mod+Return exec xfce4-terminal
+bindsym $mod+d exec dmenu_run -fn 'JetBrains Mono-10' -nb '#1a1a2e' -nf '#e0def4' -sb '#6e5494' -sf '#e0def4'
+bindsym $mod+q kill
+bindsym $mod+Shift+e exec i3-msg exit
+bindsym $mod+Shift+r restart
+
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+bindsym $mod+0 workspace $ws0
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+
+bindsym $mod+Shift+0 move container to workspace $ws0
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+
+bindsym $mod+f fullscreen toggle

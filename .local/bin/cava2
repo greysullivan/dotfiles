@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Switch cava to external mic with higher sensitivity
+sed -i '0,/^method = /{s/^method = .*/method = pulse/}' ~/.config/cava/config
+sed -i 's/^source = .*/source = alsa_input.pci-0000_00_1b.0.analog-stereo/' ~/.config/cava/config
+sed -i 's/^sensitivity = .*/sensitivity = 500/' ~/.config/cava/config
+sed -i 's/^autosens = .*/autosens = 0/' ~/.config/cava/config
+sed -i 's/^noise_reduction = .*/noise_reduction = 50/' ~/.config/cava/config
+sed -i 's/^integral = .*/integral = 50/' ~/.config/cava/config
+
+TITLE="cava-float"
+
+# Kill existing instance
+wmctrl -c "$TITLE" 2>/dev/null || true
+sleep 0.2
+
+# Fixed geometry (bottom-left, floating widget)
+X=17
+Y=806
+W=689
+H=87
+
+# Launch kitty with transparent background
+kitty --title "$TITLE" --class "$TITLE" \
+  -o background_opacity=0.01 \
+  -o hide_window_decorations=yes \
+  -o window_padding_width=4 \
+  -o remember_window_size=no \
+  -o confirm_os_window_close=0 \
+  -e /usr/bin/cava &
+PID=$!
+
+# Wait for window
+for _ in {1..60}; do
+  wmctrl -l 2>/dev/null | grep -qF "$TITLE" && break
+  sleep 0.05
+done
+sleep 0.1
+
+# Floating properties
+wmctrl -r "$TITLE" -b add,below,sticky,skip_taskbar,skip_pager 2>/dev/null || true
+xprop -name "$TITLE" -f _NET_WM_WINDOW_TYPE 32a -set _NET_WM_WINDOW_TYPE _NET_WM_WINDOW_TYPE_UTILITY 2>/dev/null || true
+xprop -name "$TITLE" -f _MOTIF_WM_HINTS 32c -set _MOTIF_WM_HINTS "0x2, 0x0, 0x0, 0x0, 0x0" 2>/dev/null || true
+
+# Position and size
+wmctrl -r "$TITLE" -e "0,$X,$Y,$W,$H" 2>/dev/null || true
+
+echo "Cava: external mic (sensitivity 500)"
+
+wait $PID 2>/dev/null || true

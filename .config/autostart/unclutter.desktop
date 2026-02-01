@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Unclutter
+Comment=Hide cursor after 10 seconds of inactivity
+Exec=unclutter --timeout 10 -b
+Terminal=false
+Hidden=false
+X-GNOME-Autostart-enabled=true

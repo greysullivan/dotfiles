@@ -1,0 +1,11 @@
+# GIMP gimp-eraser-tool options
+
+(foreground
+    (color "HSVA float" 16 "\0\0\0\0\0\0\0\0\330\10\4\76\0\0\200\77" 0))
+(brush "2. Hardness 050")
+(dynamics "Pressure Size")
+(palette "Color History")
+(brush-size 51)
+(brush-hardness 0.5)
+
+# end of gimp-eraser-tool options

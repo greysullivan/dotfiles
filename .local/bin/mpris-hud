@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+# Width = 26 columns
+WIDTH=26
+
+# fetch data
+artist=$(playerctl metadata artist 2>/dev/null | tr '[:upper:]' '[:lower:]')
+title=$(playerctl metadata title 2>/dev/null | tr '[:upper:]' '[:lower:]')
+
+# fallback
+[ -z "$artist" ] && artist="no artist"
+[ -z "$title" ] && title="no title"
+
+# progress
+pos=$(playerctl position 2>/dev/null | cut -d'.' -f1)
+dur=$(playerctl metadata mpris:length 2>/dev/null)
+dur=$((dur/1000000))
+
+bar=""
+
+if [ "$dur" -gt 0 ] 2>/dev/null; then
+    pct=$((pos * 100 / dur))
+    fill=$((pct * WIDTH / 100))
+    empty=$((WIDTH - fill))
+    bar="$(printf '%*s' "$fill" | tr ' ' '█')$(printf '%*s' "$empty" | tr ' ' '░')"
+else
+    bar="$(printf '%*s' "$WIDTH" | tr ' ' '░')"
+fi
+
+# centre text: pad both sides
+center() {
+    local text="$1"
+    local total="$WIDTH"
+    local len=${#text}
+    local pad=$(( (total - len) / 2 ))
+    printf "%*s%s%*s\n" "$pad" "" "$text" "$pad" ""
+}
+
+# output 4 lines
+echo ""
+center "$artist - $title"
+echo "$bar"
+echo ""

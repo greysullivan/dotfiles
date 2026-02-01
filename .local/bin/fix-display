@@ -1,0 +1,10 @@
+#!/bin/bash
+# Fix display offset and wallpaper issues
+
+# Reset display to proper position and disable panning
+xrandr --output eDP-1 --mode 1440x900 --pos 0x0 --panning 0x0 --primary
+
+# Reload xfdesktop to refresh wallpaper
+xfdesktop --reload
+
+echo "Display reset complete"

@@ -1,0 +1,23 @@
+# settings
+
+(GimpGegl-gegl-exposure-config "2026-02-01 10:10:07"
+    (time 1769893807)
+    (black-level 0)
+    (exposure 0))
+(GimpGegl-gegl-exposure-config "2026-02-01 10:03:54"
+    (time 1769893434)
+    (gimp-opacity 0.66599999999999993)
+    (black-level 0.090999999999999998)
+    (exposure 0.28599999999999998))
+(GimpGegl-gegl-exposure-config "2026-02-01 09:54:32"
+    (time 1769892872)
+    (black-level 0)
+    (exposure 0))
+(GimpGegl-gegl-exposure-config "2026-02-01 09:47:09"
+    (time 1769892429)
+    (gimp-mode vivid-light)
+    (gimp-opacity 0.47200000000000003)
+    (black-level 0.048000000000000001)
+    (exposure 0.66900000000000004))
+
+# end of settings

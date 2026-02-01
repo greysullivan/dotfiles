@@ -1,0 +1,92 @@
+# Lavender and White theme for btop
+# Matching fastfetch icon lavender color (#A78BFA) with white accents
+
+# Main background, empty for terminal default, need to be empty if you want transparent background
+theme[main_bg]=""
+
+# Main text color
+theme[main_fg]="#ffffff"
+
+# Title color for boxes
+theme[title]="#A78BFA"
+
+# Highlight color for keyboard shortcuts
+theme[hi_fg]="#8B5CF6"
+
+# Background color of selected item in processes box
+theme[selected_bg]="#A78BFA"
+
+# Foreground color of selected item in processes box
+theme[selected_fg]="#ffffff"
+
+# Color of inactive/disabled text
+theme[inactive_fg]="#DDD6FE"
+
+# Color of text appearing on top of graphs, i.e uptime and current network graph scaling
+theme[graph_text]="#8B5CF6"
+
+# Background color of the percentage meters
+theme[meter_bg]="#4d4d4d"
+
+# Misc colors for processes box including mini cpu graphs, details memory graph and details status text
+theme[proc_misc]="#A78BFA"
+
+# Cpu box outline color
+theme[cpu_box]="#8B5CF6"
+
+# Memory/disks box outline color
+theme[mem_box]="#A78BFA"
+
+# Net up/down box outline color
+theme[net_box]="#C4B5FD"
+
+# Processes box outline color
+theme[proc_box]="#8B5CF6"
+
+# Box divider line and small boxes line color
+theme[div_line]="#DDD6FE"
+
+# Temperature graph colors (white to lavender to deep purple)
+theme[temp_start]="#ffffff"
+theme[temp_mid]="#A78BFA"
+theme[temp_end]="#8B5CF6"
+
+# CPU graph colors (white to lavender to deep purple)
+theme[cpu_start]="#ffffff"
+theme[cpu_mid]="#C4B5FD"
+theme[cpu_end]="#8B5CF6"
+
+# Mem/Disk free meter (deep purple to lavender to white)
+theme[free_end]="#ffffff"
+theme[free_mid]="#C4B5FD"
+theme[free_start]="#8B5CF6"
+
+# Mem/Disk cached meter (white to light lavender to lavender)
+theme[cached_start]="#ffffff"
+theme[cached_mid]="#DDD6FE"
+theme[cached_end]="#A78BFA"
+
+# Mem/Disk available meter (deep purple to light lavender to white)
+theme[available_start]="#8B5CF6"
+theme[available_mid]="#DDD6FE"
+theme[available_end]="#ffffff"
+
+# Mem/Disk used meter (white to lavender to deep purple)
+theme[used_start]="#ffffff"
+theme[used_mid]="#A78BFA"
+theme[used_end]="#8B5CF6"
+
+# Download graph colors (white to lavender to deep purple)
+theme[download_start]="#ffffff"
+theme[download_mid]="#A78BFA"
+theme[download_end]="#8B5CF6"
+
+# Upload graph colors (white to light lavender to deep purple)
+theme[upload_start]="#ffffff"
+theme[upload_mid]="#C4B5FD"
+theme[upload_end]="#8B5CF6"
+
+# Process box color gradient for threads, mem and cpu usage
+theme[process_start]="#DDD6FE"
+theme[process_mid]="#A78BFA"
+theme[process_end]="#8B5CF6"

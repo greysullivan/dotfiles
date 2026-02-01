@@ -1,0 +1,11 @@
+# THEO white-steel theme
+theme[main_bg]="#00000000"
+theme[main_fg]="#e0e0e0"
+theme[selected_bg]="#ffffff22"
+theme[selected_fg]="#ffffff"
+theme[div_line]="#ffffff33"
+theme[proc_box]="#ffffff18"
+theme[gauge_bg]="#ffffff20"
+theme[gauge_fg]="#ffffffcc"
+theme[hi_fg]="#fafafa"
+theme[low_fg]="#b0b0b0"

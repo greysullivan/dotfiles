@@ -1,0 +1,383 @@
+/* xfce4-notes transparency and theming for Matcha-dark */
+window.xfce4-notes-window {
+    background-color: rgba(43, 43, 43, 0.85);
+}
+
+window.xfce4-notes-window textview {
+    background-color: rgba(43, 43, 43, 0.85);
+    color: #d3d3d3;
+}
+
+window.xfce4-notes-window textview text {
+    background-color: rgba(43, 43, 43, 0.75);
+    color: #d3d3d3;
+}
+
+window.xfce4-notes-window notebook {
+    background-color: rgba(43, 43, 43, 0.85);
+}
+
+window.xfce4-notes-window notebook header {
+    background-color: rgba(35, 35, 35, 0.9);
+}
+
+window.xfce4-notes-window notebook tab {
+    background-color: rgba(43, 43, 43, 0.85);
+    color: #d3d3d3;
+}
+
+window.xfce4-notes-window notebook tab:checked {
+    background-color: rgba(26, 188, 156, 0.3);
+    color: #1abc9c;
+}
+
+window.xfce4-notes-window toolbar {
+    background-color: rgba(35, 35, 35, 0.9);
+}
+
+/* Thunar theme - steel white-grey with soft lavender text/icons */
+
+window.thunar {
+    background-color: rgba(200, 205, 215, 0.85);
+    color: #6B5B95;
+}
+
+/* Thunar toolbar */
+window.thunar toolbar {
+    background-color: rgba(200, 205, 215, 0.85);
+    border-bottom: 1px solid rgba(160, 165, 180, 0.6);
+    color: #6B5B95;
+}
+
+window.thunar toolbar button {
+    background-color: rgba(210, 215, 225, 0.9);
+    color: #6B5B95;
+    border: 1px solid rgba(160, 165, 180, 0.8);
+}
+
+window.thunar toolbar button:hover {
+    background-color: rgba(220, 225, 235, 0.95);
+    color: #5A4A84;
+}
+
+window.thunar toolbar button:active,
+window.thunar toolbar button:checked {
+    background-color: rgba(180, 185, 200, 0.95);
+    color: #5A4A84;
+}
+
+/* Thunar location bar */
+window.thunar .path-bar button {
+    background-color: rgba(210, 215, 225, 0.9);
+    color: #6B5B95;
+    border: 1px solid rgba(160, 165, 180, 0.8);
+}
+
+window.thunar .path-bar button:hover {
+    background-color: rgba(220, 225, 235, 0.95);
+    color: #5A4A84;
+}
+
+/* Thunar sidebar */
+window.thunar .sidebar {
+    background-color: rgba(200, 205, 215, 0.85);
+    color: #6B5B95;
+    border-right: 1px solid rgba(160, 165, 180, 0.6);
+}
+
+window.thunar .sidebar row {
+    background-color: transparent;
+    color: #6B5B95;
+}
+
+window.thunar .sidebar row:selected {
+    background-color: rgba(107, 91, 149, 0.25);
+    color: #5A4A84;
+}
+
+window.thunar .sidebar row:hover {
+    background-color: rgba(210, 215, 225, 0.9);
+}
+
+/* Thunar main view - opaque background */
+window.thunar .standard-view {
+    background-color: rgb(200, 205, 215);
+    color: #6B5B95;
+}
+
+window.thunar .standard-view.frame {
+    border: none;
+}
+
+window.thunar .standard-view .rubberband {
+    background-color: rgba(107, 91, 149, 0.3);
+    border: 1px solid #6B5B95;
+}
+
+/* Thunar file/folder items - opaque background for folder view */
+window.thunar iconview {
+    background-color: rgb(200, 205, 215);
+    color: #6B5B95;
+}
+
+window.thunar iconview:selected {
+    background-color: rgba(107, 91, 149, 0.25);
+    color: #5A4A84;
+}
+
+window.thunar treeview {
+    background-color: rgb(200, 205, 215);
+    color: #6B5B95;
+    border: none;
+}
+
+window.thunar treeview:selected {
+    background-color: rgba(107, 91, 149, 0.25);
+    color: #5A4A84;
+}
+
+window.thunar treeview:hover {
+    background-color: rgba(210, 215, 225, 0.9);
+}
+
+window.thunar treeview header button {
+    background-color: rgba(200, 205, 215, 0.85);
+    color: #6B5B95;
+    border: 1px solid rgba(160, 165, 180, 0.6);
+}
+
+window.thunar treeview header button:hover {
+    background-color: rgba(210, 215, 225, 0.95);
+    color: #5A4A84;
+}
+
+/* Thunar scrollbars */
+window.thunar scrollbar {
+    background-color: transparent;
+}
+
+window.thunar scrollbar slider {
+    background-color: rgba(107, 91, 149, 0.5);
+    border-radius: 8px;
+    min-width: 12px;
+    min-height: 12px;
+}
+
+window.thunar scrollbar slider:hover {
+    background-color: rgba(107, 91, 149, 0.7);
+}
+
+window.thunar scrollbar slider:active {
+    background-color: rgba(107, 91, 149, 0.9);
+}
+
+/* Thunar entry fields (search, rename, etc.) */
+window.thunar entry {
+    background-color: rgba(220, 225, 235, 0.95);
+    color: #6B5B95;
+    border: 1px solid rgba(160, 165, 180, 0.8);
+    caret-color: #6B5B95;
+}
+
+window.thunar entry:focus {
+    border-color: rgba(107, 91, 149, 0.8);
+    background-color: rgba(230, 235, 245, 0.95);
+}
+
+window.thunar entry selection {
+    background-color: rgba(107, 91, 149, 0.4);
+    color: #5A4A84;
+}
+
+/* Thunar statusbar */
+window.thunar statusbar {
+    background-color: rgba(200, 205, 215, 0.85);
+    border-top: 1px solid rgba(160, 165, 180, 0.6);
+    color: #6B5B95;
+}
+
+/* Thunar context menu */
+window.thunar menu,
+window.thunar .context-menu {
+    background-color: rgba(200, 205, 215, 0.95);
+    color: #6B5B95;
+    border: 1px solid rgba(160, 165, 180, 0.8);
+}
+
+window.thunar menuitem {
+    color: #6B5B95;
+}
+
+window.thunar menuitem:hover {
+    background-color: rgba(107, 91, 149, 0.25);
+    color: #5A4A84;
+}
+
+window.thunar menuitem:disabled {
+    color: #A89BC4;
+}
+
+/* Thunar dialog boxes */
+window.thunar dialog {
+    background-color: rgba(200, 205, 215, 0.95);
+    color: #6B5B95;
+}
+
+window.thunar .dialog-action-area button {
+    background-color: rgba(210, 215, 225, 0.95);
+    color: #6B5B95;
+    border: 1px solid rgba(160, 165, 180, 0.8);
+}
+
+window.thunar .dialog-action-area button:hover {
+    background-color: rgba(220, 225, 235, 0.95);
+    color: #5A4A84;
+}
+
+window.thunar .dialog-action-area button:active {
+    background-color: rgba(180, 185, 200, 0.95);
+}
+
+/* Thunar notebook tabs (if present) */
+window.thunar notebook {
+    background-color: rgba(200, 205, 215, 0.85);
+}
+
+window.thunar notebook header {
+    background-color: rgba(200, 205, 215, 0.85);
+    border-bottom: 1px solid rgba(160, 165, 180, 0.6);
+}
+
+window.thunar notebook tab {
+    background-color: rgba(210, 215, 225, 0.9);
+    color: #6B5B95;
+    border: 1px solid rgba(160, 165, 180, 0.8);
+}
+
+window.thunar notebook tab:checked {
+    background-color: rgba(107, 91, 149, 0.25);
+    color: #5A4A84;
+}
+
+window.thunar notebook tab:hover {
+    background-color: rgba(220, 225, 235, 0.95);
+}
+
+/* Soft lavender icons */
+window.thunar .standard-view image,
+window.thunar iconview image,
+window.thunar treeview image,
+window.thunar .sidebar image {
+    -gtk-icon-style: symbolic;
+    color: #6B5B95;
+    -gtk-icon-shadow: none;
+}
+
+window.thunar iconview.view:selected image,
+window.thunar treeview.view:selected image,
+window.thunar .sidebar row:selected image {
+    -gtk-icon-style: symbolic;
+    color: #5A4A84;
+}
+
+/* XFCE Panel white-steel theme */
+.xfce4-panel {
+    background-color: rgba(26, 29, 35, 0.75);
+    color: #F5F7FA;
+    font-weight: normal;
+}
+
+/* Panel buttons */
+.xfce4-panel button {
+    background-color: transparent;
+    color: #D0D5DD;
+    border: none;
+    padding: 0;
+}
+
+.xfce4-panel button:hover {
+    background-color: rgba(61, 68, 81, 0.6);
+    color: #F5F7FA;
+}
+
+.xfce4-panel button:active,
+.xfce4-panel button:checked {
+    background-color: rgba(61, 68, 81, 0.75);
+    color: #F5F7FA;
+}
+
+/* Panel plugin backgrounds */
+.xfce4-panel .tasklist button {
+    background-color: rgba(44, 47, 56, 0.5);
+    color: #D0D5DD;
+    border: 1px solid rgba(61, 68, 81, 0.4);
+    margin: 2px;
+}
+
+.xfce4-panel .tasklist button:hover {
+    background-color: rgba(61, 68, 81, 0.7);
+    color: #F5F7FA;
+}
+
+.xfce4-panel .tasklist button:checked {
+    background-color: rgba(61, 68, 81, 0.8);
+    color: #F5F7FA;
+    border-color: rgba(167, 173, 184, 0.6);
+}
+
+/* Panel labels and text */
+.xfce4-panel label {
+    color: #F5F7FA;
+}
+
+/* Clock plugin */
+.xfce4-panel .clock-label {
+    color: #F5F7FA;
+    font-weight: normal;
+}
+
+/* System tray */
+.xfce4-panel #systray {
+    background-color: transparent;
+}
+
+/* Launcher buttons */
+.xfce4-panel .launcher button {
+    background-color: transparent;
+    padding: 2px;
+}
+
+.xfce4-panel .launcher button:hover {
+    background-color: rgba(61, 68, 81, 0.6);
+}
+
+/* Workspace switcher */
+.xfce4-panel .pager button {
+    background-color: rgba(44, 47, 56, 0.5);
+    border: 1px solid rgba(61, 68, 81, 0.4);
+}
+
+.xfce4-panel .pager button:hover {
+    background-color: rgba(61, 68, 81, 0.7);
+}
+
+.xfce4-panel .pager button:checked {
+    background-color: rgba(167, 173, 184, 0.6);
+    border-color: rgba(167, 173, 184, 0.6);
+}
+
+/* Panel menu */
+.xfce4-panel menu {
+    background-color: rgba(31, 34, 41, 0.95);
+    color: #F5F7FA;
+    border: 1px solid rgba(61, 68, 81, 0.8);
+}
+
+.xfce4-panel menuitem {
+    color: #F5F7FA;
+}
+
+.xfce4-panel menuitem:hover {
+    background-color: rgba(61, 68, 81, 0.9);
+    color: #F5F7FA;
+}

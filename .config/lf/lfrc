@@ -1,0 +1,11 @@
+set mouse
+set drawbox
+set ignorecase
+set hidden
+
+# keybindings
+map q quit
+map r reload
+
+# enable open using default programs
+cmd open ${EDITOR:-nano} $(lf -remote 'open' 2> /dev/null)

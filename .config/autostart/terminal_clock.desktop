@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Terminal Clock
+Comment=Terminal running tty-clock
+Exec=xfce4-terminal --fullscreen -e "tty-clock -c -C 8 -b -S -s"
+OnlyShowIn=XFCE;
+StartupNotify=false
+Terminal=false
+Hidden=false

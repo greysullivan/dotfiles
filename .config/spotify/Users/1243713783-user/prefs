@@ -1,0 +1,9 @@
+connect.mdns_devices="[]"
+connect.dial_devices="[{\"address\":\"192.168.68.58\",\"app_state\":\"MISSING\",\"created_timestamp\":1769935208,\"device_id\":\"00000000-0000-0000-0000-ecc1ab93d42d\",\"dial_location_url\":\"http://192.168.68.58:56790/dd.xml\",\"display_name\":\"Mediatek_MTXXXX\",\"last_seen\":1769935208,\"manufacturer\":\"MediaTek Inc.\",\"model_name\":\"Mediatek_MT5597\",\"product_cap\":\"\",\"public_ip\":\"115.189.102.1\",\"wol\":{\"all_interfaces\":false,\"delay_ms\":250,\"mac\":\"bcfab8dd962f\",\"port\":9,\"retries\":240}}]"
+audio.play_bitrate_non_metered_migrated=true
+audio.crossfade_v2=true
+audio.equalizer_v2=true
+ui.track_notifications_enabled=false
+audio.crossfade.time_v2=3000
+ui.hide_hpto=true
+app.browser.zoom-level=100

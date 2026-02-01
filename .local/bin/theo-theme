@@ -1,0 +1,33 @@
+#!/bin/bash
+
+THEO_DIR="$HOME/.config/theo_theme"
+TARGET="$1"
+
+if [[ "$TARGET" != "lavender" && "$TARGET" != "obsidian" ]]; then
+    echo "usage: theo-theme {lavender|obsidian}"
+    exit 1
+fi
+
+echo "Applying THEO theme: $TARGET"
+
+# xfce terminal theme (backup first)
+mkdir -p "$HOME/.config/xfce4/terminal"
+if [[ -f "$HOME/.config/xfce4/terminal/terminalrc" ]]; then
+    cp "$HOME/.config/xfce4/terminal/terminalrc" "$HOME/.config/xfce4/terminal/terminalrc.backup.$(date +%s)"
+fi
+cp "$THEO_DIR/$TARGET/terminal/"*.theme "$HOME/.config/xfce4/terminal/terminalrc"
+
+# ranger
+mkdir -p "$HOME/.config/ranger/colorschemes"
+cp "$THEO_DIR/$TARGET/ranger/rc.conf" "$HOME/.config/ranger/rc.conf"
+cp "$THEO_DIR/$TARGET/ranger/colorschemes/"*.py "$HOME/.config/ranger/colorschemes/"
+
+# btop
+mkdir -p "$HOME/.config/btop/themes"
+cp "$THEO_DIR/$TARGET/btop/"*.theme "$HOME/.config/btop/themes/theo.theme"
+
+# cava
+mkdir -p "$HOME/.config/cava"
+cp "$THEO_DIR/$TARGET/cava/config" "$HOME/.config/cava/config"
+
+echo "THEO theme applied. restart terminal + ranger if needed."

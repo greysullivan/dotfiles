@@ -1,0 +1,82 @@
+# white-steel btop theme
+# Minimal steel grey and soft white palette
+
+# Main background and foreground
+theme[main_bg]="#1A1D23"
+theme[main_fg]="#F5F7FA"
+
+# Title colors
+theme[title]="#F5F7FA"
+
+# Highlight and selected items
+theme[hi_fg]="#C8CDD6"
+theme[selected_bg]="#3D4451"
+theme[selected_fg]="#F5F7FA"
+
+# Inactive/Disabled text
+theme[inactive_fg]="#6B7280"
+
+# Process box
+theme[proc_misc]="#D0D5DD"
+theme[cpu_box]="#A7ADB8"
+theme[mem_box]="#A7ADB8"
+theme[net_box]="#A7ADB8"
+theme[proc_box]="#A7ADB8"
+
+# Division lines
+theme[div_line]="#3D4451"
+
+# Temperature colors (steel gradient)
+theme[temp_start]="#A7ADB8"
+theme[temp_mid]="#8E959F"
+theme[temp_end]="#757C86"
+
+# CPU graph colors (steel gradient)
+theme[cpu_start]="#A7ADB8"
+theme[cpu_mid]="#8E959F"
+theme[cpu_end]="#757C86"
+
+# Memory colors (steel gradient)
+theme[free_start]="#A7ADB8"
+theme[free_mid]="#8E959F"
+theme[free_end]="#757C86"
+
+theme[cached_start]="#C8CDD6"
+theme[cached_mid]="#B8BDC6"
+theme[cached_end]="#A7ADB8"
+
+theme[available_start]="#D0D5DD"
+theme[available_mid]="#C0C5CD"
+theme[available_end]="#A7ADB8"
+
+theme[used_start]="#757C86"
+theme[used_mid]="#656C76"
+theme[used_end]="#555C66"
+
+# Download and Upload (steel tones)
+theme[download_start]="#A7ADB8"
+theme[download_mid]="#8E959F"
+theme[download_end]="#757C86"
+
+theme[upload_start]="#C8CDD6"
+theme[upload_mid]="#B8BDC6"
+theme[upload_end]="#A7ADB8"
+
+# Process colors
+theme[process_start]="#A7ADB8"
+theme[process_mid]="#8E959F"
+theme[process_end]="#757C86"
+
+# Graph colors
+theme[graph_text]="#D0D5DD"
+
+# Meter colors
+theme[meter_bg]="#2C2F38"
+
+# Input field
+theme[input_bg]="#2C2F38"
+theme[input_fg]="#F5F7FA"
+
+# Item backgrounds
+theme[item_bg_odd]="#1A1D23"
+theme[item_bg_even]="#1F2229"

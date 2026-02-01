@@ -1,0 +1,7 @@
+[input]
+method = pulse
+source = auto
+
+[color]
+foreground = "#96A7C8"
+background = "#0B0C0E"

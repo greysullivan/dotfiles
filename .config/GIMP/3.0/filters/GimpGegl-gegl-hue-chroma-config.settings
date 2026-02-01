@@ -1,0 +1,11 @@
+# settings
+
+(GimpGegl-gegl-hue-chroma-config "2026-02-01 09:15:25"
+    (time 1769890525)
+    (gimp-mode normal)
+    (gimp-opacity 0.050000000000000003)
+    (hue 180)
+    (chroma 81.810000000000002)
+    (lightness 30.449999999999999))
+
+# end of settings

@@ -1,0 +1,10 @@
+
+[audacious]
+record_stream=0
+recurse_folders=FALSE
+
+[qtui]
+menu_visible=FALSE
+player_height=435
+player_width=705
+playlist_headers=FALSE

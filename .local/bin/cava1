@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Switch cava to system audio with default sensitivity in a new window
+sed -i 's/^source = .*/source = auto/' ~/.config/cava/config
+sed -i 's/^sensitivity = .*/sensitivity = 250/' ~/.config/cava/config
+
+# Kill existing cava if running
+pkill cava 2>/dev/null || true
+
+# Launch cava in a completely independent session
+setsid -f xfce4-terminal --geometry 90x25 --role=cava-terminal -e cava
+
+echo "Cava: system audio (sensitivity 250)"

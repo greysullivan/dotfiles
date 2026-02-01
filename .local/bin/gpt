@@ -1,0 +1,5 @@
+brave --app=https://chatgpt.com \
+      --window-size=1280,900 \
+      --disable-features=OverlayScrollbar \
+      --disable-session-crashed-bubble \
+      &> /dev/null &

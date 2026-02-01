@@ -1,0 +1,51 @@
+[general]
+bars = 16
+bar_width = 3
+bar_spacing = 2
+framerate = 60
+lower_cutoff_freq = 30
+higher_cutoff_freq = 12000
+sensitivity = 100
+autosens = 0
+bar_height = 13
+
+[input]
+method = pulse
+source = alsa_input.pci-0000_00_1b.0.analog-stereo
+
+[output]
+method = ncurses
+
+[smoothing]
+noise_reduction = 60
+integral = 80
+monstercat = 1
+waves = 0
+
+[eq]
+; Heavily reduce bass, aggressively boost mids
+1 = 0.3
+2 = 0.4
+3 = 0.5
+4 = 0.7
+5 = 2.0
+6 = 2.5
+7 = 3.0
+8 = 3.0
+9 = 3.0
+10 = 2.5
+11 = 2.0
+12 = 1.8
+13 = 1.5
+14 = 1.3
+15 = 1.2
+16 = 1.0
+
+[window]
+width = 150
+height = 10
+
+[colors]
+gradient = 0
+foreground = "#E6E6FA"
+opacity = 75

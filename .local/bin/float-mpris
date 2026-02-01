@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+xfce4-terminal \
+    --title="mpris-hud" \
+    --hide-menubar \
+    --hide-toolbar \
+    --hide-scrollbar \
+    --geometry=26x4 \
+    --font="JetBrainsMono Nerd Font 10" \
+    --color-bg=#000000 \
+    --color-text=#FFFFFF \
+    --disable-server \
+    --command="bash -c 'while true; do clear; ~/.local/bin/mpris-hud; sleep 1; done'"
+

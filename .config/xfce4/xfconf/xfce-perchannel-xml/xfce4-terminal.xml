@@ -1,0 +1,56 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<channel name="xfce4-terminal" version="1.0">
+  <property name="background-mode" type="string" value="TERMINAL_BACKGROUND_TRANSPARENT"/>
+  <property name="misc-always-show-tabs" type="bool" value="false"/>
+  <property name="misc-bell" type="bool" value="false"/>
+  <property name="misc-borders-default" type="bool" value="false"/>
+  <property name="misc-cursor-blinks" type="bool" value="true"/>
+  <property name="misc-cursor-shape" type="string" value="TERMINAL_CURSOR_SHAPE_UNDERLINE"/>
+  <property name="misc-default-geometry" type="string" value="96x30"/>
+  <property name="misc-inherit-geometry" type="bool" value="false"/>
+  <property name="misc-menubar-default" type="bool" value="false"/>
+  <property name="misc-mouse-autohide" type="bool" value="false"/>
+  <property name="misc-toolbar-default" type="bool" value="false"/>
+  <property name="misc-confirm-close" type="bool" value="false"/>
+  <property name="misc-cycle-tabs" type="bool" value="true"/>
+  <property name="misc-tab-close-buttons" type="bool" value="true"/>
+  <property name="misc-tab-close-middle-click" type="bool" value="false"/>
+  <property name="misc-tab-position" type="string" value="GTK_POS_TOP"/>
+  <property name="misc-highlight-urls" type="bool" value="true"/>
+  <property name="scrolling-lines" type="uint" value="999999"/>
+  <property name="scrolling-on-output" type="bool" value="false"/>
+  <property name="color-use-theme" type="bool" value="false"/>
+  <property name="color-background-vary" type="bool" value="false"/>
+  <property name="color-foreground" type="string" value="#ffffffffffff"/>
+  <property name="color-background" type="string" value="#616135358383"/>
+  <property name="color-cursor-foreground" type="string" value="#ffffffffffff"/>
+  <property name="color-cursor" type="string" value="#ffffffffffff"/>
+  <property name="color-cursor-use-default" type="bool" value="true"/>
+  <property name="color-selection" type="string" value=""/>
+  <property name="color-selection-background" type="string" value=""/>
+  <property name="color-selection-use-default" type="bool" value="true"/>
+  <property name="color-bold" type="string" value=""/>
+  <property name="color-bold-use-default" type="bool" value="true"/>
+  <property name="color-palette" type="string" value="#000000;#aa0000;#b19cd9;#aa5500;#0000aa;#aa00aa;#00aaaa;#aaaaaa;#555555;#ff5555;#dbb6ff;#ffff55;#5555ff;#ff55ff;#55ffff;#ffffff"/>
+  <property name="color-bold-is-bright" type="bool" value="true"/>
+  <property name="tab-activity-color" type="string" value="#1717f0f01818"/>
+  <property name="font-name" type="string" value="DejaVu Sans Mono 11"/>
+  <property name="font-use-system" type="bool" value="false"/>
+  <property name="cell-height-scale" type="double" value="1.2000000000000002"/>
+  <property name="cell-width-scale" type="double" value="1"/>
+  <property name="scrolling-bar" type="string" value="TERMINAL_SCROLLBAR_NONE"/>
+  <property name="misc-show-unsafe-paste-dialog" type="bool" value="false"/>
+  <property name="misc-new-tab-adjacent" type="bool" value="true"/>
+  <property name="title-initial" type="string" value="terminal"/>
+  <property name="command-login-shell" type="bool" value="true"/>
+  <property name="background-darkness" type="double" value="0.45000000000000001"/>
+  <property name="run-custom-command" type="bool" value="false"/>
+  <property name="dropdown-always-show-tabs" type="bool" value="false"/>
+  <property name="dropdown-opacity" type="uint" value="50"/>
+  <property name="dropdown-width" type="uint" value="50"/>
+  <property name="dropdown-position" type="uint" value="0"/>
+  <property name="dropdown-move-to-active" type="bool" value="false"/>
+  <property name="dropdown-position-vertical" type="uint" value="100"/>
+  <property name="font-allow-bold" type="bool" value="true"/>
+</channel>

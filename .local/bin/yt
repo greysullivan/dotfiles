@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+# yt - Lightweight YouTube launcher for Manjaro
+# Created by playbook automation
+# Uses yt-dlp + fzf for reliable search
+
+set -euo pipefail
+
+# Function to show help
+show_help() {
+    cat << 'EOF'
+yt - Lightweight YouTube command
+
+USAGE:
+    yt [MODE] [QUERY]
+
+MODES:
+    (no args)   Interactive search using yt-dlp + fzf, play in mpv (720p30)
+    search      Same as no args
+    hq          High quality mode (1080p30) for when plugged in
+    web         Open YouTube in Brave app window (no URL needed)
+    help, -h    Show this help
+
+EXAMPLES:
+    yt              # Prompt for search, then play in low-heat mode
+    yt search cats  # Search for "cats" and play
+    yt hq music     # Search for "music" in high quality
+    yt web          # Open YouTube web interface
+
+NOTES:
+    - Default mode optimized for low heat and smooth playback
+    - Uses hardware decoding when available
+    - Press 'q' in mpv to quit, 'f' for fullscreen
+    - Use arrow keys in fzf to navigate, Enter to select
+EOF
+}
+
+# Function to open web browser
+open_web() {
+    local url="https://www.youtube.com"
+
+    if command -v brave &> /dev/null; then
+        brave --app="$url" &> /dev/null &
+        disown
+        echo "Opening YouTube in Brave app mode..."
+    elif command -v firefox &> /dev/null; then
+        firefox --new-window "$url" &> /dev/null &
+        disown
+        echo "Opening YouTube in Firefox..."
+    elif command -v chromium &> /dev/null; then
+        chromium --app="$url" &> /dev/null &
+        disown
+        echo "Opening YouTube in Chromium app mode..."
+    else
+        echo "Error: No suitable browser found (tried: brave, firefox, chromium)"
+        exit 1
+    fi
+}
+
+# Function to search and play YouTube videos
+search_and_play() {
+    local quality="$1"
+    shift
+    local query="$*"
+
+    # If no query provided, prompt for one
+    if [ -z "$query" ]; then
+        echo -n "Search YouTube: "
+        read -r query
+        if [ -z "$query" ]; then
+            echo "No search query provided."
+            exit 1
+        fi
+    fi
+
+    echo "Searching for: $query"
+
+    # Use yt-dlp to search and format results with embedded video IDs
+    local results
+    results=$(yt-dlp --default-search "ytsearch20" \
+        --get-id \
+        --get-title \
+        --get-duration \
+        "ytsearch20:$query" 2>/dev/null | \
+        paste - - - | \
+        awk -F'\t' '{printf "%-60s %8s [%s]\n", substr($2,1,60), $3, $1}')
+
+    if [ -z "$results" ]; then
+        echo "No results found."
+        exit 1
+    fi
+
+    # Let user select with fzf
+    local selection
+    selection=$(echo "$results" | fzf --prompt="Select video: " --height=60% --reverse)
+
+    if [ -z "$selection" ]; then
+        echo "No video selected."
+        exit 0
+    fi
+
+    # Extract video ID from selection (it's in brackets at the end)
+    local video_id
+    video_id=$(echo "$selection" | grep -oP '\[([^\]]+)\]' | tail -1 | tr -d '[]')
+
+    # Build mpv command with quality settings
+    local mpv_opts=()
+    if [ "$quality" = "hq" ]; then
+        mpv_opts+=(--ytdl-format="bestvideo[height<=1080][fps<=30]+bestaudio/best[height<=1080]")
+    else
+        mpv_opts+=(--ytdl-format="bestvideo[height<=720][fps<=30]+bestaudio/best[height<=720]")
+    fi
+
+    echo "Playing video ID: $video_id"
+    mpv "${mpv_opts[@]}" "https://www.youtube.com/watch?v=$video_id"
+}
+
+# Main logic
+case "${1:-search}" in
+    help|-h|--help)
+        show_help
+        ;;
+    web)
+        open_web
+        ;;
+    hq)
+        shift
+        search_and_play "hq" "$@"
+        ;;
+    search|"")
+        shift 2>/dev/null || true
+        search_and_play "normal" "$@"
+        ;;
+    *)
+        # Treat unknown args as search query
+        search_and_play "normal" "$@"
+        ;;
+esac

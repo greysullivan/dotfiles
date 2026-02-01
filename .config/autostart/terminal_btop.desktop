@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Terminal Btop
+Comment=Terminal running btop in top-right quadrant
+Exec=xfce4-terminal --geometry 90x25 -e "btop"
+OnlyShowIn=XFCE;
+StartupNotify=false
+Terminal=false
+Hidden=true

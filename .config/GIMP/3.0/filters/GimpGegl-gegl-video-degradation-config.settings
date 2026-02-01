@@ -1,0 +1,10 @@
+# settings
+
+(GimpGegl-gegl-video-degradation-config "2026-02-01 09:43:44"
+    (time 1769892224)
+    (gimp-opacity 0.53799999999999992)
+    (pattern 3x3)
+    (additive yes)
+    (rotated no))
+
+# end of settings

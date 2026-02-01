@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Terminal Shell
+Comment=Plain terminal shell in bottom-right quadrant
+Exec=xfce4-terminal --geometry 90x25
+OnlyShowIn=XFCE;
+StartupNotify=false
+Terminal=false
+Hidden=false

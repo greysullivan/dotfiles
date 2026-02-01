@@ -1,0 +1,2 @@
+#!/bin/bash
+retroarch -L ~/.config/retroarch/cores/snes9x_libretro.so "/home/grey/Downloads/EarthBound (USA).sfc"

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+float-mpris &
+sleep 0.3
+centre-mpris

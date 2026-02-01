@@ -1,0 +1,10 @@
+# Large app data - not needed for config backup
+.config/BraveSoftware/
+.config/retroarch/
+.config/obsidian/
+.config/balenaEtcher/
+
+# Cache and temp files
+.config/.mozilla/
+*.log
+*.cache

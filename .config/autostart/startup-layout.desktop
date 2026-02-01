@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Startup Layout
+Comment=Arranges terminal windows into quarter-tiled layout
+Exec=/home/grey/startup-layout.sh
+OnlyShowIn=XFCE;
+StartupNotify=false
+Terminal=false
+Hidden=false

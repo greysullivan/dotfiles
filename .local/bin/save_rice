@@ -1,0 +1,25 @@
+#!/bin/bash
+
+backup_root="$HOME/rice_backups"
+mkdir -p "$backup_root"
+
+backup_name="rice_$(date +%Y%m%d_%H%M)"
+backup_dir="$backup_root/$backup_name"
+
+mkdir "$backup_dir"
+
+# core configs
+cp -r "$HOME/.config/xfce4"         "$backup_dir/"
+cp -r "$HOME/.config/btop"          "$backup_dir/"
+cp -r "$HOME/.config/cava"          "$backup_dir/"
+cp -r "$HOME/.config/fastfetch"     "$backup_dir/"
+cp -r "$HOME/.local/bin"            "$backup_dir/"
+
+# wallpapers
+cp "$HOME/Pictures/"* "$backup_dir/" 2>/dev/null
+
+# pack it
+cd "$backup_root"
+zip -r "${backup_name}.zip" "$backup_name" >/dev/null
+
+echo ">> RICE SAVED >> $backup_root/${backup_name}.zip"
