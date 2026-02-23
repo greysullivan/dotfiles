@@ -1,0 +1,19 @@
+#!/bin/bash
+set -euo pipefail
+
+# Start a normal XFCE session, then replace xfwm4 with i3.
+startxfce4 &
+xfce_pid=$!
+
+for _ in $(seq 1 50); do
+  if pgrep -x xfwm4 >/dev/null 2>&1; then
+    break
+  fi
+  sleep 0.1
+done
+
+if command -v i3 >/dev/null 2>&1; then
+  i3 --replace >/dev/null 2>&1 || true
+fi
+
+wait "$xfce_pid"

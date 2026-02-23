@@ -1,0 +1,21 @@
+#!/bin/bash
+set -euo pipefail
+
+autostart_file="$HOME/.config/autostart/i3-xfce.desktop"
+
+if [ -f "$autostart_file" ]; then
+  if command -v sed >/dev/null 2>&1; then
+    sed -i 's/^X-GNOME-Autostart-enabled=.*/X-GNOME-Autostart-enabled=false/' "$autostart_file" || true
+  fi
+fi
+
+if command -v xfconf-query >/dev/null 2>&1; then
+  xfconf-query -c xfce4-session -p /general/WindowManager -n -t string -s xfwm4 >/dev/null 2>&1 || true
+fi
+
+if [ -n "${DISPLAY:-}" ] && command -v xfwm4 >/dev/null 2>&1; then
+  xfwm4 --replace >/dev/null 2>&1 || true
+fi
+
+echo "i3 disabled for XFCE."
+echo "Log out and back in to restore a clean xfwm4 session."

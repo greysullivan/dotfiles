@@ -58,7 +58,7 @@
 (gtk_accel_path "<Actions>/terminal-window/zoom-out" "<Primary><Shift>Up")
 ; (gtk_accel_path "<Actions>/terminal-widget/shift-pageup" "<Shift>Page_Up")
 ; (gtk_accel_path "<Actions>/terminal-window/zoom-menu" "")
-(gtk_accel_path "<Actions>/terminal-window/close-window" "<Super>q")
+(gtk_accel_path "<Actions>/terminal-window/close-window" "<Super>Escape")
 ; (gtk_accel_path "<Actions>/terminal-window/goto-tab-3" "<Alt>3")
 (gtk_accel_path "<Actions>/terminal-window/last-active-tab" "<Shift>ISO_Left_Tab")
 (gtk_accel_path "<Actions>/terminal-window/save-contents" "<Primary><Alt><Super>s")
