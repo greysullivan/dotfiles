@@ -35,7 +35,7 @@
   <property name="color-palette" type="string" value="#000000;#aa0000;#b19cd9;#aa5500;#0000aa;#aa00aa;#00aaaa;#aaaaaa;#555555;#ff5555;#dbb6ff;#ffff55;#5555ff;#ff55ff;#55ffff;#ffffff"/>
   <property name="color-bold-is-bright" type="bool" value="true"/>
   <property name="tab-activity-color" type="string" value="#1717f0f01818"/>
-  <property name="font-name" type="string" value="DejaVu Sans Mono 11"/>
+  <property name="font-name" type="string" value="JetBrainsMono Nerd Font Mono 11"/>
   <property name="font-use-system" type="bool" value="false"/>
   <property name="cell-height-scale" type="double" value="1.2000000000000002"/>
   <property name="cell-width-scale" type="double" value="1"/>
