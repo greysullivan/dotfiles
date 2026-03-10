@@ -1,10 +1,50 @@
+# Sensitive data
+.secrets
+.ssh/
+.gnupg/
+.kube/
+.aws/
+.config/credentials
+.config/aws/
+
+# Caches and temp files
+.cache/
+.npm/
+.cargo/target/
+.mozilla/
+.bun/
+.avidemux6/
+
 # Large app data - not needed for config backup
 .config/BraveSoftware/
 .config/retroarch/
 .config/obsidian/
 .config/balenaEtcher/
-
-# Cache and temp files
 .config/.mozilla/
+
+# Large or unnecessary files
+.gphoto/
+node_modules/
 *.log
 *.cache
+.DS_Store
+
+# Session / display files
+.ICEauthority
+.Xauthority
+.bash_history
+.bash_logout
+.bastetscores
+
+# Local runtime
+.local/share/recently-used.xbel
+.local/share/gvfs-metadata/
+.local/share/Trash/
+.var/
+.steam/
+.ssr/
+
+# Claude local data
+.claude.json
+.claude.json.backup
+.anthropic/
