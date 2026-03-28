@@ -18,14 +18,14 @@ x = geometry['X']
 y = geometry['Y']
 width = geometry['WIDTH']
 height = geometry['HEIGHT']
-border_width = 4
+border_width = 7
 
 # Create root window
 root = tk.Tk()
 root.withdraw()
 
-# Soft warm white color
-color = '#e8e4e0'
+# Bold bright white
+color = '#ffffff'
 
 # Create 4 border windows (top, bottom, left, right)
 borders = []
@@ -69,11 +69,12 @@ borders.append(right)
 # Update to show windows
 root.update()
 
-# Fade out effect
-steps = 20
-delay = 0.08
+# Hold bold, then fade out quickly
+time.sleep(0.12)
+steps = 12
+delay = 0.04
 for i in range(steps):
-    alpha = 1.0 - (i + 1) / steps
+    alpha = 1.0 - ((i + 1) / steps) ** 0.6
     for border in borders:
         border.attributes('-alpha', alpha)
     root.update()

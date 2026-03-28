@@ -1,0 +1,31 @@
+# ncspot config — unified palette (greybone/lavender, 2026-03-18)
+# bg0=#0f0f10  bg1=#171719  bg2=#1f1f22
+# fg0=#e8e6df  fg1=#cfcac2  muted=#9d978f
+# accent1=#c7b8ff  accent2=#a79bd9  accent3=#7f76b3
+# warn=#d9a7a7  good=#b7c9b0  info=#c9c2a0
+
+cover_max_scale = 1.0
+
+[keybindings]
+"F1" = "Focus search"
+"F2" = "Focus library"
+"F3" = "Focus queue"
+
+[theme]
+background        = "#0f0f10"   # bg0 — deepest background
+primary           = "#e8e6df"   # fg0 — main text
+secondary         = "#7f76b3"   # accent3 — dimmed/inactive (lavender tint)
+title             = "#c7b8ff"   # accent1 — section titles (bright lavender)
+playing           = "#c7b8ff"   # accent1 — currently playing track
+playing_selected  = "#c7b8ff"   # accent1 — selected + playing
+playing_bg        = "#1a1820"   # deep lavender-tinted surface
+highlight         = "#0f0f10"   # bg0 — text on highlighted row
+highlight_bg      = "#2d3c2b"   # good@~25% on bg0 — subtle dark green selection
+error             = "#d9a7a7"   # warn — errors
+error_bg          = "#0f0f10"   # bg0
+statusbar         = "#cfcac2"   # fg1 — statusbar text
+statusbar_progress = "#7a9873"  # good@~60% — muted green progress bar
+statusbar_bg      = "#0a0a0c"   # below bg0 — deep statusbar
+cmdline           = "#e8e6df"   # fg0 — command line text
+cmdline_bg        = "#0f0f10"   # bg0
+search_match      = "#7a9873"   # good@~60% — muted green search highlights

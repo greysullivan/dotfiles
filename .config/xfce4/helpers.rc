@@ -1,4 +1,4 @@
-FileManager=Thunar
+FileManager=custom-FileManager
 MailReader=thunderbird
+WebBrowser=firefox
 
-WebBrowser=brave-browser

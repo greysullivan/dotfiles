@@ -1,5 +1,10 @@
 {
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "display": {
+    "color": {
+      "output": "#888888"
+    }
+  },
   "logo": {
     "source": "~/.config/fastfetch/manjaro-short.txt",
     "type": "file-raw",
@@ -13,66 +18,71 @@
     {
       "type": "title",
       "color": {
-        "user": "#ddb6f2",
-        "at": "#ddb6f2",
-        "host": "#ddb6f2"
+        "user": "#888888",
+        "at": "#888888",
+        "host": "#888888"
       }
     },
     {
       "type": "os",
       "key": "OS",
-      "keyColor": "#8E5EBB"
+      "keyColor": "#d8e2e8"
     },
     {
       "type": "host",
       "key": "Host",
-      "keyColor": "#8E5EBB",
-      "format": "MacBook Air {##ddb6f2}(13-inch,Early 2017){#}"
+      "keyColor": "#d8e2e8",
+      "format": "MacBook Air {##AFC9AF}(13-inch,Early 2017){#}"
     },
     {
       "type": "kernel",
       "key": "Kernel",
-      "keyColor": "#8E5EBB"
+      "keyColor": "#d8e2e8"
     },
     {
       "type": "packages",
       "key": "Packages",
-      "keyColor": "#8E5EBB",
-      "format": "{all} {##ddb6f2}(pacman)[{pacman-branch}]{#}"
+      "keyColor": "#d8e2e8",
+      "format": "{all} {##AFC9AF}(pacman)[{pacman-branch}]{#}"
     },
     {
       "type": "shell",
       "key": "Shell",
-      "keyColor": "#8E5EBB"
+      "keyColor": "#d8e2e8"
     },
     {
       "type": "wm",
       "key": "WM",
-      "keyColor": "#8E5EBB",
-      "format": "{pretty-name} {##ddb6f2}({protocol-name}){#}"
+      "keyColor": "#d8e2e8",
+      "format": "{pretty-name} {##AFC9AF}({protocol-name}){#}"
     },
     {
       "type": "terminal",
       "key": "Terminal",
-      "keyColor": "#8E5EBB"
+      "keyColor": "#d8e2e8"
     },
     {
       "type": "terminalfont",
       "key": "Terminal Font",
-      "keyColor": "#8E5EBB",
+      "keyColor": "#d8e2e8",
       "format": "JetbrainsMono Nerd (11pt)"
     },
     {
       "type": "memory",
       "key": "Memory",
-      "keyColor": "#8E5EBB",
-      "format": "{used} / {total} {##ddb6f2}({##FFFFFF}{percentage}{##ddb6f2}){#}"
+      "keyColor": "#d8e2e8",
+      "format": "{used} / {total} {##AFC9AF}({percentage}){#}"
     },
     {
       "type": "disk",
       "key": "Disk",
-      "keyColor": "#8E5EBB",
-      "format": "{size-used} / {size-total} {##ddb6f2}({##FFFFFF}{size-percentage}{##ddb6f2}){#}"
+      "keyColor": "#d8e2e8",
+      "format": "{size-used} / {size-total} {##AFC9AF}({size-percentage}){#}"
+    },
+    {
+      "type": "locale",
+      "key": "Locale",
+      "keyColor": "#d8e2e8"
     },
   ]
 }

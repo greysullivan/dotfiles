@@ -79,7 +79,6 @@
       <property name="&lt;Super&gt;KP_Up" type="string" value="/home/grey/.local/bin/xfwm4-tile-with-gaps up"/>
       <property name="&lt;Super&gt;KP_Down" type="string" value="/home/grey/.local/bin/xfwm4-tile-with-gaps down"/>
       <property name="&lt;Alt&gt;&lt;Super&gt;p" type="string" value="xfce4-screenshooter -f"/>
-      <property name="&lt;Alt&gt;&lt;Super&gt;l" type="string" value="xfce4-screenshooter -w"/>
       <property name="&lt;Alt&gt;&lt;Super&gt;space" type="string" value="sh -c &apos;~/.local/bin/rightdash_toggle.sh&apos;"/>
       <property name="&lt;Super&gt;d" type="string" value="xfce4-terminal -e lf"/>
       <property name="&lt;Super&gt;a" type="string" value="/home/grey/.local/bin/artha-toggle.sh"/>

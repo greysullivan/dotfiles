@@ -129,18 +129,31 @@ alias ff='fastfetch'
 alias rclone='nocorrect rclone'
 alias daw='lmms'
 alias cava="$HOME/.local/bin/cava-float"
+alias think='/home/grey/Documents/think-site/launch_think_.1.sh'
 
 # Games
 alias emerald='retroarch -L "$HOME/.config/retroarch/cores/mgba_libretro.so" "$HOME/Downloads/Pokemon-Emerald.gba"'
 
 # GUI apps (detached from terminal)
 alias spotify='nohup spotify &>/dev/null & disown'
+music() { "$HOME/.local/bin/music"; }
 alias firefox='nohup firefox &>/dev/null & disown'
 alias dolphin='nohup dolphin &>/dev/null & disown'
 alias kate='nohup kate &>/dev/null & disown'
 alias kdeconnect='nohup kdeconnect-app &>/dev/null & disown'
 alias thunar='nohup thunar &>/dev/null & disown'
 alias simplenote='nohup /opt/Simplenote/simplenote --auto-hide-menu-bar &>/dev/null & disown'
+
+# Wallpaper selection
+alias landscape='feh --bg-fill ~/Pictures/i3_wp/wp_landscape.jpg'
+alias bus='feh --bg-fill ~/Pictures/i3_wp/wp_back_of_a_bus.jpg'
+alias forrest='feh --bg-fill ~/Pictures/i3_wp/wp_forrest.jpg'
+alias wood='feh --bg-fill ~/pictures/i3_wp/wp_wood.jpg'
+alias anime='feh --bg-fill ~/Pictures/i3_wp/wp_anime.jpg'
+alias tagroom='feh --bg-fill ~/Pictures/i3_wp/wp_tagroom.jpg'
+alias tagwall='feh --bg-fill ~/Pictures/i3_wp/wp_tagwall.jpg'
+alias grafwall='feh --bg-fill ~/Pictures/i3_wp/wp_grafwall.jpg'
+alias star='feh --bg-fill ~/Pictures/i3_wp/wp_star.jpg'
 
 # Terminal browser with white-steel theme
 alias lynx='lynx -lss=/home/grey/.config/lynx/lynx.lss'
@@ -192,6 +205,10 @@ extract() {
 
 # Process search with nicer output
 psgrep() { ps aux | head -1; ps aux | command grep -i "$1" | command grep -v grep; }
+
+# Force 256-color mode for ranger so the lavender colorscheme renders consistently
+# across kitty (xterm-kitty) and xfce4-terminal (xterm-256color)
+ranger() { TERM=xterm-256color command ranger "$@"; }
 
 # =========================================
 # G) ZSH PLUGINS
@@ -290,6 +307,31 @@ clip() {
   xclip -selection clipboard
   echo "→ output copied to clipboard"
 }
+#Clean up cache
+alias cleanup='sudo paccache -r && yay -Sc --noconfirm && rm -rf ~/.cache/*'
 
-# --- NZXT keyboard profile (Alt<->Super swap via keyd) ---
-NZXT() { sudo /usr/local/bin/nzxt-toggle "${1:-toggle}"; }
+# --- Kitty environment instances ---
+dev() { kitty --detach --start-as=fullscreen --config ~/.config/kitty/dev-session.conf --session ~/.config/kitty/sessions/dev; i3-msg move scratchpad; }
+
+# www — awrit browser: direct in kitty, spawn kitty+awrit and exit if in xfce4-terminal
+www() {
+  local url="${1:-https://duckduckgo.com}"
+  if [[ -n "$KITTY_WINDOW_ID" ]]; then
+    awrit "$url" "${@:2}"
+  else
+    kitty --detach awrit "$url" "${@:2}"
+    exit
+  fi
+}
+
+# thinkyank — compile archive_txt notes into think_archives and clear
+alias thinkyank='python3 ~/Documents/think-site/thinkyank.py'
+
+# ncspot — use greybone muted theme inside dev session (KITTY_DEV_SESSION=1)
+ncspot() {
+  if [[ -n "$KITTY_DEV_SESSION" ]]; then
+    XDG_CONFIG_HOME=~/.config/ncspot-dev command ncspot "$@"
+  else
+    command ncspot "$@"
+  fi
+}

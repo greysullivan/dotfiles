@@ -2,6 +2,14 @@ set $mod Mod4
 
 font pango:JetBrains Mono 10
 
+# Startup Applications
+exec_always --no-startup-id picom --config ~/.config/picom/picom.conf
+exec_always --no-startup-id unclutter --timeout 2
+exec_always --no-startup-id /home/grey/.local/bin/start-ulauncher
+exec_always --no-startup-id xset s off
+exec_always --no-startup-id xset -dpms
+exec_always --no-startup-id xset s noblank
+
 set $bg #1a1a2e
 set $fg #e0def4
 set $accent #6e5494
@@ -21,11 +29,14 @@ default_border pixel 1
 default_floating_border pixel 1
 hide_edge_borders smart
 
+for_window [instance="floatterm"] floating enable, resize set 900 600, move position center
+for_window [class="mpv"] floating enable, move position center, border none
+
 floating_modifier $mod
 focus_follows_mouse no
 workspace_auto_back_and_forth yes
 
-set $term xfce4-terminal
+set $term kitty
 set $menu dmenu_run -fn 'JetBrains Mono-10' -nb '#1a1a2e' -nf '#e0def4' -sb '#6e5494' -sf '#e0def4'
 
 set $ws1 "1:work"
@@ -39,19 +50,19 @@ set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
 
-assign [class="Brave-browser"] $ws2
-assign [class="Xfce4-terminal"] $ws1
-assign [class="mpv"] $ws5
-assign [class="Spotify"] $ws5
-assign [class="WhatsApp"] $ws4
-
-exec --no-startup-id picom -b
 exec --no-startup-id feh --bg-fill ~/.config/i3/wallpaper.png
-exec --no-startup-id xss-lock -- i3lock -c 1a1a2e
+exec --no-startup-id ~/.local/bin/kitty-dim-inactive
+# exec --no-startup-id xss-lock -- i3lock -c 1a1a2e
+exec --no-startup-id systemctl --user import-environment DISPLAY XAUTHORITY
 
 bindsym $mod+Return exec $term
 bindsym $mod+d exec $menu
+bindsym $mod+x exec xfce4-terminal
 bindsym $mod+q kill
+bindsym $mod+p exec flameshot gui
+bindsym $mod+c exec xdotool key ctrl+c
+bindsym $mod+v exec xdotool key ctrl+v
+bindsym $mod+z exec xdotool key ctrl+z
 bindsym $mod+Shift+e exec i3-msg exit
 bindsym $mod+Shift+r restart
 bindsym $mod+Shift+c reload
@@ -61,6 +72,7 @@ bindsym $mod+h focus left
 bindsym $mod+j focus down
 bindsym $mod+k focus up
 bindsym $mod+l focus right
+bindsym $mod+e exec --no-startup-id eww open --toggle system-panel-window
 
 bindsym $mod+Shift+h move left
 bindsym $mod+Shift+j move down
@@ -68,13 +80,15 @@ bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 
 bindsym $mod+b split h
-bindsym $mod+v split v
 bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
-bindsym $mod+space focus mode_toggle
+bindsym $mod+space exec --no-startup-id kitty --name floatterm
 bindsym $mod+Shift+space floating toggle
-bindsym $mod+f fullscreen toggle
+bindsym $mod+Tab exec --no-startup-id ~/.local/bin/highlight_window.sh
+bindsym $mod+f exec $term
+bindsym $mod+Mod1+f fullscreen toggle
+bindsym Mod1+$mod+Left workspace prev
+bindsym Mod1+$mod+Right workspace next
 
 bindsym $mod+1 workspace $ws1
 bindsym $mod+2 workspace $ws2
@@ -107,3 +121,22 @@ mode "resize" {
     bindsym Escape mode "default"
 }
 bindsym $mod+r mode "resize"
+
+# Media keys
+bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
+bindsym XF86AudioPrev exec --no-startup-id playerctl previous
+bindsym XF86AudioNext exec --no-startup-id playerctl next
+bindsym XF86AudioStop exec --no-startup-id playerctl stop
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
+
+# Brightness
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +5%
+
+# Keyboard backlight
+bindsym XF86KbdBrightnessDown exec --no-startup-id brightnessctl -d '*::kbd_backlight' set 10%-
+bindsym XF86KbdBrightnessUp exec --no-startup-id brightnessctl -d '*::kbd_backlight' set +10%
+bindsym XF86KbdLightOnOff exec --no-startup-id brightnessctl -d '*::kbd_backlight' set toggle

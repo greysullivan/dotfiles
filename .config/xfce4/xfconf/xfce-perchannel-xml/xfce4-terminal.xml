@@ -23,7 +23,7 @@
   <property name="color-use-theme" type="bool" value="false"/>
   <property name="color-background-vary" type="bool" value="false"/>
   <property name="color-foreground" type="string" value="#ffffffffffff"/>
-  <property name="color-background" type="string" value="#616135358383"/>
+  <property name="color-background" type="string" value="#000000000000"/>
   <property name="color-cursor-foreground" type="string" value="#ffffffffffff"/>
   <property name="color-cursor" type="string" value="#ffffffffffff"/>
   <property name="color-cursor-use-default" type="bool" value="true"/>
@@ -32,7 +32,7 @@
   <property name="color-selection-use-default" type="bool" value="true"/>
   <property name="color-bold" type="string" value=""/>
   <property name="color-bold-use-default" type="bool" value="true"/>
-  <property name="color-palette" type="string" value="#000000;#aa0000;#b19cd9;#aa5500;#0000aa;#aa00aa;#00aaaa;#aaaaaa;#555555;#ff5555;#dbb6ff;#ffff55;#5555ff;#ff55ff;#55ffff;#ffffff"/>
+  <property name="color-palette" type="string" value="rgb(0,0,0);rgb(170,0,0);rgb(177,156,217);rgb(170,85,0);rgb(0,0,170);rgb(170,0,170);rgb(0,170,170);rgb(170,170,170);rgb(85,85,85);rgb(255,85,85);rgb(198,217,190);rgb(255,255,85);rgb(85,85,255);rgb(255,85,255);rgb(85,255,255);rgb(255,255,255)"/>
   <property name="color-bold-is-bright" type="bool" value="true"/>
   <property name="tab-activity-color" type="string" value="#1717f0f01818"/>
   <property name="font-name" type="string" value="JetBrainsMono Nerd Font Mono 11"/>
@@ -44,7 +44,7 @@
   <property name="misc-new-tab-adjacent" type="bool" value="true"/>
   <property name="title-initial" type="string" value="terminal"/>
   <property name="command-login-shell" type="bool" value="true"/>
-  <property name="background-darkness" type="double" value="0.45000000000000001"/>
+  <property name="background-darkness" type="double" value="0.59999999999999998"/>
   <property name="run-custom-command" type="bool" value="false"/>
   <property name="dropdown-always-show-tabs" type="bool" value="false"/>
   <property name="dropdown-opacity" type="uint" value="50"/>

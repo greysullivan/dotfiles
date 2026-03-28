@@ -1,0 +1,2 @@
+prefix_rule(pattern=["git", "-C", "/home/grey/.mcp-servers/google_workspace_mcp", "status", "-sb"], decision="allow")
+prefix_rule(pattern=["/usr/bin/zsh", "-lc", "printf 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a6xkAAAAASUVORK5CYII=' | base64 -d > /home/grey/thoughts_/assets/textures/archive-texture.png"], decision="allow")

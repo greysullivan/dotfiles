@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "google-workspace": {
+      "command": "/home/grey/.mcp-servers/google_workspace_mcp/.venv/bin/python",
+      "args": [
+        "/home/grey/.mcp-servers/google_workspace_mcp/main.py",
+        "--tool-tier",
+        "core"
+      ],
+      "cwd": "/home/grey/.mcp-servers/google_workspace_mcp"
+    }
+  }
+}

@@ -1,4 +1,6 @@
 # GIMP gimp-by-color-select-tool options
 
+(antialias no)
+(threshold 0)
 
 # end of gimp-by-color-select-tool options

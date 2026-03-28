@@ -3,13 +3,9 @@
 (GimpDeviceInfo "Virtual core pointer"
     (icon-name "gimp-cursor")
     (name "Virtual core pointer")
-    (tool-options "GimpFilterOptions"
-        (tool "gimp-operation-tool")
-        (foreground
-            (color "HSVA float" 16 "\65\134\1\77\0\42\13\77\72\200o\77\0\0\200\77" 0))
-        (blending-options-expanded yes)
-        (merge-filter yes))
-    (use-fg-bg yes)
+    (tool-options "GimpHistogramOptions"
+        (tool "gimp-threshold-tool"))
+    (use-fg-bg no)
     (use-opacity-paint-mode no)
     (use-brush no)
     (use-dynamics no)
