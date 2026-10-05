@@ -1,0 +1,16 @@
+# Optional mail, music, gestures, dictation and file previews
+aerc
+sound-theme-freedesktop
+cava
+ncspot
+rclone
+fuse3
+touchegg
+python-vosk
+python-gobject
+poppler
+resvg
+imagemagick
+ueberzugpp
+w3m
+xclip
