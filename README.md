@@ -84,4 +84,5 @@ separately; helper scripts reference the private files without storing their con
 The Codex executable is installed separately. Service enablement symlinks are
 also omitted; enable the relevant units explicitly when restoring.
 
-This is a local repository. No remote is configured and nothing has been pushed.
+Remote: `https://github.com/greysullivan/dotfiles`, branch `arch-install-20261005`.
+The existing `master` branch contains the original reference setup.
