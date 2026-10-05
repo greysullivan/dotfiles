@@ -1,0 +1,602 @@
+#!/usr/bin/python3
+"""Small native theme generator and conflict-aware appearance switcher."""
+import datetime, fcntl, hashlib, json, os, re, shutil, subprocess, sys, tempfile
+from pathlib import Path
+import tomllib
+import xml.etree.ElementTree as ET
+
+HOME = Path.home()
+ROOT = HOME / '.config/air-theme'
+STATE = HOME / '.local/state/air-theme'
+XML = '.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-terminal.xml'
+PROFILE = '.config/mozilla/firefox/59y3la6e.default-release'
+FILES = ['.config/i3/config', '.config/i3status/config', XML,
+         '.config/fastfetch/config.jsonc', '.config/btop/btop.conf',
+         '.config/btop/themes/charcoal.theme', '.config/aerc/aerc.conf',
+         '.config/aerc/stylesets/charcoal', '.config/yazi/theme.toml',
+         '.config/ncspot/config.toml', '.config/dunst/dunstrc',
+         '.config/kitty/theme.conf', '.config/starship.toml',
+         '.config/nvim/init.lua', '.config/nvim/colors/charcoal.lua',
+         '.config/gtk-3.0/settings.ini', '.config/gtk-3.0/gtk.css',
+         PROFILE + '/chrome/userChrome.css', '.tmux.conf']
+
+def run(args, **kw):
+    return subprocess.run(args, capture_output=True, text=True, timeout=15, **kw)
+
+def digest(data):
+    return hashlib.sha256(data).hexdigest()
+
+def savejson(path, obj):
+    with tempfile.NamedTemporaryFile(mode='w', dir=path.parent, delete=False) as t:
+        t.write(json.dumps(obj, indent=2) + '\n')
+        tmp = Path(t.name)
+    tmp.chmod(0o600)
+    os.replace(tmp,path)
+
+def snapshot():
+    ref = STATE / 'baseline.json'
+    if ref.exists():
+        return json.loads(ref.read_text())
+    backup = STATE / ('original-' + datetime.datetime.now().strftime('%Y%m%d-%H%M%S'))
+    backup.mkdir(mode=0o700)
+    entries = {}
+    for rel in FILES:
+        p = HOME / rel
+        exists = p.exists()
+        entries[rel] = {'exists': exists, 'link': os.readlink(p) if p.is_symlink() else None,
+                        'mode': (p.stat().st_mode & 0o7777) if exists else 0o600,
+                        'hash': digest(p.read_bytes()) if exists else None}
+        if exists:
+            b = backup / rel
+            b.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+            b.write_bytes(p.read_bytes())
+            b.chmod(0o600)
+    for d in backup.rglob('*'):
+        if d.is_dir(): d.chmod(0o700)
+    meta = {'backup': str(backup), 'entries': entries}
+    savejson(backup / 'manifest.json', meta)
+    savejson(ref, meta)
+    return meta
+
+def original(meta, rel):
+    p = Path(meta['backup']) / rel
+    return p.read_text() if meta['entries'][rel]['exists'] else ''
+
+def render(meta):
+    p = json.loads((ROOT / 'palette.json').read_text())
+    assert p['accent'].lower() == '#ff3d00', 'Accent must be exactly #FF3D00'
+    assert all(re.fullmatch(r'#[0-9a-fA-F]{6}', v) for v in p.values())
+    out = {}
+    # Existing native fragments: replace only appearance colours, keeping structure.
+    roles = {'#0a0a0a':'background', '#151518':'surface', '#e8e8ee':'foreground',
+             '#c8a2ff':'accent', '#24242a':'surface', '#ffb7d5':'error',
+             '#a8a8b3':'muted', '#555560':'divider', '#866dac':'divider',
+             '#a9c99f':'success', '#d8c5a0':'warning', '#ffffff':'foreground'}
+    for rel in ['.config/i3/config', '.config/i3status/config',
+                '.config/fastfetch/config.jsonc', '.config/yazi/theme.toml',
+                '.config/ncspot/config.toml', '.config/dunst/dunstrc']:
+        s = original(meta, rel)
+        s = re.sub(r'#[0-9a-fA-F]{6}', lambda m: p[roles[m[0].lower()]] if m[0].lower() in roles else m[0], s)
+        out[rel] = s
+    s = out['.config/i3/config']
+    s = re.sub(r"xsetroot -solid '[^']+'", "xsetroot -solid '" + p['desktop'] + "'", s)
+    s = re.sub(r'i3lock -c [0-9a-fA-F]{6}', 'i3lock -c ' + p['desktop'][1:], s)
+    s = s.replace('separator ' + p['surface'], 'separator ' + p['divider'])
+    out['.config/i3/config'] = s
+    # Focus and selection use orange; ordinary labels remain neutral.
+    s = out['.config/fastfetch/config.jsonc']
+    s = s.replace('"keys": "'+p['accent']+'"', '"keys": "'+p['foreground']+'"')
+    s = s.replace('"user": "'+p['accent']+'"', '"user": "'+p['foreground']+'"')
+    out['.config/fastfetch/config.jsonc'] = s
+    s = out['.config/ncspot/config.toml']
+    s = s.replace('title = "'+p['accent']+'"', 'title = "'+p['foreground']+'"')
+    s = s.replace('highlight_inactive_bg = "'+p['surface']+'"', 'highlight_inactive_bg = "'+p['accent']+'"')
+    # Progress is a filled control: use dark text over its orange fill.
+    s = s.replace('statusbar_progress = "'+p['accent']+'"', 'statusbar_progress = "'+p['desktop']+'"')
+    s = s.replace('statusbar_progress_bg = "'+p['surface']+'"', 'statusbar_progress_bg = "'+p['accent']+'"')
+    out['.config/ncspot/config.toml'] = s
+    s = out['.config/yazi/theme.toml']
+    s = re.sub(r'(?m)^(hovered|preview_hovered) = .*\n', '', s, count=2)
+    s = s.replace('cwd = { fg = "'+p['accent']+'"', 'cwd = { fg = "'+p['foreground']+'"')
+    s = s.replace('perm_type = { fg = "'+p['accent']+'"', 'perm_type = { fg = "'+p['foreground']+'"')
+    s = re.sub(r'(?m)^on = ', 'chord = ', s)
+    s = re.sub(r'(?m)^run = ', 'action = ', s)
+    s = re.sub(r'(?m)^(selected|active|hovered) = (\{[^\n]*)( \})$', r'\1 = \2, reversed = false\3', s)
+    s = re.sub(r'(?m)^(desc|footer) = .*\n', lambda m: '' if s[:m.start()].rfind('[help]') > s[:m.start()].rfind('[which]') else m[0], s)
+    s += f'''\n# Yazi 26.9 indicator API, retaining the existing icon policy.
+[indicator]
+parent = {{ fg = "{p['foreground']}", bg = "{p['surface']}", reversed = false }}
+current = {{ fg = "{p['desktop']}", bg = "{p['accent']}", bold = true, reversed = false }}
+preview = {{ fg = "{p['foreground']}", bg = "{p['surface']}", underline = true }}
+padding = {{ open = "", close = "" }}
+[confirm]
+border = {{ fg = "{p['divider']}" }}
+title = {{ fg = "{p['foreground']}" }}
+body = {{ fg = "{p['foreground']}" }}
+btn_yes = {{ fg = "{p['desktop']}", bg = "{p['accent']}", reversed = false }}
+btn_no = {{ fg = "{p['foreground']}", bg = "{p['surface']}" }}
+[spot]
+border = {{ fg = "{p['divider']}" }}
+title = {{ fg = "{p['foreground']}" }}
+tbl_col = {{ fg = "{p['foreground']}", bold = true }}
+tbl_cell = {{ fg = "{p['desktop']}", bg = "{p['accent']}", reversed = false }}
+[notify]
+title_info = {{ fg = "{p['foreground']}" }}
+title_warn = {{ fg = "{p['warning']}" }}
+title_error = {{ fg = "{p['error']}" }}
+'''
+    if 'yazi_bone' in p:
+        bone, mauve, charcoal = p['yazi_bone'], p['yazi_mauve'], p['yazi_status']
+        def style(section, key, fg=None, bg=None, bold=False):
+            nonlocal s
+            attrs = ([f'fg = "{fg}"'] if fg else []) + ([f'bg = "{bg}"'] if bg else [])
+            if bold: attrs.append('bold = true')
+            line = key + ' = { ' + ', '.join(attrs) + ' }'
+            pattern = r'(\['+re.escape(section)+r'\]\n)(.*?)(?=\n\[|\Z)'
+            def update(m):
+                body, count = re.subn(r'(?m)^'+re.escape(key)+r'\s*=.*$', line, m[2])
+                return m[1] + (body if count else body+'\n'+line+'\n')
+            s = re.sub(pattern, update, s, flags=re.S)
+        style('mgr', 'marker_copied', mauve, mauve)
+        style('mgr', 'count_copied', charcoal, mauve)
+        style('mgr', 'count_cut', charcoal, p['error'])
+        style('mgr', 'count_selected', charcoal, p['accent'])
+        style('tabs', 'active', charcoal, p['accent'], True)
+        style('tabs', 'inactive', bone, charcoal)
+        for key, fg, bg in [('normal_main',charcoal,p['accent']),('normal_alt',mauve,charcoal),
+                            ('select_main',charcoal,mauve),('select_alt',mauve,charcoal),
+                            ('unset_main',charcoal,p['error']),('unset_alt',p['error'],charcoal)]:
+            style('mode', key, fg, bg, key.endswith('_main'))
+        style('status', 'overall', bone, charcoal)
+        style('status', 'progress_label', bone, None, True)
+        style('status', 'progress_normal', p['accent'], charcoal)
+        style('status', 'progress_error', p['error'], charcoal)
+        for key in ['perm_type','perm_read']: style('status',key,bone)
+        style('status', 'perm_exec', mauve)
+        style('indicator', 'current', charcoal, p['accent'], True)
+        # Explicit supported overrides for the installed 26.9 filetype defaults.
+        # Keep rule order and existing warning/error/media distinctions.
+        s += f'''\n[filetype]
+rules = [
+    {{ mime = "**/image/*", fg = "yellow" }},
+    {{ mime = "**/{{audio,video}}/*", fg = "magenta" }},
+    {{ mime = "**/application/{{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}}", fg = "red" }},
+    {{ mime = "**/application/{{pdf,doc,rtf}}", fg = "{bone}" }},
+    {{ mime = "vfs/{{absent,stale}}", fg = "darkgray" }},
+    {{ url = "*", is = "orphan", bg = "red" }},
+    {{ url = "*", is = "exec", fg = "{mauve}" }},
+    {{ url = "*", is = "dummy", bg = "red" }},
+    {{ url = "*/", is = "dummy", bg = "red" }},
+    {{ url = "*/", fg = "{bone}" }},
+]
+'''
+    out['.config/yazi/theme.toml'] = s
+    out['.config/i3status/config'] = out['.config/i3status/config'].replace('color_good = "'+p['accent']+'"', 'color_good = "'+p['foreground']+'"')
+    # Essential notification text remains readable; critical notifications get a label.
+    s = out['.config/dunst/dunstrc'].replace('foreground = "'+p['muted']+'"', 'foreground = "'+p['foreground']+'"')
+    s = s.replace('separator_color = "'+p['surface']+'"', 'separator_color = "'+p['divider']+'"')
+    s = s.replace('frame_color = "'+p['surface']+'"', 'frame_color = "'+p['divider']+'"')
+    s = s.replace('frame_color = "'+p['error']+'"', 'frame_color = "'+p['accent']+'"')
+    s = s.replace('frame_color = "'+p['background']+'"', 'frame_color = "'+p['divider']+'"')
+    s = s.replace('[urgency_critical]', '[urgency_critical]\n    format = "<b>CRITICAL: %s</b>\\n%b"')
+    if 'notification_background' in p:
+        s = re.sub(r'(?m)^(\s*)background\s*=.*$', lambda m: m[1]+'background = "'+p['notification_background']+'"', s)
+        s = re.sub(r'(?m)^(\s*)foreground\s*=.*$', lambda m: m[1]+'foreground = "'+p['notification_foreground']+'"', s)
+        s = re.sub(r'(?m)^(\s*)frame_color\s*=.*$', lambda m: m[1]+'frame_color = "'+p['accent']+'"', s)
+    out['.config/dunst/dunstrc'] = s
+    ansi = [p[k] for k in ['surface','error','success','warning','info','violet','cyan','foreground',
+                           'muted','error','success','warning','info','violet','cyan','foreground']]
+    values = {'color-use-theme': ('bool','false'), 'color-foreground': ('string',p['foreground']),
+              'color-background': ('string',p['background']), 'color-cursor': ('string',p['accent']),
+              'color-cursor-use-default': ('bool','false'), 'color-selection-use-default': ('bool','false'),
+              'color-selection': ('string',p['desktop']), 'color-selection-background': ('string',p['accent']),
+              'color-palette': ('string',';'.join(ansi)), 'background-mode': ('string','TERMINAL_BACKGROUND_SOLID')}
+    s = original(meta, XML)
+    for key, (typ, val) in values.items():
+        line = f'<property name="{key}" type="{typ}" value="{val}"/>'
+        pattern = r'<property name="'+re.escape(key)+r'"[^>]*/>'
+        if re.search(pattern,s): s = re.sub(pattern,line,s)
+        else: s = s.replace('</channel>', '  '+line+'\n</channel>')
+    out[XML] = s
+    s = original(meta, '.config/kitty/theme.conf')
+    kitty = {'foreground':p['foreground'], 'background':p['background'], 'cursor':p['accent'],
+             'selection_foreground':p['desktop'], 'selection_background':p['accent'],
+             'active_border_color':p['accent'], 'inactive_border_color':p['divider'], 'bell_border_color':p['error'],
+             'active_tab_foreground':p['desktop'], 'active_tab_background':p['accent'],
+             'inactive_tab_foreground':p['foreground'], 'inactive_tab_background':p['surface']}
+    kitty.update({'color'+str(i): c for i,c in enumerate(ansi)})
+    for k,v in kitty.items(): s = re.sub(r'(?m)^'+k+r'\s+.*$', k+' '+v,s)
+    s = re.sub(r'(?m)^# (Green|Yellow|Blue|Magenta|Cyan).*$', '# Neutral information slot', s)
+    s = re.sub(r'(?m)^# (bg0|fg0|accent1|warn ).*\n', '', s)
+    s = s.replace('# Red (warn)', '# Red (fault)')
+    out['.config/kitty/theme.conf'] = s
+    b = original(meta, '.config/btop/btop.conf')
+    b = re.sub(r'(?m)^color_theme = .*$', 'color_theme = "'+str(HOME / '.config/btop/themes/charcoal.theme')+'"', b)
+    b = re.sub(r'(?m)^theme_background = .*$', 'theme_background = true', b)
+    b = re.sub(r'(?m)^rounded_corners = .*$', 'rounded_corners = false', b)
+    out['.config/btop/btop.conf'] = b
+    bt = {'main_bg':p['background'], 'main_fg':p['foreground'], 'title':p['foreground'],
+          'hi_fg':p['accent'], 'selected_bg':p['accent'], 'selected_fg':p['desktop'],
+          'inactive_fg':p['muted'], 'proc_misc':p['info'], 'div_line':p['divider']}
+    bt.update({k+'_box':p['divider'] for k in ['cpu','mem','net','proc']})
+    for k,c in [('temp','error'),('cpu','foreground'),('free','success'),('cached','muted'),
+                ('available','info'),('used','warning'),('download','cyan'),('upload','violet')]:
+        bt.update({k+'_start':p['divider'], k+'_mid':p[c], k+'_end':p['error'] if k in ['temp','cpu','used'] else p['foreground']})
+    out['.config/btop/themes/charcoal.theme'] = '\n'.join(f'theme[{k}]="{v}"' for k,v in bt.items())+'\n'
+    out['.config/aerc/aerc.conf'] = re.sub(r'(?m)^styleset-name\s*=.*$', 'styleset-name = charcoal', original(meta,'.config/aerc/aerc.conf'))
+    styles = f'''*.default = true
+*.normal = true
+*.fg = {p['foreground']}
+*.bg = {p['background']}
+border.fg = {p['divider']}
+border.bg = {p['divider']}
+title.fg = {p['foreground']}
+title.bg = {p['surface']}
+title.bold = true
+statusline_default.bg = {p['surface']}
+msglist_unread.bold = true
+msglist_flagged.underline = true
+dirlist_unread.bold = true
+dirlist_recent.underline = true
+msglist_marked.underline = true
+msglist_deleted.fg = {p['error']}
+msglist_deleted.italic = true
+*error.fg = {p['error']}
+*error.bold = true
+*warning.fg = {p['warning']}
+*warning.bold = true
+*success.fg = {p['success']}
+*.selected.fg = {p['desktop']}
+*.selected.bg = {p['accent']}
+selector_focused.fg = {p['desktop']}
+selector_focused.bg = {p['accent']}
+[viewer]
+*.default = true
+*.normal = true
+url.fg = {p['info']}
+url.underline = true
+header.fg = {p['foreground']}
+header.bold = true
+signature.fg = {p['muted']}
+diff_meta.bold = true
+diff_chunk.fg = {p['info']}
+diff_add.fg = {p['success']}
+diff_del.fg = {p['error']}
+diff_whitespace.bg = {p['error']}
+quote_1.fg = {p['muted']}
+quote_2.fg = {p['info']}
+code.fg = {p['foreground']}
+'''
+    out['.config/aerc/stylesets/charcoal'] = styles
+    s = original(meta,'.config/starship.toml')
+    for old, role in [('#DDA0DD','foreground'),('bold purple','bold '+p['muted']),('bold yellow','bold '+p['warning'])]:
+        s = s.replace(old, p[role] if role in p else role)
+    s = s.replace('[>](bold green)', '[>](bold '+p['accent']+')').replace('[>](bold red)', '[>](bold '+p['error']+')').replace('style = "bold red"', 'style = "bold '+p['error']+'"')
+    out['.config/starship.toml'] = s
+    out['.config/nvim/init.lua'] = original(meta,'.config/nvim/init.lua') + '\n-- air-theme appearance\nvim.opt.termguicolors = vim.env.TERM ~= "linux"\nvim.cmd.colorscheme("charcoal")\n'
+    highlights = {'Normal':('foreground','background'), 'NormalFloat':('foreground','surface'),
+                  'FloatBorder':('divider','surface'), 'Comment':('muted',None), 'CursorLine':(None,'surface'),
+                  'CursorLineNr':('accent','surface'), 'LineNr':('muted',None), 'Visual':('desktop','accent'),
+                  'Search':('desktop','warning'), 'IncSearch':('desktop','accent'), 'CurSearch':('desktop','accent'),
+                  'StatusLine':('foreground','surface'), 'StatusLineNC':('muted','surface'),
+                  'WinSeparator':('divider',None), 'Pmenu':('foreground','surface'), 'PmenuSel':('desktop','accent'),
+                  'Statement':('foreground',None), 'Type':('foreground',None), 'Identifier':('foreground',None),
+                  'Function':('foreground',None), 'Constant':('warning',None), 'String':('success',None),
+                  'PreProc':('info',None), 'Special':('violet',None), 'Error':('error',None),
+                  'DiagnosticError':('error',None), 'DiagnosticWarn':('warning',None),
+                  'DiagnosticInfo':('info',None), 'DiagnosticHint':('cyan',None),
+                  'DiffAdd':('success','surface'), 'DiffDelete':('error','surface'),
+                  'DiffChange':('info','surface'), 'DiffText':('desktop','warning'),
+                  'MatchParen':('accent','surface'), 'Todo':('desktop','warning')}
+    lua = ['vim.cmd("highlight clear")', 'vim.o.background = "dark"', 'vim.g.colors_name = "charcoal"']
+    for k,(fg,bg) in highlights.items():
+        def ansi_nearest(role):
+            return {'desktop':0,'background':0,'surface':0,'divider':8,'muted':8,'error':1,'accent':15}.get(role,15)
+        attrs = ([f'fg = "{p[fg]}", ctermfg = {ansi_nearest(fg)}'] if fg else []) + ([f'bg = "{p[bg]}", ctermbg = {ansi_nearest(bg)}'] if bg else [])
+        if k in ['Statement','Type','Function','CursorLineNr','MatchParen']: attrs.append('bold = true')
+        lua.append(f'vim.api.nvim_set_hl(0, "{k}", {{'+', '.join(attrs)+'})')
+    out['.config/nvim/colors/charcoal.lua'] = '\n'.join(lua)+'\n'
+    gtk = original(meta,'.config/gtk-3.0/settings.ini')
+    if not gtk: gtk = '[Settings]\n'
+    gtk += 'gtk-application-prefer-dark-theme=true\n' if 'gtk-application-prefer-dark-theme' not in gtk else ''
+    gtk = re.sub(r'(?m)^gtk-application-prefer-dark-theme\s*=.*$', 'gtk-application-prefer-dark-theme=true',gtk)
+    out['.config/gtk-3.0/settings.ini'] = gtk
+    out['.config/gtk-3.0/gtk.css'] = original(meta,'.config/gtk-3.0/gtk.css') + f'''
+/* air-theme: native GTK controls, no icon changes */
+@define-color theme_bg_color {p['background']};
+@define-color theme_fg_color {p['foreground']};
+@define-color theme_base_color {p['surface']};
+@define-color theme_text_color {p['foreground']};
+@define-color theme_selected_bg_color {p['accent']};
+@define-color theme_selected_fg_color {p['desktop']};
+window, dialog {{ background-color: {p['background']}; color: {p['foreground']}; }}
+button, entry {{ border-radius: 0; border-color: {p['divider']}; }}
+selection {{ background-color: {p['accent']}; color: {p['desktop']}; }}
+'''
+    # Stage chrome CSS without altering the persistent Firefox preference database.
+    out[PROFILE+'/chrome/userChrome.css'] = original(meta,PROFILE+'/chrome/userChrome.css') + f'''
+/* air-theme: browser chrome only */
+:root {{ --toolbar-bgcolor: {p['background']} !important;
+ --toolbar-color: {p['foreground']} !important;
+ --lwt-accent-color: {p['desktop']} !important;
+ --lwt-text-color: {p['foreground']} !important;
+ --tab-selected-bgcolor: {p['surface']} !important;
+ --tab-selected-textcolor: {p['foreground']} !important; }}
+#navigator-toolbox, #TabsToolbar {{ background: {p['background']} !important; color: {p['foreground']} !important; }}
+.tab-background {{ border-radius: 0 !important; }}
+.tabbrowser-tab[selected] .tab-background {{ border-top: 2px solid {p['accent']} !important; }}
+#urlbar-background {{ background: {p['surface']} !important; border-radius: 0 !important; border-color: {p['divider']} !important; }}
+'''
+    out['.tmux.conf'] = original(meta,'.tmux.conf') + f'''
+# air-theme appearance
+set -g status-style 'fg={p['foreground']},bg={p['surface']}'
+set -g window-status-current-style 'fg={p['desktop']},bg={p['accent']},bold'
+set -g pane-border-style 'fg={p['divider']}'
+set -g pane-active-border-style 'fg={p['accent']}'
+set -g message-style 'fg={p['foreground']},bg={p['surface']}'
+set -g mode-style 'fg={p['desktop']},bg={p['accent']}'
+'''
+    s = out['.config/i3status/config']
+    s = re.sub(r'(?m)^(\s*color_degraded = ).*$', lambda m: m[1]+'"'+p['accent']+'"', s)
+    out['.config/i3status/config'] = s
+    out['.config/aerc/stylesets/charcoal'] = out['.config/aerc/stylesets/charcoal'].replace('*warning.fg = '+p['warning'], '*warning.fg = '+p['accent'])
+    out['.config/yazi/theme.toml'] = out['.config/yazi/theme.toml'].replace('title_warn = { fg = "'+p['warning']+'" }', 'title_warn = { fg = "'+p['accent']+'" }')
+    # SluntShack: information uses luminance; orange means attention, red means fault.
+    s = out['.config/yazi/theme.toml']
+    s = re.sub(r'(?m)^unset_(main|alt) = .*$', lambda m: 'unset_'+m[1]+' = { fg = "'+(p['desktop'] if m[1]=='main' else p['accent'])+'", bg = "'+(p['accent'] if m[1]=='main' else p['background'])+'" }', s)
+    s = re.sub(r'(?m)^select_main = .*$', 'select_main = { fg = "'+p['desktop']+'", bg = "'+p['accent']+'", bold = true }', s)
+    for key in ['perm_write','perm_exec','progress_normal']:
+        s = re.sub(r'(?m)^'+key+r' = .*$', key+' = { fg = "'+p['muted']+'" }', s)
+    s = re.sub(r'(?m)^find_keyword = .*$', 'find_keyword = { fg = "'+p['desktop']+'", bg = "'+p['accent']+'", bold = true }', s)
+    s = s.replace('fg = "yellow"', 'fg = "'+p['foreground']+'"').replace('fg = "magenta"', 'fg = "'+p['foreground']+'"').replace('fg = "red"', 'fg = "'+p['foreground']+'"')
+    s = s.replace('fg = "darkgray"', 'fg = "'+p['muted']+'"').replace('is = "dummy", bg = "red"', 'is = "dummy", fg = "'+p['muted']+'"').replace('is = "orphan", bg = "red"', 'is = "orphan", fg = "'+p['error']+'"')
+    s = s.replace('is = "exec", fg = "'+p['yazi_mauve']+'"', 'is = "exec", fg = "'+p['foreground']+'"')
+    # Preserve the existing explicit empty icon lists (text-only file manager).
+    out['.config/yazi/theme.toml'] = s
+    # Resource magnitudes and diffs describe data, not faults.
+    bt = out['.config/btop/themes/charcoal.theme']
+    bt = re.sub(r'(?m)^(theme\[(?:temp|cpu|used)_end\]=).*$', lambda m: m[1]+'"'+p['foreground']+'"', bt)
+    bt = re.sub(r'(?m)^theme\[temp_mid\]=.*$', 'theme[temp_mid]="'+p['info']+'"', bt)
+    for key,role in {'graph_text':'foreground','meter_bg':'divider','process_start':'divider','process_mid':'muted','process_end':'foreground','followed_bg':'accent','followed_fg':'desktop','proc_banner_bg':'surface','proc_banner_fg':'foreground','proc_follow_bg':'accent','proc_pause_bg':'surface'}.items():
+        bt += 'theme['+key+']="'+p[role]+'"\n'
+    out['.config/btop/themes/charcoal.theme'] = bt
+    s = out['.config/ncspot/config.toml']
+    s = re.sub(r'(?m)^search_match = .*$', 'search_match = "'+p['accent']+'"', s)
+    out['.config/ncspot/config.toml'] = s
+    s = out['.config/fastfetch/config.jsonc']
+    obj = json.loads(s)
+    obj['logo']['color'] = {k:p['muted'] for k in obj['logo']['color']}
+    out['.config/fastfetch/config.jsonc'] = json.dumps(obj,indent=2)+'\n'
+    s = out['.config/aerc/stylesets/charcoal']
+    s = s.replace('diff_del.fg = '+p['error'], 'diff_del.fg = '+p['muted']).replace('diff_whitespace.bg = '+p['error'], 'diff_whitespace.bg = '+p['surface'])
+    out['.config/aerc/stylesets/charcoal'] = s
+    s = out['.config/nvim/colors/charcoal.lua']
+    for group in ['DiffDelete','DiffText']:
+        s = re.sub(r'(?m)^vim.api.nvim_set_hl\(0, "'+group+r'", .*$', 'vim.api.nvim_set_hl(0, "'+group+'", { fg = "'+p['muted']+'", bg = "'+p['surface']+'", ctermfg = 8, ctermbg = 0 })', s)
+    for group in ['Search','IncSearch','CurSearch','Todo']:
+        s = re.sub(r'(?m)^vim.api.nvim_set_hl\(0, "'+group+r'", .*$', 'vim.api.nvim_set_hl(0, "'+group+'", { fg = "'+p['desktop']+'", bg = "'+p['accent']+'", ctermfg = 0, ctermbg = 7, bold = true })', s)
+    s += '\nvim.api.nvim_set_hl(0, "DiagnosticWarn", { fg = "'+p['accent']+'", ctermfg = 7, bold = true })\n'
+    # Neutralise default groups and modern captures not covered by the basic theme.
+    for group in ['Number','Boolean','Float','Character','Keyword','Operator','Conditional','Repeat','Label','Exception','Include','Define','Macro','PreCondit','StorageClass','Structure','Typedef','Tag','Delimiter','SpecialChar','SpecialComment','Debug','Underlined','@variable','@constant','@string','@character','@number','@boolean','@function','@constructor','@operator','@keyword','@type','@attribute','@module','@label','@punctuation','@markup','@diff.plus','@diff.minus','@diff.delta']:
+        s += 'vim.api.nvim_set_hl(0, "'+group+'", { fg = "'+p['foreground']+'", ctermfg = 15 })\n'
+    for group in ['NonText','SpecialKey','Folded','FoldColumn','SignColumn','Conceal','EndOfBuffer','@comment','@comment.note','@comment.todo','@comment.warning']:
+        s += 'vim.api.nvim_set_hl(0, "'+group+'", { fg = "'+p['muted']+'", ctermfg = 8 })\n'
+    # Native default highlights otherwise leak cyan/green outside syntax groups.
+    for group in ['Directory','MoreMsg','ModeMsg','Title','OkMsg','Added','Changed','DiagnosticOk']:
+        s += 'vim.api.nvim_set_hl(0, "'+group+'", { fg = "'+p['foreground']+'", ctermfg = 15 })\n'
+    for group in ['Removed','DiagnosticDeprecated']:
+        s += 'vim.api.nvim_set_hl(0, "'+group+'", { fg = "'+p['muted']+'", ctermfg = 8 })\n'
+    for group in ['WarningMsg','Question']:
+        s += 'vim.api.nvim_set_hl(0, "'+group+'", { fg = "'+p['accent']+'", ctermfg = 15, bold = true })\n'
+    s += 'vim.api.nvim_set_hl(0, "ErrorMsg", { fg = "'+p['error']+'", ctermfg = 1, bold = true })\n'
+    s += 'vim.api.nvim_set_hl(0, "NvimInternalError", { fg = "'+p['desktop']+'", bg = "'+p['error']+'", ctermfg = 0, ctermbg = 1 })\n'
+    for group in ['PmenuThumb','CursorColumn','ColorColumn','FloatShadow','FloatShadowThrough','RedrawDebugClear','RedrawDebugComposed','RedrawDebugRecompose']:
+        s += 'vim.api.nvim_set_hl(0, "'+group+'", { bg = "'+p['surface']+'", ctermbg = 0 })\n'
+    for group in ['QuickFixLine','WinBar','WinBarNC']:
+        s += 'vim.api.nvim_set_hl(0, "'+group+'", { fg = "'+p['muted']+'", bg = "'+p['surface']+'", ctermfg = 8, ctermbg = 0 })\n'
+    for group in ['SpellBad','SpellCap','SpellRare','SpellLocal','DiagnosticUnderlineError','DiagnosticUnderlineWarn','DiagnosticUnderlineInfo','DiagnosticUnderlineHint','DiagnosticUnderlineOk']:
+        colour = p['error'] if group in ['SpellBad','DiagnosticUnderlineError'] else p['accent'] if group=='DiagnosticUnderlineWarn' else p['muted']
+        s += 'vim.api.nvim_set_hl(0, "'+group+'", { sp = "'+colour+'", undercurl = true })\n'
+    out['.config/nvim/colors/charcoal.lua'] = s
+    out['.config/gtk-3.0/gtk.css'] += f"""
+/* Semantic native GTK colours, including built-in links and state controls. */
+@define-color success_color {p['foreground']};
+@define-color warning_color {p['accent']};
+@define-color error_color {p['error']};
+@define-color link_color {p['foreground']};
+@define-color visited_link_color {p['muted']};
+@define-color theme_unfocused_bg_color {p['background']};
+@define-color theme_unfocused_fg_color {p['muted']};
+@define-color theme_unfocused_selected_bg_color {p['surface']};
+@define-color theme_unfocused_selected_fg_color {p['foreground']};
+*:link {{ color: {p['foreground']}; }}
+*:visited {{ color: {p['muted']}; }}
+button:focus, entry:focus {{ border-color: {p['accent']}; }}
+check:checked, radio:checked, switch:checked {{ background-color: {p['accent']}; color: {p['desktop']}; }}
+.error {{ color: {p['error']}; }}
+.warning {{ color: {p['accent']}; }}
+.success {{ color: {p['foreground']}; }}
+"""
+    out[PROFILE+'/chrome/userChrome.css'] += f"""
+:root {{ --focus-outline-color: {p['accent']} !important;
+ --link-color: {p['foreground']} !important;
+ --link-color-visited: {p['muted']} !important; }}
+#urlbar[focused] #urlbar-background {{ border-color: {p['accent']} !important; }}
+toolbarbutton[checked] {{ outline-color: {p['accent']} !important; }}
+"""
+    return out
+
+def merge(current, base, target, rel):
+    if current == base: return target
+    if current == target or base == target: return current
+    if base and current.startswith(base): return target + current[len(base):]
+    if base and current.endswith(base): return current[:-len(base)] + target
+    with tempfile.TemporaryDirectory(dir=STATE) as td:
+        paths = [Path(td)/str(i) for i in range(3)]
+        for q,s in zip(paths,[current,base,target]): q.write_text(s)
+        result = run(['diff3','-m', *map(str,paths)])
+    if result.returncode:
+        c = STATE / 'conflicts' / rel
+        c.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+        c.write_text(current); c.chmod(0o600)
+        c.with_name(c.name+'.requested').write_text(target)
+        c.with_name(c.name+'.merge').write_text(result.stdout)
+        raise ValueError('Conflict: '+str(HOME/rel)+' (both versions saved in '+str(c.parent)+')')
+    return result.stdout
+
+def validate(out):
+    for rel,s in out.items():
+        if rel.endswith('.toml'): tomllib.loads(s)
+        elif rel.endswith('.jsonc'): json.loads(s) # Existing fastfetch file is strict JSON.
+        elif rel == XML: ET.fromstring(s)
+    if '.config/i3/config' not in out: return
+    with tempfile.NamedTemporaryFile(mode='w',dir=STATE) as t:
+        t.write(out['.config/i3/config']); t.flush()
+        r = run(['i3','-C','-c',t.name])
+        if r.returncode: raise ValueError('i3 validation: '+r.stderr+r.stdout)
+
+def sync_terminal(meta, mode):
+    if not os.environ.get('DISPLAY'): return []
+    desired = ET.fromstring((HOME/XML).read_text())
+    keys = ['background-mode','color-use-theme','color-foreground','color-background','color-cursor',
+            'color-cursor-use-default','color-selection-use-default','color-selection',
+            'color-selection-background','color-palette']
+    attrs = {x.attrib['name']:x.attrib for x in desired}
+    failures = []
+    for key in keys:
+        a = attrs.get(key)
+        args = ['xfconf-query','-c','xfce4-terminal','-p','/'+key]
+        if a:
+            r = run(args+['--create','-t',a['type'],'-s',a['value']])
+        else:
+            r = run(args+['--reset'])
+        if r.returncode: failures.append('terminal '+key+': '+r.stderr.strip())
+    return failures
+
+def refresh(meta, mode):
+    if not os.environ.get('DISPLAY'):
+        return [], ['TTY: graphical reloads skipped']
+    failures = sync_terminal(meta,mode)
+    notes = []
+    r = run(['i3-msg','reload'])
+    if r.returncode or not all(x.get('success') for x in json.loads(r.stdout or '[{}]')):
+        failures.append('i3 reload: '+r.stderr.strip())
+    bg = re.search(r"xsetroot -solid ['\"]?(#[0-9a-fA-F]{6})", original(meta,'.config/i3/config'))
+    r = run(['xsetroot','-solid',json.loads((ROOT/'palette.json').read_text())['desktop'] if mode=='charcoal' else (bg[1] if bg else '#000000')])
+    if r.returncode: failures.append('desktop background: '+r.stderr.strip())
+    # Dunst supports reload through dunstctl; never terminate the daemon.
+    if shutil.which('dunstctl'):
+        r = run(['dunstctl','reload'])
+        if r.returncode: failures.append('Dunst reload: '+r.stderr.strip())
+    notes.append('Reopen TUIs, Kitty, Firefox and GTK apps; existing sessions are kept running.')
+    notes.append('ncspot supports :reload. Reopen existing Neovim/tmux sessions to pick up the selected appearance; see README for manual refresh.')
+    if mode == 'charcoal':
+        notes.append('Firefox chrome CSS is staged; enable toolkit.legacyUserProfileCustomizations.stylesheets in about:config only if wanted, then restart Firefox.')
+    return failures, notes
+
+def main():
+    os.umask(0o077)
+    STATE.mkdir(parents=True,exist_ok=True,mode=0o700)
+    lock = (STATE/'lock').open('w')
+    fcntl.flock(lock,fcntl.LOCK_EX)
+    args = sys.argv[1:]
+    component = args[2] if len(args)==3 and args[:2]==['charcoal','--only'] and args[2] in ['yazi','dunst'] else None
+    scoped = component is not None
+    cmd = args[0] if len(args)==1 or scoped else ''
+    statefile = STATE/'state.json'
+    state = json.loads(statefile.read_text()) if statefile.exists() else {'selected':'original','failures':[]}
+    if scoped and state.get('selected') == 'partial' and state.get('requested') == 'charcoal --only '+component:
+        state = state.get('previous_state', {'selected':'unknown','failures':[]})
+    if cmd == 'status':
+        print('Selected theme:',state['selected'])
+        if state['selected'] == 'charcoal': print('Colour grammar: SluntShack — black/white/greys; orange attention; red faults. Notes: '+str(ROOT/'SLUNTSHACK.txt'))
+        if (STATE/'baseline.json').exists(): print('Original backup:',json.loads((STATE/'baseline.json').read_text())['backup'])
+        for item in state.get('failures',[]) + state.get('notes',[]): print(item)
+        if state.get('yazi_notes'): print(state['yazi_notes'])
+        if state.get('yazi_selected'): print('Yazi selection:',state['yazi_selected'])
+        if state.get('dunst_notes'): print(state['dunst_notes'])
+        last = STATE/'last'
+        drift = [r for r,h in state.get('hashes',{}).items() if (digest((HOME/r).read_bytes()) if (HOME/r).exists() else None) != h]
+        if drift: print('Changed since last selection:',', '.join(drift))
+        return
+    if cmd not in ['charcoal','original']:
+        raise ValueError('Usage: air-theme charcoal|original|status [charcoal also accepts --only yazi|dunst]')
+    meta = snapshot()
+    # Restoration must work even if the palette was edited incorrectly.
+    themed = render(meta) if cmd == 'charcoal' else {r:original(meta,r) for r in FILES}
+    active_files = [{'yazi':'.config/yazi/theme.toml','dunst':'.config/dunst/dunstrc'}[component]] if scoped else FILES
+    themed = {r:themed[r] for r in active_files}
+    validate({r:s for r,s in themed.items() if s})
+    if cmd == 'charcoal':
+        generated = ROOT/'generated'
+        for rel,s in themed.items():
+            q = generated/rel; q.parent.mkdir(parents=True,exist_ok=True,mode=0o700); q.write_text(s)
+    last = STATE/'last'
+    proposed = {}; conflicts = []
+    for rel in active_files:
+        p = HOME/rel; entry = meta['entries'][rel]
+        link = os.readlink(p) if p.is_symlink() else None
+        if link != entry['link']:
+            conflicts.append('Symlink changed: '+str(p)); continue
+        current = p.read_text() if p.exists() else ''
+        base = (last/rel).read_text() if (last/rel).exists() else original(meta,rel)
+        target = themed[rel] if cmd=='charcoal' else original(meta,rel)
+        try: proposed[rel] = merge(current,base,target,rel)
+        except ValueError as e: conflicts.append(str(e))
+    # Stage and validate merged files before any live write.
+    if conflicts:
+        state['failures'] = conflicts; savejson(statefile,state)
+        raise ValueError('\n'.join(conflicts))
+    validate({r:s for r,s in proposed.items() if s})
+    # Save truthful progress before live writes; a failed operation remains partial.
+    pending = dict(state) if scoped else {}
+    if scoped: pending['previous_state'] = state
+    pending.update({'selected':'partial', 'requested':'charcoal --only '+component if scoped else cmd,
+                    'failures':['Application in progress; rerun the requested selection if interrupted.']})
+    savejson(statefile, pending)
+    for rel,s in proposed.items():
+        p = HOME/rel; entry = meta['entries'][rel]
+        if cmd=='original' and not entry['exists'] and not s:
+            if p.exists(): p.unlink()
+        else:
+            p.parent.mkdir(parents=True,exist_ok=True,mode=0o700)
+            dest = p.resolve() if p.is_symlink() else p
+            with tempfile.NamedTemporaryFile(mode='w',dir=dest.parent,delete=False) as t:
+                t.write(s); tmp = Path(t.name)
+            tmp.chmod(p.stat().st_mode & 0o7777 if p.exists() else entry['mode'])
+            os.replace(tmp,dest)
+        # Track our intended appearance delta, never absorb unrelated user edits
+        # into the merge base on repeated selection.
+        q = last/rel; q.parent.mkdir(parents=True,exist_ok=True,mode=0o700)
+        q.write_text(themed[rel] if cmd=='charcoal' else original(meta,rel))
+    if scoped:
+        state.setdefault('hashes',{}).update({r:digest((HOME/r).read_bytes()) for r in active_files})
+        note = 'Yazi colors applied; reopen Yazi normally to load the theme. Other components were not reloaded.'
+        if component == 'dunst':
+            note = 'Dunst colors applied; TTY reload skipped.'
+            if os.environ.get('DISPLAY'):
+                r = run(['dunstctl','reload'])
+                if r.returncode:
+                    note = 'Dunst files applied, reload failed: '+r.stderr.strip()
+                    state.setdefault('failures',[]).append(note)
+                else: note = 'Dunst colors applied and safely reloaded; other components were not reloaded.'
+        state[component+'_notes'] = note
+        state[component+'_selected'] = 'charcoal'
+        savejson(statefile,state)
+        print(note)
+        if component == 'dunst' and os.environ.get('DISPLAY') and r.returncode: sys.exit(2)
+        return
+    try:
+        failures,notes = refresh(meta,cmd)
+    except (OSError, ValueError, subprocess.TimeoutExpired) as e:
+        failures,notes = ['Graphical refresh incomplete: '+str(e)], ['Files applied; retry selection to refresh.']
+    hashes = {r:digest((HOME/r).read_bytes()) if (HOME/r).exists() else None for r in FILES}
+    savejson(statefile,{'selected':cmd,'failures':failures,'notes':notes,'hashes':hashes})
+    print('Selected theme:',cmd)
+    for msg in failures+notes: print(msg)
+    if failures: sys.exit(2)
+
+if __name__ == '__main__':
+    try: main()
+    except (ValueError,OSError,AssertionError,subprocess.TimeoutExpired) as e:
+        print(str(e),file=sys.stderr); sys.exit(1)

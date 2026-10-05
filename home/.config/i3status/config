@@ -1,0 +1,44 @@
+general {
+    output_format = "i3bar"
+    colors = true
+    color_good = "#FFFFFF"
+    color_degraded = "#FF3D00"
+    color_bad = "#D88C8C"
+    interval = 5
+}
+order += "wireless _first_"
+order += "battery 0"
+order += "volume master"
+order += "memory"
+order += "tztime local"
+wireless _first_ {
+    format_up = "Wi-Fi %quality"
+    format_down = "Wi-Fi down"
+}
+battery 0 {
+    path = "/sys/class/power_supply/BAT%d/uevent"
+    format = "%status %percentage"
+    format_down = "Battery absent"
+    status_chr = "Charging"
+    status_bat = "Battery"
+    status_full = "Full"
+    status_unk = "Battery"
+    last_full_capacity = true
+    format_percentage = "%.0f%s"
+    low_threshold = 15
+    threshold_type = "percentage"
+}
+volume master {
+    format = "Vol %volume"
+    format_muted = "Vol muted"
+    device = "pulse"
+}
+memory {
+    format = "RAM %used"
+    memory_used_method = "memavailable"
+    threshold_degraded = "10%"
+    threshold_critical = "5%"
+}
+tztime local {
+    format = "%a %d %b  %H:%M"
+}

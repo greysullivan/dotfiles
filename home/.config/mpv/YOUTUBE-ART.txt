@@ -1,0 +1,85 @@
+YOUTUBE ART PLAYBACK — 540p / 24 fps
+
+Use:
+  yt --check
+  yt 'https://www.youtube.com/watch?v=VIDEO_ID'
+
+Firefox:
+  Install ff2mpv from https://addons.mozilla.org/en-US/firefox/addon/ff2mpv/
+  Right-click a video link and choose Play in MPV, or use its toolbar button.
+  Pause/close an existing YouTube playback tab to avoid playing twice.
+  Discover videos in Firefox; login, subscriptions and comments stay there.
+
+Profile:
+  H.264 preferred; at most 720p / 30 fps input. Other codecs are fallback.
+  Output is 540 pixels high, aspect ratio preserved, sampled at exactly 24 fps.
+  Lower-resolution sources are enlarged to 540 pixels high.
+  Duration, speed and audio pitch stay unchanged. No motion interpolation.
+  60 Hz monitors repeat these frames; the physical display remains at 60 Hz.
+  Fullscreen can enlarge the 540p image; no screen mode changes are made.
+  H.264 uses native VA-API decoding and GPU scaling through a small mpv Lua hook.
+  Unsupported codecs/renderers use auto-copy or software decoding with CPU scaling.
+  CPU fallback keeps the exact same 540p / 24 fps output.
+  Buffer limits: 32 MiB forward and 8 MiB back; no persistent video download.
+  Playlist URLs play the selected video rather than starting an entire playlist.
+  Public videos need no login. Restricted videos can be played in Firefox.
+  YouTube-format and extraction failures remain visible in mpv/terminal output.
+
+Appearance:
+  Native mpv controls; square opaque bottom bar, neutral text, orange while held.
+  Native selected menu text uses #FF3D00. Controls hide after 1.5 seconds.
+  Colours are taken from ~/.config/air-theme/palette.json at installation.
+  No changes to the shared palette, Firefox theme, i3, sound services or startup.
+  If the palette changes later, update only the appearance values in
+  ~/.config/mpv/youtube-art.conf; keep this baseline for conflict-safe rollback.
+
+Files:
+  ~/.config/mpv/mpv.conf (one include)
+  ~/.config/mpv/youtube-art.conf (isolated auto/explicit profile)
+  ~/.config/mpv/scripts/youtube-art.lua (predecode scaler selection / fallback)
+  ~/.local/bin/yt (launcher)
+  ~/.local/bin/ff2mpv (official upstream Python host)
+  ~/.config/mozilla/native-messaging-hosts/ff2mpv.json (XDG registration)
+  ~/.mozilla/native-messaging-hosts/ff2mpv.json (legacy registration)
+
+Restore:
+  python '/home/grey/.local/state/grey-config-backups/youtube-art-20261005-151759/restore.py'
+  Stops if a touched file was subsequently edited, preserving both versions.
+  Does not remove packages or the Firefox add-on; remove the add-on through
+  Firefox's add-on manager if wanted.
+
+Sources:
+  Charter: stbl3-design-language-charter.pdf, Alpha 0.1 / August 2026
+  Desktop adaptation: Drive/text/arch-air-theme-codex.txt, 4 October 2026
+  Live palette: ~/.config/air-theme/palette.json
+  https://github.com/woodruffw/ff2mpv
+  https://github.com/yt-dlp/yt-dlp/wiki/EJS
+  https://mpv.io/manual/stable/
+
+Verification (5 October 2026):
+  Official Arch packages installed: yt-dlp 2026.08.19, yt-dlp-ejs 0.8.0,
+  intel-media-driver 26.3.5, libva-utils 2.24.0. Existing Node: 26.10.0.
+  ff2mpv 6.0.0 is active in Firefox. The official native host passes framing
+  and URL handoff tests; live public YouTube playback through the host passes.
+  Public 4:3 video and local 16:9 H.264 clip: output height 540, filter FPS 24,
+  native VA-API decoding/scaling, speed 1.0, and no unintended dropped frames.
+  Final audio/video drift samples were below 1 ms after playback settled.
+  Seeking, fullscreen, local captions and visual native control inspection pass.
+  23.976, 24, 30 and 60 fps synthetic sources produce 24 frames per second.
+  Software/null-renderer fallback passes. Loading a local file after YouTube
+  restores native dimensions and an empty filter chain.
+  Isolated rollback tests cover clean restoration and later-edit conflicts.
+
+Performance:
+  Six-second per-player samples on the same muted 720p30 H.264 fixture:
+  CPU scaling / gpu-next: 46.65% of one core, 121.75 MiB proportional memory.
+  CPU scaling / gpu: 55.10% of one core, 131.23 MiB proportional memory.
+  GPU scaling / gpu-next: 13.82% of one core, 190.13 MiB proportional memory.
+  Native GPU scaling was selected for its lower CPU demand. It uses about
+  68 MiB more proportional memory than the initial CPU scaling path.
+  These short local tests exclude the YouTube website and do not establish
+  battery-life improvements or universal browser performance gains.
+  Raw playback results: youtube-art-validation.json
+  Renderer/scaler comparison: youtube-art-candidates.json
+  Firefox/mpv workflow sample: youtube-art-resources.json (comparison invalid: Firefox
+  exited during window cleanup). Use the per-player figures above.

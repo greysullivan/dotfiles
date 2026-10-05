@@ -1,0 +1,125 @@
+#!/usr/bin/python3
+"""No protocol logging, message fetches, mailbox writes or SMTP submission."""
+import base64
+import email.utils
+import imaplib
+import json
+import os
+import re
+import shutil
+import smtplib
+import ssl
+import sys
+from datetime import datetime
+from pathlib import Path
+from urllib.parse import quote
+
+os.umask(0o077)
+base = Path.home() / '.local/share/aerc-private'
+conf = Path.home() / '.config/aerc'
+state = Path.home() / '.local/state/aerc-setup'
+
+def decode_folder(s):
+    def part(m):
+        v = m.group(1)
+        if not v:
+            return '&'
+        return base64.b64decode(v.replace(',', '/') + '=' * (-len(v) % 4)).decode('utf-16-be')
+    return re.sub(r'&([^-]*)-', part, s)
+
+def write_config(path, body):
+    if path.exists():
+        backup = state / ('backup-' + datetime.now().strftime('%Y%m%d-%H%M%S-%f'))
+        backup.mkdir(mode=0o700)
+        shutil.copy2(path, backup / path.name)
+        print('Configuration backup:', backup / path.name)
+    temp = path.with_suffix('.new')
+    with temp.open('x') as f:
+        f.write(body)
+    temp.chmod(0o600)
+    os.replace(temp, path)
+
+stage = 'local credential availability'
+try:
+    for p, mode in ((base, 0o700), (base/'identity.json', 0o600), (base/'gmail-app-password', 0o600)):
+        s = p.lstat()
+        if p.is_symlink() or s.st_uid != os.getuid() or s.st_mode & 0o777 != mode:
+            sys.exit('Unsafe ownership or permissions: ' + str(p))
+    identity = json.loads((base/'identity.json').read_text())
+    password = (base/'gmail-app-password').read_text().strip()
+    ctx = ssl.create_default_context()
+    stage = 'IMAP TLS/authentication'
+    with imaplib.IMAP4_SSL('imap.gmail.com', 993, ssl_context=ctx, timeout=20) as imap:
+        imap.login(identity['address'], password)
+        print('IMAP certificate verification and authentication: PASS')
+        stage = 'IMAP folder discovery'
+        status, rows = imap.list()
+        if status != 'OK':
+            sys.exit('IMAP LIST failed; configuration unchanged.')
+        special = {}
+        for row in rows:
+            if not isinstance(row, bytes):
+                continue
+            m = re.fullmatch(rb'\((.*?)\) (?:"(?:[^"\\]|\\.)*"|NIL) (.*)', row)
+            if not m:
+                continue
+            raw = m[2].decode('ascii')
+            if raw.startswith('"') and raw.endswith('"'):
+                raw = re.sub(r'\\(.)', r'\1', raw[1:-1])
+            name = decode_folder(raw)
+            flags = m[1].decode('ascii').lower().split()
+            for flag, role in (('\\drafts','drafts'), ('\\sent','sent'), ('\\all','archive'), ('\\trash','trash')):
+                if flag in flags:
+                    special[role] = name
+        if set(special) != {'drafts','sent','archive','trash'}:
+            sys.exit('Required Gmail special folders not exposed over IMAP; check Gmail label visibility. Configuration unchanged.')
+        for role, folder in special.items():
+            print(role + ': ' + folder)
+        stage = 'read-only Inbox access'
+        status, _ = imap.select('INBOX', readonly=True)
+        if status != 'OK':
+            sys.exit('Read-only Inbox access failed.')
+        print('Inbox EXAMINE (read-only, no message fetch): PASS')
+        imap.unselect()
+    stage = 'SMTP TLS/authentication'
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=ctx, timeout=20) as smtp:
+        smtp.ehlo()
+        smtp.auth('PLAIN', lambda challenge=None: '\0'+identity['address']+'\0'+password)
+        print('SMTP certificate verification and AUTH PLAIN: PASS (no message submitted)')
+    stage = 'configuration generation'
+    user = quote(identity['address'], safe='')
+    source = f'imaps://{user}@imap.gmail.com:993'
+    outgoing = f'smtps+plain://{user}@smtp.gmail.com:465'
+    command = '/usr/bin/cat /home/grey/.local/share/aerc-private/gmail-app-password'
+    if any(c in x for x in special.values() for c in '\r\n'):
+        sys.exit('Unexpected folder-name characters; configuration unchanged.')
+    body = f'''[Gmail]
+source = {source}
+source-cred-cmd = {command}
+outgoing = {outgoing}
+outgoing-cred-cmd = {command}
+from = {email.utils.formataddr((identity['name'], identity['address']))}
+default = INBOX
+postpone = {special['drafts']}
+archive = {special['archive']}
+# Gmail files SMTP submissions in Sent automatically; do not append a copy.
+copy-to =
+copy-to-replied = false
+cache-headers = false
+'''
+    write_config(conf / 'accounts.conf', body)
+    binds = Path('/usr/share/aerc/binds.conf').read_text()
+    trash = special['trash'].replace('\\','\\\\').replace('"','\\"')
+    move = f':choose -o y "Move to Gmail Trash?" "move \\"{trash}\\""<Enter>'
+    binds = binds.replace("d = :choose -o y 'Really delete this message' delete-message<Enter>", 'd = ' + move)
+    binds = binds.replace('D = :delete<Enter>', 'D = ' + move)
+    drafts = '^' + re.escape(special['drafts']) + '$'
+    binds = binds.replace('[messages:folder=Drafts]', f'[messages:folder={drafts}]')
+    write_config(conf / 'binds.conf', binds)
+    summary = dict(imap_auth=True, inbox_readonly=True, smtp_auth=True, sent_test=False, folders=special)
+    write_config(state / 'verification.json', json.dumps(summary, indent=2) + '\n')
+    print('Account and bindings configured using server-discovered special folders.')
+except Exception as exc:
+    code = getattr(exc, 'smtp_code', None)
+    print(f'FAILED at {stage}: {type(exc).__name__}' + (f' (SMTP status {code})' if code else '') + '. Server text suppressed to protect private data.', file=sys.stderr)
+    sys.exit(1)

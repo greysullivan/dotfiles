@@ -1,0 +1,4 @@
+#!/bin/sh
+
+fastfetch
+exec "${SHELL:-/bin/zsh}" -l

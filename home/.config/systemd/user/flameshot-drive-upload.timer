@@ -1,0 +1,11 @@
+[Unit]
+Description=Retry screenshot uploads every five minutes
+
+[Timer]
+OnStartupSec=30s
+OnUnitInactiveSec=5min
+AccuracySec=15s
+Unit=flameshot-drive-upload.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,33 @@
+#!/bin/sh
+
+unit="power-button-hold"
+
+case "$1" in
+    press)
+        # A fresh press replaces any stale timer left by an interrupted session.
+        systemctl --user stop "$unit.timer" "$unit.service" >/dev/null 2>&1 || true
+        systemd-run --user --quiet --collect \
+            --unit="$unit" \
+            --on-active=1s \
+            --timer-property=AccuracySec=100ms \
+            /usr/bin/systemctl poweroff
+        ;;
+    release)
+        # A short press is intentionally a no-op.
+        systemctl --user stop "$unit.timer" "$unit.service" >/dev/null 2>&1 || true
+        ;;
+    test)
+        # Exercise timer creation/cancellation without scheduling a shutdown.
+        systemctl --user stop "$unit-test.timer" "$unit-test.service" >/dev/null 2>&1 || true
+        systemd-run --user --quiet --collect \
+            --unit="$unit-test" \
+            --on-active=1s \
+            --timer-property=AccuracySec=100ms \
+            /usr/bin/true
+        systemctl --user stop "$unit-test.timer" "$unit-test.service" >/dev/null 2>&1 || true
+        ;;
+    *)
+        printf 'Usage: %s {press|release|test}\n' "$0" >&2
+        exit 2
+        ;;
+esac

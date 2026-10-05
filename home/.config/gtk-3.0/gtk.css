@@ -1,0 +1,29 @@
+
+/* air-theme: native GTK controls, no icon changes */
+@define-color theme_bg_color #000000;
+@define-color theme_fg_color #FFFFFF;
+@define-color theme_base_color #191919;
+@define-color theme_text_color #FFFFFF;
+@define-color theme_selected_bg_color #FF3D00;
+@define-color theme_selected_fg_color #000000;
+window, dialog { background-color: #000000; color: #FFFFFF; }
+button, entry { border-radius: 0; border-color: #343434; }
+selection { background-color: #FF3D00; color: #000000; }
+
+/* Semantic native GTK colours, including built-in links and state controls. */
+@define-color success_color #FFFFFF;
+@define-color warning_color #FF3D00;
+@define-color error_color #D88C8C;
+@define-color link_color #FFFFFF;
+@define-color visited_link_color #A3A3A3;
+@define-color theme_unfocused_bg_color #000000;
+@define-color theme_unfocused_fg_color #A3A3A3;
+@define-color theme_unfocused_selected_bg_color #191919;
+@define-color theme_unfocused_selected_fg_color #FFFFFF;
+*:link { color: #FFFFFF; }
+*:visited { color: #A3A3A3; }
+button:focus, entry:focus { border-color: #FF3D00; }
+check:checked, radio:checked, switch:checked { background-color: #FF3D00; color: #000000; }
+.error { color: #D88C8C; }
+.warning { color: #FF3D00; }
+.success { color: #FFFFFF; }

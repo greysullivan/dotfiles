@@ -1,0 +1,146 @@
+{
+  "version": 1,
+  "reddit_enabled": true,
+  "audio_enabled": true,
+  "topics": [
+    {
+      "id": "books",
+      "label": "Artist books, zines and independent publishing",
+      "weight": 3,
+      "enabled": true,
+      "queries": ["artist books zine publishing process", "photography zine sequencing bookbinding"],
+      "subreddits": ["zines", "bookbinding"],
+      "evidence": "Your artist bio describes handmade books, zines and independent publishing.",
+      "source": "https://drive.google.com/file/d/1FK6O2ZO245fx1d0k_uR8SXJKdN_NAt2l/view"
+    },
+    {
+      "id": "print",
+      "label": "Photocopy, collage and thermal printing",
+      "weight": 3,
+      "enabled": true,
+      "queries": ["photocopy collage xerox art process", "thermal printer art experimental printing"],
+      "subreddits": [],
+      "evidence": "Your bio names collage, thermal printing, paper, toner and visible reproduction processes.",
+      "source": "https://drive.google.com/file/d/1FK6O2ZO245fx1d0k_uR8SXJKdN_NAt2l/view"
+    },
+    {
+      "id": "archives",
+      "label": "Photography, memory and living archives",
+      "weight": 2.5,
+      "enabled": true,
+      "queries": ["artist archive photography memory installation", "photobook sequencing everyday life photography"],
+      "subreddits": ["Photobooks"],
+      "evidence": "Your practice proposal describes ordinary records, photography, oral history and an archive that can be reordered.",
+      "source": "https://drive.google.com/file/d/1Is705X7QB8ZdC-KefXK0VUQex91OjnLC/view"
+    },
+    {
+      "id": "local",
+      "label": "Christchurch and Aotearoa creative scenes",
+      "weight": 1.5,
+      "enabled": true,
+      "queries": ["Christchurch independent music art documentary", "New Zealand skate graffiti independent art documentary"],
+      "subreddits": [],
+      "evidence": "Your proposal discusses Christchurch creative communities, musicians, skaters and graffiti writers.",
+      "source": "https://drive.google.com/file/d/1Is705X7QB8ZdC-KefXK0VUQex91OjnLC/view"
+    },
+    {
+      "id": "guitar",
+      "label": "Experimental guitar and old digital effects",
+      "weight": 2,
+      "enabled": true,
+      "queries": ["BOSS BR900CD COSM guitar effects", "experimental guitar slow attack pitch shift delay sounds"],
+      "subreddits": ["guitarpedals"],
+      "evidence": "Your BR-900CD guide focuses on weird COSM tones, ghost pads, chorus, pitch shifting and stereo experiments. No favourite music genre is assumed.",
+      "source": "https://drive.google.com/file/d/1IXtNmFBAv29wAoaqfaq3-Mx_PpsE8Xe8/view"
+    },
+    {
+      "id": "design",
+      "label": "Typography, restrained interfaces and craft",
+      "weight": 2,
+      "enabled": true,
+      "queries": ["typography grid visual hierarchy design process", "minimal interface design typography principles"],
+      "subreddits": [],
+      "evidence": "Your design charter and local UX philosophy put hierarchy before hue and give colour an interaction role.",
+      "source": "/home/grey/setup/ux-philosophy.md"
+    },
+    {
+      "id": "linux",
+      "label": "Unix, i3 and minimal computing",
+      "weight": 1.5,
+      "enabled": true,
+      "queries": ["i3 window manager minimal linux workflow", "unix philosophy simple tools terminal workflow"],
+      "subreddits": ["unixporn"],
+      "evidence": "Your Arch/i3 setup and this request favour lean CLI tools and deliberate control.",
+      "source": "/home/grey/setup/ux-philosophy.md"
+    }
+  ],
+  "curated_posts": [
+    {
+      "id": "reddit:1vq1kdh",
+      "kind": "post",
+      "title": "Community Zine Fest #1 | Post your zines / shop zines for sale!",
+      "source": "r/zines",
+      "url": "https://www.reddit.com/r/zines/comments/1vq1kdh/community_zine_fest_1_post_your_zines_shop_zines/",
+      "score": 54,
+      "popularity": "curated popular post; published 2026-08-16",
+      "body": "A community thread for discovering makers' zines and independent shops. Live text and comments are fetched when opened; this note is a summary.",
+      "relevance": 1
+    },
+    {
+      "id": "reddit:1jen35i",
+      "kind": "post",
+      "title": "First bind!",
+      "source": "r/bookbinding",
+      "url": "https://www.reddit.com/r/bookbinding/comments/1jen35i/",
+      "score": 393,
+      "popularity": "curated popular post; published 2025-03-19",
+      "body": "A first bookbinding project with discussion of printing, folding and preparing the document. Live text and comments are fetched when opened; this note is a summary.",
+      "relevance": 1
+    },
+    {
+      "id": "reddit:1vym0y8",
+      "kind": "post",
+      "title": "Where do you buy your photobooks?",
+      "source": "r/Photobooks",
+      "url": "https://www.reddit.com/r/Photobooks/comments/1vym0y8/where_do_you_buy_your_photobooks/",
+      "score": 26,
+      "popularity": "curated popular post; published 2026-08-26",
+      "body": "Readers discuss independent photobook stores, publishers, newsletters and places to browse sample spreads. Live text and comments are fetched when opened; this note is a summary.",
+      "relevance": 1
+    },
+    {
+      "id": "reddit:yhb8uk",
+      "kind": "post",
+      "title": "Favorite experimental pedals?",
+      "source": "r/guitarpedals",
+      "url": "https://www.reddit.com/r/guitarpedals/comments/yhb8uk/favorite_experimental_pedals/",
+      "score": 34,
+      "popularity": "curated popular post; published 2022-10-30",
+      "body": "A discussion of unusual effect designs, digital textures and pedals that are fun to experiment with. Live text and comments are fetched when opened; this note is a summary.",
+      "relevance": 1
+    },
+    {
+      "id": "reddit:1j2mq5i",
+      "kind": "post",
+      "title": "[i3wm] Minimal rice.",
+      "source": "r/unixporn",
+      "url": "https://www.reddit.com/r/unixporn/comments/1j2mq5i/",
+      "score": 287,
+      "popularity": "curated popular post; published 2025-03-03",
+      "body": "A restrained Arch/i3 desktop with discussion of the configuration. This is a neighbouring discovery, rather than a claim that you prefer this exact appearance. Live text and comments are fetched when opened; this note is a summary.",
+      "relevance": 1
+    }
+  ],
+  "audiobooks": [
+    {
+      "id": "archive:newsfromnowhere_etk_librivox",
+      "archive_id": "newsfromnowhere_etk_librivox",
+      "title": "News from Nowhere — William Morris",
+      "source": "Internet Archive / LibriVox; Elizabeth Klett",
+      "url": "https://archive.org/details/newsfromnowhere_etk_librivox",
+      "topic": "design",
+      "reason": "Discovery: artist/designer William Morris imagines craft and everyday life. Selected for your making/design interests, without inferring political views.",
+      "catalogue": "https://librivox.org/news-from-nowhere-by-william-morris/"
+    }
+  ]
+}

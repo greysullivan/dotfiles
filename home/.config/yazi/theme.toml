@@ -1,0 +1,124 @@
+#:schema https://yazi-rs.github.io/schemas/theme.json
+
+[app]
+overall = { bg = "#000000" }
+
+# Keep file lists text-only, matching the rest of the desktop UI.
+[icon]
+globs = []
+dirs = []
+files = []
+exts = []
+conds = []
+
+[mgr]
+cwd = { fg = "#FFFFFF", bold = true }
+find_keyword = { fg = "#000000", bg = "#FF3D00", bold = true }
+find_position = { fg = "#A3A3A3" }
+marker_copied = { fg = "#A3A3A3", bg = "#A3A3A3" }
+marker_cut = { fg = "#D88C8C", bg = "#D88C8C" }
+marker_marked = { fg = "#FF3D00", bg = "#FF3D00" }
+marker_selected = { fg = "#FFFFFF", bg = "#FFFFFF" }
+count_copied = { fg = "#000000", bg = "#A3A3A3" }
+count_cut = { fg = "#000000", bg = "#D88C8C" }
+count_selected = { fg = "#000000", bg = "#FF3D00" }
+border_symbol = "│"
+border_style = { fg = "#343434" }
+
+[tabs]
+active = { fg = "#000000", bg = "#FF3D00", bold = true }
+inactive = { fg = "#FFFFFF", bg = "#000000" }
+sep_inner = { open = "", close = "" }
+sep_outer = { open = "", close = "" }
+
+[mode]
+normal_main = { fg = "#000000", bg = "#FF3D00", bold = true }
+normal_alt = { fg = "#A3A3A3", bg = "#000000" }
+select_main = { fg = "#000000", bg = "#FF3D00", bold = true }
+select_alt = { fg = "#A3A3A3", bg = "#000000" }
+unset_main = { fg = "#000000", bg = "#FF3D00" }
+unset_alt = { fg = "#FF3D00", bg = "#000000" }
+
+[status]
+overall = { fg = "#FFFFFF", bg = "#000000" }
+sep_left = { open = "", close = "" }
+sep_right = { open = "", close = "" }
+progress_label = { fg = "#FFFFFF", bold = true }
+progress_normal = { fg = "#A3A3A3" }
+progress_error = { fg = "#D88C8C", bg = "#000000" }
+perm_type = { fg = "#FFFFFF" }
+perm_read = { fg = "#FFFFFF" }
+perm_write = { fg = "#A3A3A3" }
+perm_exec = { fg = "#A3A3A3" }
+perm_sep = { fg = "#343434" }
+
+[input]
+border = { fg = "#FF3D00" }
+title = { fg = "#FF3D00" }
+value = { fg = "#FFFFFF" }
+selected = { fg = "#000000", bg = "#FF3D00", reversed = false }
+
+[pick]
+border = { fg = "#FF3D00" }
+active = { fg = "#FF3D00", bold = true, reversed = false }
+inactive = { fg = "#A3A3A3" }
+
+[cmp]
+border = { fg = "#343434" }
+active = { fg = "#000000", bg = "#FF3D00", reversed = false }
+inactive = { fg = "#A3A3A3" }
+
+[tasks]
+border = { fg = "#343434" }
+title = { fg = "#FF3D00" }
+hovered = { fg = "#000000", bg = "#FF3D00", reversed = false }
+
+[which]
+cols = 3
+mask = { bg = "#000000" }
+cand = { fg = "#FF3D00" }
+rest = { fg = "#A3A3A3" }
+desc = { fg = "#FFFFFF" }
+separator = "  "
+separator_style = { fg = "#343434" }
+
+[help]
+chord = { fg = "#FF3D00" }
+action = { fg = "#FFFFFF" }
+hovered = { fg = "#000000", bg = "#FF3D00", reversed = false }
+
+# Yazi 26.9 indicator API, retaining the existing icon policy.
+[indicator]
+parent = { fg = "#FFFFFF", bg = "#191919", reversed = false }
+current = { fg = "#000000", bg = "#FF3D00", bold = true }
+preview = { fg = "#FFFFFF", bg = "#191919", underline = true }
+padding = { open = "", close = "" }
+[confirm]
+border = { fg = "#343434" }
+title = { fg = "#FFFFFF" }
+body = { fg = "#FFFFFF" }
+btn_yes = { fg = "#000000", bg = "#FF3D00", reversed = false }
+btn_no = { fg = "#FFFFFF", bg = "#191919" }
+[spot]
+border = { fg = "#343434" }
+title = { fg = "#FFFFFF" }
+tbl_col = { fg = "#FFFFFF", bold = true }
+tbl_cell = { fg = "#000000", bg = "#FF3D00", reversed = false }
+[notify]
+title_info = { fg = "#FFFFFF" }
+title_warn = { fg = "#FF3D00" }
+title_error = { fg = "#D88C8C" }
+
+[filetype]
+rules = [
+    { mime = "**/image/*", fg = "#FFFFFF" },
+    { mime = "**/{audio,video}/*", fg = "#FFFFFF" },
+    { mime = "**/application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", fg = "#FFFFFF" },
+    { mime = "**/application/{pdf,doc,rtf}", fg = "#FFFFFF" },
+    { mime = "vfs/{absent,stale}", fg = "#A3A3A3" },
+    { url = "*", is = "orphan", fg = "#D88C8C" },
+    { url = "*", is = "exec", fg = "#FFFFFF" },
+    { url = "*", is = "dummy", fg = "#A3A3A3" },
+    { url = "*/", is = "dummy", fg = "#A3A3A3" },
+    { url = "*/", fg = "#FFFFFF" },
+]

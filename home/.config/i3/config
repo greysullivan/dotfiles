@@ -1,0 +1,158 @@
+# Grey's Air — X11/i3, started manually from a TTY.
+set $mod Mod4
+font pango:JetBrains Mono 10
+set $bg #000000
+set $surface #191919
+set $fg #FFFFFF
+set $accent #FF3D00
+set $inactive #191919
+set $urgent #D88C8C
+
+client.focused          $accent $surface $fg $accent $accent
+client.focused_inactive $inactive $surface $fg $inactive $inactive
+client.unfocused        $inactive $bg $fg $inactive $inactive
+client.urgent           $urgent $urgent $bg $urgent $urgent
+client.background       $bg
+
+gaps inner 8
+gaps outer 4
+smart_gaps off
+default_border none
+default_floating_border none
+floating_modifier $mod
+focus_follows_mouse no
+workspace_auto_back_and_forth yes
+
+# Initial startup only: reloading/restarting i3 must not duplicate daemons.
+exec --no-startup-id xsetroot -solid '#000000'
+# Keep the display on while the i3 session is running.
+exec --no-startup-id xset s off -dpms
+exec --no-startup-id xinput set-prop "bcm5974" "libinput Tapping Enabled" 1
+exec --no-startup-id picom --config ~/.config/picom/picom.conf
+exec --no-startup-id dunst
+exec --no-startup-id unclutter --timeout 2 --jitter 2
+exec --no-startup-id touchegg --client
+
+# Überzug++ preview overlays should never enter the tiling tree.
+for_window [class="(?i)^ueberzugpp$"] floating enable, border none, sticky enable
+
+# Keep the main Firefox browser over the terminal instead of splitting the tile.
+for_window [class="(?i)^firefox$" window_role="^browser$"] fullscreen enable
+
+set $term xfce4-terminal
+set $menu dmenu_run -fn 'JetBrains Mono-10' -nb '#191919' -nf '#FFFFFF' -sb '#FF3D00' -sf '#000000'
+bindsym $mod+space exec --no-startup-id xfce4-terminal --title='System overview' --execute ~/.local/bin/fastfetch-shell
+bindsym $mod+Return exec --no-startup-id $term
+bindsym $mod+Shift+Return exec --no-startup-id kitty
+bindsym $mod+Control+Return exec --no-startup-id xfce4-terminal --disable-server --title='Bash fallback' --execute /bin/bash -l
+bindsym $mod+d exec --no-startup-id $menu
+bindsym $mod+q kill
+# Capture: picture, live recording toggle, options menu.
+bindsym $mod+p exec --no-startup-id ~/.local/bin/capture picture
+bindsym $mod+l exec --no-startup-id ~/.local/bin/capture live
+bindsym $mod+bracketleft exec --no-startup-id ~/.local/bin/capture menu
+bindsym $mod+bracketright exec --no-startup-id ~/.local/bin/capture menu
+bindsym Print exec --no-startup-id flameshot gui
+bindsym $mod+Shift+v exec --no-startup-id ~/.local/bin/dictation-toggle
+bindsym $mod+Shift+x exec --no-startup-id i3lock -c 000000
+bindsym $mod+Shift+e exec i3-nagbar -t warning -m 'Exit i3 and return to your TTY?' -b 'Exit i3' 'i3-msg exit'
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+c reload
+
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+bindsym $mod+b split h
+bindsym $mod+v split v
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+f fullscreen toggle
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+Mod1+Left workspace prev
+bindsym $mod+Mod1+Right workspace next
+
+set $ws1 "1:work"
+bindsym $mod+1 workspace $ws1
+bindsym $mod+Shift+1 move container to workspace $ws1; workspace $ws1
+set $ws2 "2:web"
+bindsym $mod+2 workspace $ws2
+bindsym $mod+Shift+2 move container to workspace $ws2; workspace $ws2
+set $ws3 "3:btop"
+bindsym $mod+3 workspace $ws3
+bindsym $mod+Shift+3 move container to workspace $ws3; workspace $ws3
+set $ws4 "4:ncspot"
+bindsym $mod+4 workspace $ws4
+bindsym $mod+Shift+4 move container to workspace $ws4; workspace $ws4
+set $ws5 "5:yazi"
+bindsym $mod+5 workspace $ws5
+bindsym $mod+Shift+5 move container to workspace $ws5; workspace $ws5
+set $ws6 "6"
+bindsym $mod+6 workspace $ws6
+bindsym $mod+Shift+6 move container to workspace $ws6; workspace $ws6
+set $ws7 "7"
+bindsym $mod+7 workspace $ws7
+bindsym $mod+Shift+7 move container to workspace $ws7; workspace $ws7
+set $ws8 "8"
+bindsym $mod+8 workspace $ws8
+bindsym $mod+Shift+8 move container to workspace $ws8; workspace $ws8
+set $ws9 "9"
+bindsym $mod+9 workspace $ws9
+bindsym $mod+Shift+9 move container to workspace $ws9; workspace $ws9
+set $ws10 "10"
+bindsym $mod+0 workspace $ws10
+bindsym $mod+Shift+0 move container to workspace $ws10; workspace $ws10
+
+mode "resize" {
+    bindsym h resize shrink width 10 px or 10 ppt
+    bindsym j resize grow height 10 px or 10 ppt
+    bindsym k resize shrink height 10 px or 10 ppt
+    bindsym l resize grow width 10 px or 10 ppt
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl --min-value=1 set 5%-
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +5%
+bindsym XF86KbdBrightnessDown exec --no-startup-id brightnessctl -d '*::kbd_backlight' set 10%-
+bindsym XF86KbdBrightnessUp exec --no-startup-id brightnessctl -d '*::kbd_backlight' set +10%
+
+# Media player controls
+bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
+bindsym XF86AudioNext exec --no-startup-id playerctl next
+bindsym XF86AudioPrev exec --no-startup-id playerctl previous
+
+# Volume controls
+bindsym XF86AudioRaiseVolume exec --no-startup-id wpctl set-volume --limit 1.0 @DEFAULT_AUDIO_SINK@ 5%+
+bindsym XF86AudioLowerVolume exec --no-startup-id wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+bindsym XF86AudioMute exec --no-startup-id wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+
+# Ignore a tap of the power button; shut down after holding it for one second.
+bindsym XF86PowerOff exec --no-startup-id ~/.local/bin/power-button-hold press
+bindsym --release XF86PowerOff exec --no-startup-id ~/.local/bin/power-button-hold release
+
+
+bar {
+    position bottom
+    status_command i3status --config ~/.config/i3status/config
+    font pango:JetBrains Mono 10
+    colors {
+        background $bg
+        statusline $fg
+        separator #343434
+        focused_workspace $accent $accent $bg
+        active_workspace $inactive $surface $fg
+        inactive_workspace $bg $bg #A3A3A3
+        urgent_workspace $urgent $urgent $bg
+        binding_mode $accent $accent $bg
+    }
+}

@@ -1,0 +1,198 @@
+#!/usr/bin/python3
+"""Compose existing Codex popups with a serialized gong and per-music-stream duck."""
+import fcntl, json, os, signal, subprocess, sys, tempfile, time
+from pathlib import Path
+HOME = Path.home()
+CONFIG = HOME/'.config/codex-alerts/settings.json'
+STATE = HOME/'.local/state/codex-alerts'
+PREVIOUS = HOME/'.local/share/codex-alerts/previous-notify.py'
+
+def save(name, obj):
+    with tempfile.NamedTemporaryFile(mode='w', dir=STATE, delete=False) as t:
+        json.dump(obj,t,indent=2);t.write('\n');p=Path(t.name)
+    p.chmod(0o600);os.replace(p,STATE/name)
+
+def read(name, default):
+    try: return json.loads((STATE/name).read_text())
+    except (OSError,ValueError): return default
+
+def settings():
+    p=json.loads(CONFIG.read_text())
+    for key,low,high in [('gong_volume',0,1),('duck_factor',.5,1),('restore_seconds',.1,2),('coalesce_seconds',0,60)]:
+        value=p[key]
+        if not isinstance(value,(int,float)) or not low<=value<=high: raise ValueError('Invalid '+key)
+    if not isinstance(p['music_apps'],list) or not all(isinstance(x,str) for x in p['music_apps']): raise ValueError('Invalid music_apps')
+    if not isinstance(p['sound_enabled'],bool): raise ValueError('Invalid sound_enabled')
+    return p
+
+class Pulse:
+    def streams(self):
+        r=subprocess.run(['pactl','-f','json','list','sink-inputs'],capture_output=True,text=True,timeout=2)
+        if r.returncode: raise OSError('PulseAudio stream query failed')
+        return json.loads(r.stdout)
+    def find(self, identity):
+        return next((s for s in self.streams() if identify(s)==identity),None)
+    def set_volume(self,index,values):
+        r=subprocess.run(['pactl','set-sink-input-volume',str(index),*map(str,values)],capture_output=True,timeout=2)
+        if r.returncode: raise OSError('Music stream disappeared or volume change failed')
+
+def identify(s):
+    p=s.get('properties',{})
+    return {'index':s['index'],'serial':p.get('object.serial'),'client':s.get('client'),
+            'pid':p.get('application.process.id'),'binary':p.get('application.process.binary')}
+
+def volume(s): return [v['value'] for v in s['volume'].values()]
+
+def matches(a,b,tolerance=0): return len(a)==len(b) and all(abs(x-y)<=tolerance for x,y in zip(a,b))
+
+def playing(stream):
+    p=stream.get('properties',{});binary=p.get('application.process.binary','').casefold()
+    if binary not in ['ncspot','spotify']:return True
+    player='ncspot.instance'+p.get('application.process.id','') if binary=='ncspot' else 'spotify'
+    try:
+        r=subprocess.run(['playerctl','--player='+player,'status'],capture_output=True,text=True,timeout=1)
+        return r.stdout.strip()=='Playing' if r.returncode==0 else True
+    except (OSError,subprocess.TimeoutExpired):return True # Fall back to the stream's corked state.
+
+def choose_music(streams, apps, is_playing=None):
+    candidates=[];apps={x.casefold() for x in apps}
+    for s in streams:
+        if s.get('mute') or s.get('corked') or not any(volume(s)): continue
+        p=s.get('properties',{});role=p.get('media.role','').casefold()
+        if role in ['phone','communication','video']: continue
+        if is_playing is not None and not is_playing(s):continue
+        binary=p.get('application.process.binary','').casefold();name=p.get('application.name','').casefold()
+        score=0 if binary in apps or name in apps else 1 if role=='music' else None
+        if score is not None: candidates.append((score,s['index'],s))
+    return min(candidates,key=lambda x:x[:2])[2] if candidates else None
+
+class Duck:
+    def __init__(self,pulse,stream,restore_seconds,original=None):
+        self.pulse=pulse;self.identity=identify(stream);self.original=original or volume(stream)
+        self.expected=volume(stream);self.pending=None;self.seconds=restore_seconds;self.owned=True;self.reason='restored'
+    def current(self):
+        s=self.pulse.find(self.identity)
+        if s is None: self.owned=False;self.reason='stream-disappeared';return None
+        if not matches(volume(s),self.expected):
+            if self.pending is not None and matches(volume(s),self.pending,16):
+                self.expected=volume(s);self.pending=None
+            else:self.owned=False;self.reason='user-volume-change';return None
+        return s
+    def set(self,values):
+        if not self.owned or self.current() is None:return False
+        values=[max(0,min(x,ceiling)) for x,ceiling in zip(values,self.original)]
+        # Save both sides of an in-flight write so recovery can recognize either.
+        self.pending=values
+        save('duck.json',{'identity':self.identity,'original':self.original,'expected':self.expected,'pending':values})
+        self.pulse.set_volume(self.identity['index'],values)
+        s=self.pulse.find(self.identity)
+        if s is None:self.owned=False;self.reason='stream-disappeared';return False
+        if not matches(volume(s),values,16):self.owned=False;self.reason='user-volume-change';return False
+        self.expected=volume(s);self.pending=None
+        save('duck.json',{'identity':self.identity,'original':self.original,'expected':self.expected})
+        return True
+    def lower(self,factor):return self.set([round(x*factor) for x in self.original])
+    def restore(self):
+        if not self.owned or self.current() is None:return
+        start=list(self.expected);steps=max(2,round(self.seconds/.05))
+        for i in range(1,steps+1):
+            t=i/steps;t=t*t*(3-2*t)
+            if not self.set([round(x+(y-x)*t) for x,y in zip(start,self.original)]):return
+            if i<steps:time.sleep(self.seconds/steps)
+
+class Interrupted(Exception): pass
+
+def recover(pulse,seconds):
+    j=read('duck.json',None)
+    if not j:return 'none'
+    s=pulse.find(j['identity'])
+    if s is not None and any(matches(volume(s),v,16) for v in [j['expected'],j.get('pending',j['expected'])]):
+        d=Duck(pulse,s,seconds,j['original']);d.restore();outcome=d.reason
+    else:outcome='stream-or-user-change-preserved'
+    (STATE/'duck.json').unlink(missing_ok=True)
+    return outcome
+
+def worker(config=None,force=False):
+    p=config or settings()
+    with (STATE/'sound.lock').open('a') as lock:
+        try:fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        except BlockingIOError:return {'outcome':'coalesced'}
+        pulse=Pulse();last=read('last-sound.json',{})
+        try:recovery=recover(pulse,p['restore_seconds'])
+        except (OSError,ValueError,subprocess.TimeoutExpired):return {'outcome':'recovery-pending'}
+        if not force and not p['sound_enabled']:return {'outcome':'disabled'}
+        now=time.time()
+        if not force and 0<=now-last.get('started',0)<p['coalesce_seconds']:return {'outcome':'coalesced'}
+        save('last-sound.json',{'started':now,'outcome':'in-progress','recovery':recovery})
+        d=None;play=None;result={'started':now,'recovery':recovery}
+        old_handlers={}
+        def interrupted(signum,frame):raise Interrupted()
+        for sig in (signal.SIGTERM,signal.SIGINT):
+            old_handlers[sig]=signal.signal(sig,interrupted)
+        try:
+            try:stream=choose_music(pulse.streams(),p['music_apps'],playing)
+            except (OSError,ValueError,subprocess.TimeoutExpired):stream=None;result['ducking']='unavailable'
+            if stream:
+                d=Duck(pulse,stream,p['restore_seconds']);result['music_before']=list(d.original)
+                if d.lower(p['duck_factor']):result['music_ducked']=list(d.expected)
+            if force or p['sound_enabled']:
+                play=subprocess.Popen(['paplay','--client-name=Codex alerts','--stream-name=Codex soft gong',
+                    '--property=media.role=event','--property=module-stream-restore.id=codex-soft-gong',
+                    '--volume='+str(round(65536*p['gong_volume'])),p['sound_file']],
+                    stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+                deadline=time.monotonic()+5
+                while play.poll() is None and time.monotonic()<deadline:
+                    if d and d.owned:d.current()
+                    time.sleep(.05)
+                if play.poll() is None:play.terminate();result['gong']='timeout'
+                else:result['gong']='played' if play.returncode==0 else 'playback-failed'
+            result['outcome']='completed'
+        except Interrupted:result['outcome']='interrupted'
+        except (OSError,ValueError,subprocess.TimeoutExpired):result['outcome']='audio-unavailable'
+        finally:
+            # Do not let a second termination interrupt the short restoration.
+            for sig in old_handlers:signal.signal(sig,signal.SIG_IGN)
+            if play and play.poll() is None:
+                play.terminate()
+                try:play.wait(timeout=1)
+                except subprocess.TimeoutExpired:play.kill();play.wait()
+            if d:
+                try:
+                    d.restore();result['ducking']=d.reason
+                    s=pulse.find(d.identity)
+                    if s:result['music_after']=volume(s)
+                    (STATE/'duck.json').unlink(missing_ok=True)
+                except (OSError,ValueError,subprocess.TimeoutExpired):result['ducking']='recovery-pending'
+            else:result.setdefault('ducking','no-active-unmuted-music')
+            for sig,handler in old_handlers.items():signal.signal(sig,handler)
+            save('last-sound.json',result)
+        return result
+
+def main():
+    os.umask(0o077);STATE.mkdir(parents=True,exist_ok=True,mode=0o700)
+    if sys.argv[1:]==['--status']:
+        print(json.dumps({'settings':settings(),'last_event':read('last-event.json',None),
+                          'last_sound':read('last-sound.json',None),'recovery_pending':(STATE/'duck.json').exists()},indent=2));return 0
+    if sys.argv[1:]==['--sound']:worker();return 0
+    if sys.argv[1:]==['--test']:
+        r=subprocess.run(['notify-send','--print-id','--app-name=Codex','--urgency=normal','--expire-time=8000',
+                          'Codex — Notification test','Local charcoal popup and soft gong check'],capture_output=True,text=True,timeout=2)
+        result=worker(force=True);print(json.dumps({'test_popup_id':r.stdout.strip(),'audio':result},indent=2));return 0
+    try:payload=json.loads(sys.argv[1]) if len(sys.argv)>1 else json.loads(sys.stdin.read(2_000_000))
+    except (ValueError,OSError):return 0
+    if not isinstance(payload,dict):return 0
+    event=payload.get('type') or payload.get('hook_event_name')
+    if event not in ['agent-turn-complete','PermissionRequest']:return 0
+    # The old handler retains its titles, urgency and project context. Never pass
+    # prompt, transcript, command or message-body fields into this composition.
+    sanitized={'type':event} if event=='agent-turn-complete' else {'hook_event_name':event}
+    if isinstance(payload.get('cwd'),str):sanitized['cwd']=payload['cwd']
+    r=subprocess.run([sys.executable,str(PREVIOUS)],input=json.dumps(sanitized),text=True,
+                     stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=2)
+    save('last-event.json',{'event':event,'time':time.time(),'popup_handler_exit':r.returncode})
+    subprocess.Popen([sys.executable,str(Path(__file__).resolve()),'--sound'],stdin=subprocess.DEVNULL,
+                     stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True)
+    return 0
+if __name__=='__main__':
+    try:raise SystemExit(main())
+    except (OSError,ValueError,subprocess.TimeoutExpired):raise SystemExit(0)

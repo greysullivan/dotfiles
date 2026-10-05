@@ -1,0 +1,12 @@
+{
+  "sound_enabled": true,
+  "gong_volume": 0.6,
+  "duck_factor": 0.8,
+  "restore_seconds": 0.75,
+  "coalesce_seconds": 5.0,
+  "music_apps": [
+    "ncspot",
+    "spotify"
+  ],
+  "sound_file": "/home/grey/.local/share/codex-alerts/gong.wav"
+}

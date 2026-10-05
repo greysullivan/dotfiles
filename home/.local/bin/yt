@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+"""Play YouTube in mpv with Grey's 540p / 24 fps art profile."""
+import argparse
+import os
+from pathlib import Path
+import shutil
+import sys
+from urllib.parse import urlsplit
+
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('url', nargs='?', help='YouTube video URL; quote URLs containing &')
+parser.add_argument('--check', action='store_true', help='check playback dependencies')
+args = parser.parse_args()
+missing = [name for name in ('mpv', 'yt-dlp', 'node') if not shutil.which(name)]
+profile = Path('/home/grey/.config/mpv/youtube-art.conf')
+if not profile.is_file():
+    missing.append(str(profile))
+if missing:
+    parser.exit(1, 'Missing: ' + ', '.join(missing) + '\nInstall: sudo pacman -S --needed yt-dlp intel-media-driver libva-utils\n')
+if args.check:
+    print('Ready: mpv, yt-dlp, Node; 540 pixels high, 24 fps, normal speed.')
+    sys.exit(0)
+if not args.url:
+    parser.error('provide a YouTube URL, or use --check')
+try:
+    url = urlsplit(args.url)
+    host = (url.hostname or '').lower()
+except ValueError:
+    parser.error('invalid URL')
+if url.scheme not in ('http', 'https') or not (
+    host in ('youtube.com', 'youtu.be', 'youtube-nocookie.com')
+    or host.endswith('.youtube.com') or host.endswith('.youtube-nocookie.com')
+):
+    parser.error('provide an http(s) YouTube URL')
+os.execv(shutil.which('mpv'), ['mpv', '--profile=youtube-art', '--', args.url])

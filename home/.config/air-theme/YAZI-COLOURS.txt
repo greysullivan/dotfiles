@@ -1,0 +1,68 @@
+YAZI BONE / MAUVE STATUS COLORS — 2026-10-05
+
+Running app: Yazi 26.9.1. Its process has no XDG_CONFIG_HOME or
+YAZI_CONFIG_HOME override, so ~/.config/yazi/theme.toml is the active theme.
+TERM=xterm-256color and COLORTERM=truecolor.
+
+Blue directories and cyan documents came from built-in filetype rules and
+resolved through terminal ANSI colors. They now use explicit bone #C9C4BC
+inside Yazi. Green executable text, copied indicators and secondary mode/state
+styling now use mauve #A38BA8. Orange #FF3D00 remains the primary selection and
+normal active badge. Status surfaces use #1C1A1D, ordinary status text uses
+bone, and filled badges use dark #1C1A1D text. Existing warning/error, media and
+image distinctions were retained. The main background remains #0e0e0e.
+Global ANSI palettes and i3/bar colors were not changed.
+
+Canonical source tokens: yazi_bone, yazi_mauve, yazi_status in palette.json.
+The generator now changes only complete legacy help keys; its accidental
+find_positichord key was corrected to supported find_position.
+
+Apply only Yazi (safe to repeat):
+  air-theme charcoal --only yazi
+Check theme status:
+  air-theme status
+Refresh: quit Yazi normally with q, then run y from the existing zsh shell.
+The existing y wrapper preserves the visited directory. No supported native
+appearance reload was identified, so the active session was kept open.
+
+Restore the previous Yazi colors and this generator/palette change:
+  /home/grey/.local/state/air-theme/yazi-colours-20261005-064614/restore
+Preflight without writing live configs:
+  /home/grey/.local/state/air-theme/yazi-colours-20261005-064614/restore --check
+
+This restores this change's private backup, not the original desktop theme.
+The oldest original-theme backup remains unchanged. Restoration uses three-way
+text/JSON merges; independent later edits survive. Conflicts abort before live
+writes and preserve current/applied/requested versions inside the backup.
+Symlink changes and backup integrity mismatches also abort. Reopen Yazi after
+rollback. No desktop component reload is performed.
+
+Files modified or added (relative to home):
+  .local/bin/air-theme
+  .config/air-theme/palette.json
+  .config/yazi/theme.toml
+  .config/air-theme/generated/.config/yazi/theme.toml
+  .local/state/air-theme/last/.config/yazi/theme.toml
+  .local/state/air-theme/state.json
+  .config/air-theme/README.txt
+  .config/air-theme/YAZI-COLOURS.txt
+
+New supporting artifacts: this backup's manifest, after-manifest, restore
+executable and private before/after snapshots; harmless sample files and
+screenshots under ~/.config/air-theme/review/yazi-colours/.
+
+Verification:
+Python syntax and native TOML parsing passed; installed Yazi loaded the theme
+in a disposable terminal. Visual inspection confirmed bone directories and
+PDF text, mauve executable text and status mode context, orange selection and
+normal badge, status permissions, and the mauve select badge with dark text.
+The unset badge was not conclusively captured; its existing error distinction
+was preserved in the parsed theme. Copy/cut/progress indicators were not
+visually exercised, avoiding changes to the active session's clipboard or
+file operations. No sample executable was run and no user files were operated on.
+Native previews used only harmless created files; original Yazi was not killed.
+Contrast ratios: bone/charcoal 9.96:1, mauve/charcoal 5.61:1,
+orange/charcoal 4.87:1, bone/main 11.13:1, mauve/main 6.27:1.
+All watched files outside this change match their pre-change hashes, including
+i3, both terminal palettes, other app configs, generated themes, tracking
+fragments, bindings, startup and the oldest original-baseline reference.

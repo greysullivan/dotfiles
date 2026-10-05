@@ -1,0 +1,37 @@
+backend = "pulseaudio"
+default_keybindings = true
+audio_cache = true
+audio_cache_size = 512
+bitrate = 320
+gapless = true
+notify = true
+use_nerdfont = false
+# Allow Kitty to render album art above its 640px source size on HiDPI displays.
+cover_max_scale = 2
+playback_state = "Paused"
+hide_display_names = true
+
+[notification_format]
+title = "%title"
+body = "%artists"
+
+[theme]
+background = "#000000"
+primary = "#FFFFFF"
+secondary = "#A3A3A3"
+title = "#FFFFFF"
+playing = "#FF3D00"
+playing_selected = "#000000"
+playing_bg = "#191919"
+highlight = "#000000"
+highlight_bg = "#FF3D00"
+highlight_inactive_bg = "#FF3D00"
+error = "#000000"
+error_bg = "#D88C8C"
+statusbar = "#FFFFFF"
+statusbar_bg = "#191919"
+statusbar_progress = "#000000"
+statusbar_progress_bg = "#FF3D00"
+cmdline = "#FFFFFF"
+cmdline_bg = "#000000"
+search_match = "#FF3D00"

@@ -1,0 +1,10 @@
+[Unit]
+Description=Copy locally saved Flameshot screenshots to Google Drive
+Documentation=https://rclone.org/commands/rclone_copy/
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/rclone copy %h/sshot gdrive:Screenshots --config=%h/.config/rclone/rclone.conf --max-depth=1 --filter-from=%h/.config/flameshot/drive-upload-filter.txt --min-age=10s --checksum --immutable --no-traverse --transfers=1 --checkers=1 --buffer-size=1M --contimeout=10s --timeout=30s --retries=1 --low-level-retries=2 --stats=0 --log-level=INFO
+TimeoutStartSec=2min
+Nice=10
+UMask=0077

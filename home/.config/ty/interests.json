@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "topics": [
+    {
+      "id": "books",
+      "label": "Artist books, zines and independent publishing",
+      "weight": 3,
+      "enabled": true,
+      "queries": [
+        "mediatype:texts AND (title:zine OR title:zines OR title:photobook) AND (title:art OR title:photography OR title:collage OR subject:\"artists books\")"
+      ],
+      "evidence": "Your artist bio describes handmade books, zines and independent publishing.",
+      "source": "https://drive.google.com/file/d/1FK6O2ZO245fx1d0k_uR8SXJKdN_NAt2l/view"
+    },
+    {
+      "id": "print",
+      "label": "Photocopy, collage and thermal printing",
+      "weight": 3,
+      "enabled": false,
+      "queries": [
+        "mediatype:texts AND (title:printing OR title:bookbinding) AND year:[1850 TO 1930]"
+      ],
+      "evidence": "Your bio names collage, thermal printing, paper, toner and visible reproduction processes.",
+      "source": "https://drive.google.com/file/d/1FK6O2ZO245fx1d0k_uR8SXJKdN_NAt2l/view"
+    },
+    {
+      "id": "archives",
+      "label": "Everyday archives and experimental film",
+      "weight": 2.5,
+      "enabled": true,
+      "queries": [
+        "mediatype:movies AND (collection:prelinger OR subject:\"experimental film\")"
+      ],
+      "evidence": "Your practice proposal describes ordinary records, photography, oral history and an archive that can be reordered.",
+      "source": "https://drive.google.com/file/d/1Is705X7QB8ZdC-KefXK0VUQex91OjnLC/view"
+    },
+    {
+      "id": "local",
+      "label": "Christchurch and Aotearoa creative scenes",
+      "weight": 1.5,
+      "enabled": true,
+      "queries": [
+        "(mediatype:audio OR mediatype:movies) AND (title:Christchurch OR (title:\"New Zealand\" AND (subject:music OR subject:art OR subject:\"field recordings\")))"
+      ],
+      "evidence": "Your proposal discusses Christchurch creative communities, musicians, skaters and graffiti writers.",
+      "source": "https://drive.google.com/file/d/1Is705X7QB8ZdC-KefXK0VUQex91OjnLC/view"
+    },
+    {
+      "id": "guitar",
+      "label": "Experimental sound and field recordings",
+      "weight": 2,
+      "enabled": false,
+      "queries": [
+        "mediatype:audio AND (subject:\"experimental music\" OR subject:\"field recordings\")"
+      ],
+      "evidence": "Your BR-900CD guide focuses on weird COSM tones, ghost pads, chorus, pitch shifting and stereo experiments. No favourite music genre is assumed. Archive sound experiments are neighbouring discoveries, rather than confirmed favourite genres.",
+      "source": "https://drive.google.com/file/d/1IXtNmFBAv29wAoaqfaq3-Mx_PpsE8Xe8/view"
+    },
+    {
+      "id": "design",
+      "label": "Typography, restrained interfaces and craft",
+      "weight": 3,
+      "enabled": true,
+      "queries": [
+        "collection:librivoxaudio AND (title:\"Book of Tea\" OR title:\"News from Nowhere\" OR title:\"Art of Writing\")"
+      ],
+      "evidence": "Your design charter and local UX philosophy put hierarchy before hue and give colour an interaction role.",
+      "source": "/home/grey/setup/ux-philosophy.md"
+    },
+    {
+      "id": "linux",
+      "label": "Unix, i3 and minimal computing",
+      "weight": 1.5,
+      "enabled": true,
+      "queries": [
+        "mediatype:movies AND (title:Unix OR title:Linux)"
+      ],
+      "evidence": "Your Arch/i3 setup and this request favour lean CLI tools and deliberate control.",
+      "source": "/home/grey/setup/ux-philosophy.md"
+    }
+  ],
+  "seeds": [
+    {
+      "id": "archive:newsfromnowhere_etk_librivox",
+      "archive_id": "newsfromnowhere_etk_librivox",
+      "title": "News from Nowhere — William Morris",
+      "source": "Internet Archive / LibriVox; Elizabeth Klett",
+      "url": "https://archive.org/details/newsfromnowhere_etk_librivox",
+      "topic": "design",
+      "reason": "Discovery: artist/designer William Morris imagines craft and everyday life. Selected for your making/design interests, without inferring political views.",
+      "catalogue": "https://librivox.org/news-from-nowhere-by-william-morris/",
+      "kind": "audio",
+      "relevance": 1
+    }
+  ]
+}

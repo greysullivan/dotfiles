@@ -1,0 +1,46 @@
+# Starship prompt - minimal and fast
+
+format = """
+$directory\
+$cmd_duration\
+$status\
+$character"""
+
+add_newline = false
+
+[character]
+success_symbol = "[>](bold #FF3D00)"
+error_symbol = "[>](bold #D88C8C)"
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "bold #FFFFFF"
+
+[git_branch]
+format = "[$branch]($style) "
+style = "bold #A3A3A3"
+
+[git_status]
+format = '([$all_status$ahead_behind]($style) )'
+style = "bold #A3A3A3"
+conflicted = "!"
+ahead = "+"
+behind = "-"
+diverged = "+-"
+untracked = "?"
+stashed = "$"
+modified = "*"
+staged = "+"
+renamed = "r"
+deleted = "x"
+
+[cmd_duration]
+min_time = 800
+format = "[$duration]($style) "
+style = "bold #A3A3A3"
+
+[status]
+disabled = false
+format = "[$status]($style) "
+style = "bold #D88C8C"

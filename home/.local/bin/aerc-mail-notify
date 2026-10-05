@@ -1,0 +1,15 @@
+#!/bin/sh
+# Generic Inbox notification; never include message data in arguments or logs.
+umask 077
+[ "${AERC_ACCOUNT:-}" = Gmail ] || exit 0
+[ "${AERC_FOLDER:-}" = INBOX ] || exit 0
+
+# Collapse bursts into one notification while playback and a short pause run.
+exec 9>/home/grey/.local/state/aerc-setup/notification.lock
+/usr/bin/flock -n 9 || exit 0
+/usr/bin/notify-send --app-name=aerc --urgency=normal --expire-time=5000 \
+    'New Gmail mail' 'A new message arrived in Inbox.' >/dev/null 2>&1 &
+/usr/bin/paplay --client-name=aerc --stream-name='New mail' --volume=32768 \
+    /usr/share/sounds/freedesktop/stereo/message.oga >/dev/null 2>&1
+sleep 3
+wait

@@ -1,0 +1,3 @@
+#!/bin/sh
+# Preserve argument boundaries, including paths containing spaces.
+exec kitty "$@"

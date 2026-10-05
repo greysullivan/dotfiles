@@ -1,0 +1,372 @@
+#!/usr/bin/env python3
+"""A personal, mixed-media terminal feed; Internet Archive listening, reading and film discovery."""
+import argparse
+import concurrent.futures
+import hashlib
+import html
+import json
+import os
+from pathlib import Path
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
+import time
+import urllib.parse
+import urllib.request
+import xml.etree.ElementTree as ET
+from collections import Counter
+
+HOME = Path.home()
+CONFIG = HOME / '.config/ty/interests.json'
+STATE = HOME / '.local/state/ty/feedback.json'
+CACHE = HOME / '.cache/ty'
+USER_AGENT = 'GreyPersonalFeed/1.0 (personal terminal reader)'
+WARNINGS = []
+
+
+def clean(value):
+    # Untrusted titles and post bodies must never emit terminal escape sequences.
+    return ''.join(c for c in html.unescape(str(value or '')) if c.isprintable() or c == '\n').replace('\t', ' ')
+
+
+def line(value):
+    return ' '.join(clean(value).split())
+
+
+def read_json(path, default=None):
+    if not path.exists():
+        return default
+    try:
+        return json.loads(path.read_text())
+    except (ValueError, OSError) as exc:
+        raise RuntimeError(f'Cannot read {path}: {exc}. File preserved; repair it before continuing.') from exc
+
+
+def write_json(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    fd, temp = tempfile.mkstemp(prefix='.' + path.name, dir=path.parent)
+    try:
+        with os.fdopen(fd, 'w') as stream:
+            json.dump(value, stream, ensure_ascii=False, indent=2)
+            stream.write('\n')
+        os.replace(temp, path)
+    finally:
+        if os.path.exists(temp):
+            os.unlink(temp)
+
+
+def request(url):
+    req = urllib.request.Request(url, headers={'User-Agent': USER_AGENT})
+    with urllib.request.urlopen(req, timeout=12) as response:
+        return response.read(8 * 1024 * 1024)
+
+
+def cached(key, producer, refresh=False, ttl=86400):
+    path = CACHE / (hashlib.sha256(key.encode()).hexdigest() + '.json')
+    saved = read_json(path)
+    if saved and saved.get('items') and not refresh and time.time() - saved['fetched'] < ttl:
+        return saved['items']
+    if saved and not refresh and time.time() - saved.get('last_failure', 0) < 900:
+        WARNINGS.append(f"{key}: {saved['error']}; retry paused for 15 minutes (Ctrl-R overrides)")
+        return [dict(item, availability='cached; refresh failed') for item in saved['items']]
+    try:
+        items = producer()
+        if not items:
+            raise RuntimeError('no results')
+        write_json(path, {'key': key, 'fetched': time.time(), 'items': items})
+        return items
+    except (OSError, ValueError, RuntimeError, subprocess.SubprocessError, ET.ParseError) as exc:
+        error = line(exc)[:160]
+        WARNINGS.append(f'{key}: {error}' + ('; using cached results' if saved and saved.get('items') else ''))
+        write_json(path, {'key': key, 'fetched': saved['fetched'] if saved else 0,
+                          'items': saved['items'] if saved else [], 'last_failure': time.time(), 'error': error})
+        if saved and saved.get('items'):
+            return [dict(item, availability='cached; refresh failed') for item in saved['items']]
+        return []
+
+
+def feedback():
+    state = read_json(STATE, {'liked': {}, 'hidden': [], 'opened': {}})
+    if not isinstance(state, dict) or not all(k in state for k in ('liked', 'hidden', 'opened')):
+        raise RuntimeError(f'Invalid feedback file: {STATE}; original preserved.')
+    return state
+
+
+def load_config():
+    config = read_json(CONFIG)
+    if not isinstance(config, dict) or not isinstance(config.get('topics'), list):
+        raise RuntimeError(f'Missing or invalid interests: {CONFIG}')
+    for topic in config['topics']:
+        if not topic.get('id') or not topic.get('queries') or not isinstance(topic.get('weight'), (int, float)):
+            raise RuntimeError(f'Invalid topic in {CONFIG}')
+    return config
+
+
+def rank(items, config, state, limit=45):
+    """Explicit likes affect interest; diversity and read/listen breaks have reserved space."""
+    weights = {t['id']: max(0.1, t['weight']) for t in config['topics']}
+    likes = Counter(t for t in state['liked'].values())
+    unique = {}
+    for item in items:
+        if item['id'] in state['hidden']:
+            continue
+        # Hide opened items for three weeks, then let them return as rediscoveries.
+        if item['kind'] != 'audio' and time.time() - state['opened'].get(item['id'], 0) < 21 * 86400:
+            continue
+        if item['id'] not in unique or item.get('relevance', 0) > unique[item['id']].get('relevance', 0):
+            unique[item['id']] = item
+    pools = {kind: [] for kind in ('video', 'text', 'audio')}
+    for item in unique.values():
+        pools[item['kind']].append(item)
+    selected, topic_counts, source_counts = [], Counter(), Counter()
+    # Listening and reading lead; films offer occasional changes of medium.
+    cycle = ('audio', 'text', 'audio', 'video', 'text')
+    if state.get('video_streak', 0) >= 2:
+        cycle = ('text', 'audio', 'text', 'video', 'audio')
+    while any(pools.values()) and len(selected) < limit:
+        desired = cycle[len(selected) % len(cycle)]
+        pool = pools[desired] or next(p for p in pools.values() if p)
+        eligible = [i for i in pool if source_counts[i['source']] < 2]
+        if not eligible:
+            pool.clear()
+            continue
+        def score(item):
+            topic = item['topic']
+            weight = weights.get(topic, 1) * (1 + min(likes[topic], 5) * 0.15)
+            return weight * (0.65 + item.get('relevance', 0) * 0.35) / (1 + topic_counts[topic])
+        best = max(eligible, key=score)
+        pool.remove(best)
+        selected.append(best)
+        topic_counts[best['topic']] += 1
+        source_counts[best['source']] += 1
+    return selected
+
+
+def describe(item):
+    info = '; '.join(value for value in (item.get('availability'), item.get('popularity')) if value)
+    if item.get('downloads') is not None:
+        info += f"; {item['downloads']} Archive downloads when fetched"
+    duration = item.get('duration')
+    if duration:
+        info = f'{int(duration) // 60}m ' + info
+    return f"{item['kind'].upper():5}  {line(item['title'])}  | {line(item['source'])}  | why: {line(item['reason'])}" + (f'  | {info}' if info else '')
+
+
+def choose(rows, header, expect='ctrl-l,ctrl-x,ctrl-t,ctrl-r,ctrl-o'):
+    env = dict(os.environ)
+    env.pop('FZF_DEFAULT_OPTS', None)
+    env.pop('FZF_DEFAULT_OPTS_FILE', None)
+    result = subprocess.run([
+        'fzf', '--wrap=word', '--wrap-sign=  ', '--bind=ctrl-w:toggle-wrap', '--layout=reverse', '--border=none', '--no-multi', '--no-sort',
+        '--delimiter=\t', '--with-nth=2..', '--expect=' + (expect or 'enter'),
+        '--prompt=ty > ', '--header=' + header,
+        '--color=bg:#000000,fg:#FFFFFF,bg+:#FF3D00,fg+:#000000,hl:#FF3D00,hl+:#000000,info:#A3A3A3,prompt:#FF3D00,pointer:#000000,header:#A3A3A3',
+    ], input='\n'.join(f'{i}\t{row}' for i, row in enumerate(rows)), capture_output=True, text=True, env=env)
+    if result.returncode in (1, 130):
+        return 'quit', None
+    if result.returncode:
+        raise RuntimeError('fzf: ' + line(result.stderr))
+    output = result.stdout.splitlines()
+    key = output[0] if output else ''
+    index = int(output[1].split('\t', 1)[0]) if len(output) > 1 else None
+    return key, index
+
+
+def topics_menu(config):
+    while True:
+        rows = [f"[{'on' if t.get('enabled', True) else 'off'}] {t['label']} | weight {t['weight']}"
+                for t in config['topics']]
+        key, index = choose(rows, 'Enter toggle topic | Esc back', '')
+        if key == 'quit':
+            return
+        if index is not None:
+            topic = config['topics'][index]
+            topic['enabled'] = not topic.get('enabled', True)
+            write_json(CONFIG, config)
+
+
+def archive_search(query):
+    params = [('q', '(' + query + ') AND NOT access-restricted-item:true'),
+              ('output', 'json'), ('rows', '8'), ('sort[]', 'downloads desc')]
+    params += [('fl[]', f) for f in ('identifier', 'title', 'creator', 'mediatype', 'downloads', 'description', 'date')]
+    data = json.loads(request('https://archive.org/advancedsearch.php?' + urllib.parse.urlencode(params)))
+    items = []
+    for index, doc in enumerate(data.get('response', {}).get('docs', [])):
+        identifier = doc.get('identifier', '')
+        kind = {'audio': 'audio', 'texts': 'text', 'movies': 'video'}.get(doc.get('mediatype'))
+        if not kind or not re.fullmatch(r'[A-Za-z0-9_.-]+', identifier):
+            continue
+        creator = doc.get('creator') or 'Internet Archive'
+        if isinstance(creator, list): creator = ', '.join(creator[:2])
+        items.append(dict(id='archive:' + identifier, archive_id=identifier, kind=kind,
+                          title=line(doc.get('title') or identifier), source=line(creator),
+                          url='https://archive.org/details/' + identifier, relevance=1 / (index + 1),
+                          description=doc.get('description', ''), downloads=doc.get('downloads', 0)))
+    return items
+
+
+def collect(config, refresh=False, query=None):
+    topics = [t for t in config['topics'] if t.get('enabled', True)]
+    if query:
+        query = '(mediatype:audio OR mediatype:texts OR mediatype:movies) AND (' + query + ')'
+        return [dict(i, topic='search', reason='your Archive search') for i in
+                cached('archive-search:' + query, lambda: archive_search(query), refresh)]
+    def run(topic):
+        query = topic['queries'][0]
+        return [dict(i, topic=topic['id'], reason=topic['label']) for i in
+                cached('archive-search:' + query, lambda: archive_search(query), refresh)]
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+        items = [item for group in pool.map(run, topics) for item in group]
+    enabled = {t['id'] for t in topics}
+    items += [dict(i) for i in config.get('seeds', []) if i['topic'] in enabled and not query]
+    return items
+
+
+def metadata(identifier):
+    rows = cached('metadata:' + identifier, lambda: [json.loads(request(
+        'https://archive.org/metadata/' + urllib.parse.quote(identifier, safe='')))], ttl=30 * 86400)
+    return rows[0] if rows else None
+
+
+def files_for(item, data):
+    files = [f for f in data.get('files', []) if not f.get('private') and f.get('size', '0') != '0']
+    if item['kind'] == 'audio':
+        chosen = [f for f in files if f.get('format') == '64Kbps MP3']
+        if not chosen: chosen = [f for f in files if f.get('format') == 'VBR MP3']
+        if not chosen: chosen = [f for f in files if f.get('name', '').lower().endswith(('.mp3','.ogg','.m4a')) and f.get('source') == 'original']
+    elif item['kind'] == 'video':
+        chosen = [f for f in files if f.get('format') in ('512Kb MPEG4', 'MPEG4', 'h.264') and f.get('name', '').lower().endswith('.mp4')]
+        if not chosen: chosen = [f for f in files if f.get('name', '').lower().endswith(('.mp4','.webm','.ogv'))]
+        # Prefer a small derived stream; never download or queue the whole item.
+        chosen.sort(key=lambda f: int(f.get('size') or 0))
+    else:
+        chosen = [f for f in files if f.get('format') in ('Text', 'DjVuTXT') or f.get('name', '').endswith('_djvu.txt')]
+    if item['kind'] != 'video':
+        chosen.sort(key=lambda f: [int(p) if p.isdigit() else p.lower() for p in re.split(r'(\d+)', f['name'])])
+    return [dict(title=line(f.get('title') or f['name']), size=int(f.get('size') or 0),
+                 url='https://archive.org/download/' + urllib.parse.quote(item['archive_id'], safe='') + '/' + urllib.parse.quote(f['name'], safe='')) for f in chosen]
+
+
+def strip_markup(value):
+    if isinstance(value, list): value = '\n'.join(str(v) for v in value)
+    return clean(re.sub(r'<[^>]*>', ' ', html.unescape(str(value or ''))))
+
+
+def page(text):
+    env = dict(os.environ, LESSSECURE='1')
+    return subprocess.run(['less', '-M', '-Pq: return to ty', '--'], input=clean(text) + '\n', text=True, env=env).returncode == 0
+
+
+def open_item(item):
+    data = metadata(item['archive_id'])
+    if not data:
+        raise RuntimeError('Archive metadata unavailable; try again online.')
+    if data.get('metadata', {}).get('access-restricted-item') in (True, 'true', ['true']):
+        raise RuntimeError('This item needs access through its Archive page. Ctrl-O opens it in Firefox.')
+    choices = files_for(item, data)
+    if not choices:
+        return page(describe(item) + '\n\n' + item['url'] + '\n\n' + strip_markup(data.get('metadata', {}).get('description')) +
+                    '\n\nNo public playable/readable stream found. Ctrl-O opens the item page (including scanned pages).')
+    key, index = choose([f"{c['title']} | {c['size']/1048576:.1f} MiB" for c in choices],
+                        'Enter open one chapter/file | Esc back', '')
+    if index is None: return False
+    chosen = choices[index]
+    if item['kind'] == 'text':
+        if chosen['size'] > 8 * 1024 * 1024:
+            raise RuntimeError('Text exceeds the 8 MiB terminal reader limit. Ctrl-O opens the Archive page.')
+        return page(describe(item) + '\n\n' + request(chosen['url']).decode('utf-8', errors='replace'))
+    command = ['mpv', '--speed=1', '--save-position-on-quit',
+               '--demuxer-max-bytes=8MiB', '--demuxer-max-back-bytes=2MiB', '--cache-secs=20']
+    command += ['--no-video'] if item['kind'] == 'audio' else ['--profile=youtube-art']
+    command += ['--', chosen['url']]
+    started = time.monotonic()
+    result = subprocess.run(command)
+    return result.returncode == 0 and time.monotonic() - started >= 10
+
+
+def interactive(config, items, state, query=None):
+    while True:
+        feed = rank(items, config, state, limit=30)
+        rows = [('liked  ' if i['id'] in state['liked'] else '') + describe(i) for i in feed]
+        header = 'Enter open | Ctrl-L like | Ctrl-X hide | Ctrl-W wrap\nCtrl-T topics | Ctrl-R refresh | Ctrl-O Firefox | Esc quit'
+        if WARNINGS: header += '\nSome sources unavailable; cached results remain available.'
+        key, index = choose(rows or ['No unseen results; Ctrl-R refresh or Ctrl-T topics'], header)
+        if key == 'quit': return 0
+        if key in ('ctrl-r', 'ctrl-t'):
+            if key == 'ctrl-t': topics_menu(config)
+            WARNINGS.clear()
+            print('Updating Archive feed…', file=sys.stderr)
+            items = collect(config, refresh=key == 'ctrl-r', query=query)
+            continue
+        if index is None or index >= len(feed): continue
+        item = feed[index]
+        if key == 'ctrl-l':
+            if item['id'] in state['liked']: del state['liked'][item['id']]
+            else: state['liked'][item['id']] = item['topic']
+        elif key == 'ctrl-x': state['hidden'].append(item['id'])
+        elif key == 'ctrl-o': subprocess.run(['firefox', '--new-tab', item['url']], check=False)
+        else:
+            try:
+                if open_item(item):
+                    state['opened'][item['id']] = time.time()
+                    state['video_streak'] = state.get('video_streak', 0) + 1 if item['kind'] == 'video' else 0
+            except (RuntimeError, OSError) as exc:
+                print(str(exc), file=sys.stderr)
+                input('Press Enter to return to ty. ')
+        write_json(STATE, state)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('words', nargs='*', help='search WORDS, topics, or an Archive item URL')
+    parser.add_argument('--check', action='store_true')
+    parser.add_argument('--list', action='store_true')
+    parser.add_argument('--json', action='store_true')
+    parser.add_argument('--refresh', action='store_true')
+    args = parser.parse_args()
+    missing = [dep for dep in ('mpv','fzf','less') if not shutil.which(dep)]
+    if missing: parser.error('Missing: ' + ', '.join(missing))
+    config, state = load_config(), feedback()
+    if args.check:
+        print('Ready: ty / Internet Archive — audio, text and films; no autoplay.')
+        print(f'Interests: {CONFIG}\nFeedback: {STATE}')
+        return 0
+    if args.words == ['topics']:
+        if sys.stdin.isatty(): topics_menu(config)
+        else:
+            for t in config['topics']: print(t['id'] + ': ' + t['label'])
+        return 0
+    query = None
+    if args.words:
+        if len(args.words) == 1 and args.words[0].startswith(('http://','https://')):
+            url = urllib.parse.urlsplit(args.words[0])
+            match = re.fullmatch(r'/details/([A-Za-z0-9_.-]+)/?', url.path)
+            if url.hostname not in ('archive.org','www.archive.org') or not match:
+                parser.error('Use an Internet Archive /details/ item URL')
+            data = metadata(match[1])
+            if not data: return 1
+            kind = {'audio':'audio','texts':'text','movies':'video'}.get(data.get('metadata',{}).get('mediatype'))
+            if not kind: parser.error('Item must be audio, text or film')
+            return 0 if open_item(dict(archive_id=match[1],kind=kind,title=line(data.get('metadata',{}).get('title')),
+                                      source='Internet Archive',reason='your selection',url=args.words[0])) else 1
+        words = args.words[1:] if args.words[0] == 'search' else args.words
+        if not words: parser.error('search needs words')
+        query = ' '.join(words)
+    if not (args.list or args.json) and not sys.stdin.isatty(): parser.error('Use a terminal, or ty --list')
+    print('Loading your Archive feed…', file=sys.stderr)
+    items = collect(config,args.refresh,query)
+    for warning in WARNINGS: print('Source unavailable: ' + warning,file=sys.stderr)
+    feed = rank(items,config,state,limit=30)
+    if args.json: print(json.dumps(feed,ensure_ascii=False,indent=2))
+    elif args.list:
+        for item in feed: print(describe(item)+'\n  '+item['url'])
+    else: return interactive(config,items,state,query)
+    return 0 if feed else 1
+
+
+if __name__ == '__main__':
+    try: sys.exit(main())
+    except (RuntimeError,OSError,ValueError) as exc: sys.exit('ty: ' + str(exc))
+    except KeyboardInterrupt: sys.exit(130)

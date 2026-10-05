@@ -1,0 +1,3 @@
+# SluntShack shell presentation; no bindings or navigation changes.
+export LS_COLORS='no=37:fi=37:di=1;37:ln=90:pi=37:so=37:bd=37:cd=37:or=31:mi=90:ex=37:su=37:sg=37:tw=37:ow=37:st=37:mh=37'
+export EZA_COLORS='reset:di=1;37:ex=37:fi=37:pi=37:so=37:bd=37:cd=37:ln=37:or=31:oc=90:ur=90:uw=90:ux=90:ue=90:gr=90:gw=90:gx=90:tr=90:tw=90:tx=90:su=90:sf=90:xa=90:sn=37:nb=37:nk=37:nm=37:ng=37:nt=37:sb=90:ub=90:uk=90:um=90:ug=90:ut=90:df=90:ds=90:uu=90:uR=90:un=90:gu=90:gR=90:gn=90:lc=90:lm=90:ga=37:gm=37:gd=37:gv=37:gt=37:gi=90:gc=31:Gm=37:Go=37:Gc=37:Gd=37:xx=90:da=90:in=90:bl=90:hd=37:lp=90:cc=37:bO=31:sp=37:mp=37:im=37:vi=37:mu=37:lo=37:cr=37:do=37:co=37:tm=90:cm=90:bu=37:sc=37:ic=37:Sn=90:Su=90:Sr=90:St=90:Sl=90:ff=90'

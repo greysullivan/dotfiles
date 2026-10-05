@@ -1,0 +1,18 @@
+
+/* air-theme: browser chrome only */
+:root { --toolbar-bgcolor: #000000 !important;
+ --toolbar-color: #FFFFFF !important;
+ --lwt-accent-color: #000000 !important;
+ --lwt-text-color: #FFFFFF !important;
+ --tab-selected-bgcolor: #191919 !important;
+ --tab-selected-textcolor: #FFFFFF !important; }
+#navigator-toolbox, #TabsToolbar { background: #000000 !important; color: #FFFFFF !important; }
+.tab-background { border-radius: 0 !important; }
+.tabbrowser-tab[selected] .tab-background { border-top: 2px solid #FF3D00 !important; }
+#urlbar-background { background: #191919 !important; border-radius: 0 !important; border-color: #343434 !important; }
+
+:root { --focus-outline-color: #FF3D00 !important;
+ --link-color: #FFFFFF !important;
+ --link-color-visited: #A3A3A3 !important; }
+#urlbar[focused] #urlbar-background { border-color: #FF3D00 !important; }
+toolbarbutton[checked] { outline-color: #FF3D00 !important; }

@@ -1,0 +1,116 @@
+#!/usr/bin/python
+"""Keyboard capture controls for the X11 desktop."""
+import fcntl
+import os
+from pathlib import Path
+import signal
+import subprocess
+import sys
+import time
+from datetime import datetime
+
+SAVE = Path.home() / 'sshot'
+STATE = Path(os.environ.get('XDG_RUNTIME_DIR', '/tmp')) / f'capture-{os.getuid()}'
+SERVICE = 'capture-live.service'
+
+
+def run(*args, **kwargs):
+    return subprocess.run(args, check=True, **kwargs)
+
+
+def notify(message):
+    subprocess.run(['notify-send', '-a', 'Capture', 'Capture', message], check=False)
+
+
+def filename(suffix):
+    SAVE.mkdir(parents=True, exist_ok=True)
+    return SAVE / (datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f') + suffix)
+
+
+def picture():
+    run('flameshot', 'full', '--path', str(filename('.png')))
+
+
+def live():
+    STATE.mkdir(mode=0o700, parents=True, exist_ok=True)
+    with (STATE / 'toggle.lock').open('w') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        state = run('systemctl', '--user', 'show', SERVICE, '--property=ActiveState',
+                    '--value', capture_output=True, text=True).stdout.strip()
+        if state in ('active', 'activating', 'deactivating'):
+            run('systemctl', '--user', 'stop', SERVICE)
+        else:
+            names = [name for name in ('DISPLAY', 'XAUTHORITY') if os.environ.get(name)]
+            if names:
+                run('systemctl', '--user', 'import-environment', *names)
+            run('systemctl', '--user', 'start', SERVICE)
+
+
+def record():
+    STATE.mkdir(mode=0o700, parents=True, exist_ok=True)
+    destination = filename('-live.mp4')
+    pending = destination.with_name('.' + destination.stem + '.part.mp4')
+    width, height = run('xdotool', 'getdisplaygeometry', capture_output=True,
+                        text=True).stdout.split()
+    stopped = False
+    process = None
+
+    def stop(signum, frame):
+        nonlocal stopped
+        stopped = True
+        if process is not None and process.poll() is None:
+            process.send_signal(signal.SIGINT)
+
+    signal.signal(signal.SIGINT, stop)
+    signal.signal(signal.SIGTERM, stop)
+    process = subprocess.Popen([
+        'ffmpeg', '-hide_banner', '-loglevel', 'warning', '-nostdin', '-n',
+        '-f', 'x11grab', '-framerate', '24', '-video_size', f'{width}x{height}',
+        '-i', os.environ['DISPLAY'], '-an', '-vf', 'pad=ceil(iw/2)*2:ceil(ih/2)*2',
+        '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '23', '-threads', '2',
+        '-pix_fmt', 'yuv420p', '-movflags', '+faststart', str(pending),
+    ])
+    if stopped:
+        process.send_signal(signal.SIGINT)
+    time.sleep(0.3)
+    if process.poll() is None and not stopped:
+        notify('Recording started — Super+l stops and saves it.')
+    code = process.wait()
+    if code == 0 or (stopped and code == 255):
+        probe = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0',
+                                '-show_entries', 'stream=codec_name', '-of',
+                                'default=noprint_wrappers=1:nokey=1', str(pending)],
+                               capture_output=True, text=True)
+        if probe.returncode == 0 and probe.stdout.strip():
+            pending.rename(destination)
+            notify(f'Recording saved: {destination.name}')
+            return
+    raise RuntimeError('Recording failed; inspect journalctl --user -u capture-live.service')
+
+
+def menu():
+    actions = {
+        'Picture — full screen': picture,
+        'Picture — select area / annotate': lambda: run('flameshot', 'gui'),
+        'Live — start / stop recording': live,
+        'Open sshot folder': lambda: run('xfce4-terminal', '--execute', 'yazi', str(SAVE)),
+        'Upload new captures now': lambda: run('systemctl', '--user', 'start',
+                                               '--no-block', 'flameshot-drive-upload.service'),
+    }
+    result = subprocess.run(['dmenu', '-i', '-p', 'Capture', '-fn', 'JetBrains Mono-10',
+                             '-nb', '#191919', '-nf', '#FFFFFF', '-sb', '#FF3D00',
+                             '-sf', '#000000'], input='\n'.join(actions) + '\n',
+                            capture_output=True, text=True)
+    action = actions.get(result.stdout.strip())
+    if result.returncode == 0 and action:
+        action()
+
+
+if __name__ == '__main__':
+    try:
+        {'picture': picture, 'live': live, 'menu': menu, 'record': record}[sys.argv[1]]()
+    except (KeyError, IndexError):
+        sys.exit('Usage: capture picture|live|menu|record')
+    except (OSError, subprocess.CalledProcessError, RuntimeError) as error:
+        notify(str(error))
+        sys.exit(str(error))

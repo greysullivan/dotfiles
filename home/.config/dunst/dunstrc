@@ -1,0 +1,43 @@
+[global]
+    font = JetBrains Mono 10
+    origin = top-right
+    offset = (8, 8)
+    width = (240, 340)
+    height = (0, 160)
+    notification_limit = 5
+    progress_bar = false
+    indicate_hidden = false
+    transparency = 0
+    separator_height = 1
+    separator_color = "#343434"
+    padding = 8
+    horizontal_padding = 10
+    text_icon_padding = 0
+    frame_width = 1
+    frame_color = "#FF3D00"
+    gap_size = 0
+    corner_radius = 0
+    show_age_threshold = -1
+    show_indicators = false
+    enable_recursive_icon_lookup = false
+    icon_position = off
+    history_length = 0
+    format = "<b>%s</b>\n%b"
+
+[urgency_low]
+    background = "#000000"
+    foreground = "#FFFFFF"
+    frame_color = "#FF3D00"
+    timeout = 3
+
+[urgency_normal]
+    background = "#000000"
+    foreground = "#FFFFFF"
+    timeout = 5
+
+[urgency_critical]
+    format = "<b>CRITICAL: %s</b>\n%b"
+    background = "#000000"
+    foreground = "#FFFFFF"
+    frame_color = "#FF3D00"
+    timeout = 15
