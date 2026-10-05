@@ -85,4 +85,5 @@ The Codex executable is installed separately. Service enablement symlinks are
 also omitted; enable the relevant units explicitly when restoring.
 
 Remote: `https://github.com/greysullivan/dotfiles`, branch `arch-install-20261005`.
+The branch is committed locally; pushing awaits GitHub authentication.
 The existing `master` branch contains the original reference setup.
