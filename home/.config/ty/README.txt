@@ -2,6 +2,8 @@ TY / INTERNET ARCHIVE
 
   ty                       personal Archive feed
   ty search book of tea    search Archive audio, texts and films
+  ty youtube xerox art    search YouTube and select a video in the terminal
+  ty youtube              prompt for a YouTube search
   ty topics                toggle topics
   ty --list                print the feed and source links
   ty --refresh             update public searches
@@ -17,6 +19,14 @@ information; Ctrl-O opens the original Archive page in Firefox.
 
 Ctrl-L toggles a like, Ctrl-X hides an item, Ctrl-T changes topics,
 Ctrl-R refreshes, Ctrl-W toggles row wrapping, Escape quits.
+Ctrl-Y searches YouTube from inside ty. Ctrl-S starts another search in
+the current source. Ctrl-A returns to your personal Archive feed.
+YouTube results open directly in mpv at 540 pixels high / 24 fps, normal
+speed, and return to the menu after playback. No browser is required.
+Type filters the displayed results; Ctrl-S runs a new online search.
+Explicit searches preserve source order and include watched items;
+hidden items stay hidden. YouTube search uses the installed yt-dlp and
+Node, with public results cached for 24 hours and no account cookies.
 Type to filter; arrows move. Full reasons appear in wrapped rows.
 Ctrl-O is optional and requires Firefox; normal browsing stays in the CLI.
 

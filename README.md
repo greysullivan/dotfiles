@@ -50,6 +50,23 @@ git commit -m "Update dotfiles"
 Add new configuration paths to `manifest.json` before taking a snapshot.
 Snapshots copy files; live configuration continues to work independently.
 
+The console workspace is available through `work`; its independent tmux
+configuration is included. Fastfetch uses a white upper Arch logo and orange
+lower section. The Firefox theme template and its enabling preference are
+included alongside the generated stylesheet.
+
+## External drive tools
+
+`tools/external-drive-report/inspect.py` reads the identified LaCie drive and
+generates a local hardware, health, and metadata inventory report.
+`tools/drive-use/grey-drive.py` prepares daily storage and encrypted machine
+backups while retaining the existing files. See
+[drive setup instructions](tools/drive-use/README.md). These tools are specific
+to this machine and the reviewed drive identity; the desktop installer does
+not run them or change disk partitions. They require administrator access
+in a visible terminal. Reports, drive contents, repair evidence, and backup
+passwords are not tracked in this repository.
+
 ## Restore
 
 ```sh

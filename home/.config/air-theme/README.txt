@@ -2,6 +2,7 @@ CHARCOAL — ARCH AIR OPTIONAL THEME
 Installed and selected for review: 2026-10-05.
 
 COMMANDS
+  air-theme accent HEX Change only the i3/dmenu/i3status accent and reload i3.
   air-theme charcoal   Generate, validate and select charcoal; safe to repeat.
   air-theme original   Restore captured appearance, preserving unrelated edits.
   air-theme status     Show selection, refresh failures and file drift.
@@ -14,13 +15,96 @@ will not restore the old theme. Run air-theme original explicitly to restore.
 From a TTY, graphical reloads are skipped; app files are still selected.
 start03 rejects an existing graphical session and a non-console terminal.
 
+I3 ACCENT SWITCHING
+  air-theme accent ff4d00
+  air-theme accent '#336699'
+  air-theme status
+  air-theme charcoal --only i3  Reapply the saved i3 accent and retry reload.
+
+Six hex digits are required; # is optional and should be quoted in the shell.
+The palette's i3_accent is independent of the shared application accent.
+Selections automatically use black or white text for the stronger contrast.
+The command updates focused decorations, workspace selection, resize mode,
+dmenu selection, and i3status degraded/warning colours. File application and
+reload results are printed. The status command reports requested/configured
+accent, reload notes/failures and tracked configuration drift.
+
+The accent value is included in status_command's environment so i3bar restarts
+i3status on colour changes. Backgrounds, status modules, keybindings and other
+application accents are preserved. Without DISPLAY or I3SOCK, files are saved
+and live refresh is skipped. Changes persist across logins and charcoal
+selection. air-theme original restores the captured appearance; the saved
+accent remains available for the next charcoal selection. If a conflicting
+edit prevents merging, the palette and live configuration are not changed.
+When starting from original, the accent command selects charcoal for i3 and
+its status bar only.
+
+KEYBOARD REFERENCE (Super = Windows/Command key, the configured Mod4)
+  Super+Return                 Xfce Terminal
+  Super+Shift+Return           Kitty
+  Super+Control+Return         Bash fallback in Xfce Terminal
+  Super+Space                  System overview
+  Super+d                      Application menu
+  Super+q                      Close focused window
+  Super+h/j/k                  Focus left/down/up
+  Super+arrow                  Focus in each direction, including right
+  Super+Shift+h/j/k/l          Move window left/down/up/right
+  Super+Shift+arrow            Move window in each direction
+  Super+b/v                    Split horizontally/vertically
+  Super+s/w/e                  Stacked/tabbed/toggle split layout
+  Super+f                      Toggle fullscreen
+  Super+Shift+Space            Toggle floating
+  Super+Mod1+Left/Right        Previous/next workspace (Mod1 = Alt)
+  Super+1..9/0                 Workspace 1..10
+  Super+Shift+1..9/0           Move to workspace and follow
+  Super+Shift+Ctrl+1..9/0      Send to workspace and stay here
+  Super+r                      Resize mode; h/j/k/l or arrows resize
+  Enter/Esc (resize mode)      Return to normal shortcuts
+  Super+p                      Capture picture
+  Super+l                      Capture recording toggle (not focus right)
+  Super+[/]                    Capture menu; both keys deliberately retained
+  Print                        Flameshot capture
+  Super+Shift+v                Dictation toggle
+  Super+Shift+x                Lock screen
+  Super+Shift+e                Exit confirmation
+  Super+Shift+c/r              Reload/restart i3
+  Brightness/media/volume keys Installed brightnessctl/playerctl/wpctl actions
+  Power button                 Tap ignored; hold one second to shut down
+
+WINDOW BEHAVIOUR
+  Firefox browser windows open fullscreen automatically, as chosen in review.
+  Super+f remains available to toggle fullscreen manually.
+  Normal tiled windows use a 1-pixel border; the focused border uses $accent.
+  Focused means the window receiving keyboard input. Other borders stay grey.
+  Fullscreen Firefox does not display a border; floating defaults remain none.
+  To apply borders to existing tiled windows after this change:
+    i3-msg 'reload; [tiling] border pixel 1'
+
+ZSH REFERENCE
+  Ctrl+R                       Fuzzy history search (fzf)
+  Ctrl+T                       Fuzzy file selection (fzf)
+  Alt+c                        Fuzzy directory selection (fzf)
+  Up/Down                      History substring search; prefix fallback
+  Ctrl+Left/Right              Move by word
+  Home/End/Delete              Line start/end/delete character
+  z <directory>                Smart directory change (zoxide)
+  y                            Yazi, returning to its final directory
+  neofetch                     Manual system display; startup stays quiet
+  cleanup                      Remove orphans; no sudo call when none exist
+
+Completion is configured once. History remains shared with the current
+100000-entry limits. Command correction remains enabled; argument correction
+is disabled. The prompt, plugins, aliases and completion security checks are
+retained. Shell completion and prompt colours retain their separate accents.
+Open a new shell to load the cleanup, or run: exec zsh
+
 PALETTE AND IMPLEMENTATION
   ~/.config/air-theme/palette.json       One named source palette.
   ~/.config/air-theme/generated/         Generated native appearance configs.
   ~/.local/bin/air-theme                 Python generator and safe switcher.
   ~/.local/bin/start03                   Small guarded startup entry point.
   ~/.local/state/air-theme/              Private baseline, state and merge data.
-Existing zsh PATH already includes ~/.local/bin, so shell configs needed no edit.
+Existing zsh PATH already includes ~/.local/bin; the accent command needs no alias.
 Python, diff3 and existing app tools are used. No packages were installed.
 
 Palette: desktop #000000, background #0e0e0e, surface #191919,
@@ -67,6 +151,7 @@ NATIVE FILES (paths relative to home)
   .config/gtk-3.0/settings.ini
   .config/gtk-3.0/gtk.css
   .config/mozilla/firefox/59y3la6e.default-release/chrome/userChrome.css
+  .config/mozilla/firefox/59y3la6e.default-release/user.js
   .tmux.conf
 
 ORIGINAL AND SAFE RESTORATION
@@ -105,14 +190,23 @@ kept running. Other app sessions may retain old explicit colors until reopened.
         source ~/.tmux.conf if you want all its appearance options now. Merely
         restoring the file does not reset options already loaded into a server.
 
-Firefox chrome CSS is staged in the existing default-release profile. Its
-user.js and prefs.js were not changed: the legacy chrome-stylesheet preference
-was disabled/absent, and enabling it can persist beyond deleting user.js.
-If you want this optional browser chrome, enable
+Firefox chrome is generated for the existing default-release profile.
+  air-theme charcoal --only firefox
+applies the browser component and a managed user.js entry enabling
   toolkit.legacyUserProfileCustomizations.stylesheets
-in about:config and restart Firefox. This changes browser chrome only. If you
-enable it yourself, remember that air-theme original restores the CSS file,
-but does not undo your manual preference choice. No website CSS was added.
+at Firefox's next normal restart. Existing sessions are kept running and
+prefs.js is never edited directly. No website CSS was added.
+
+The web alias invokes the existing detached Firefox launcher. Open a fresh
+Zsh shell or run source ~/.zshrc to load it, then use web [URL].
+
+Restoration of user.js alone does not reset a preference Firefox has already
+persisted. After air-theme original, reset the stylesheet preference in
+about:config if it was previously unset. The pre-restyle rollback command is
+  firefox-theme-rollback
+It preflights all touched files, preserves unrelated edits where mergeable,
+and refuses overlapping edits before modifying live files. Detailed browser
+notes and the backup location are in ~/.config/air-theme/FIREFOX.txt.
 
 Real Linux console output is limited by the console's 16-color palette and
 font. Exact #FF3D00 is retained in truecolor terminals. Neovim disables
@@ -140,8 +234,9 @@ syntax/search, and aerc read/unread/selection using locally generated messages.
 The aerc pager filter parsed the styleset on synthetic text. Private mail,
 accounts and auth settings were not opened or used in these checks.
 Screenshots and harmless sample files are under ~/.config/air-theme/review/.
-Ncspot, Kitty, Firefox chrome, GTK dialogs and live notifications were not
-visually inspected. Dunst config reload succeeded; placement/timeouts remain
+At the initial theme pass, Ncspot, Kitty, Firefox chrome, GTK dialogs and live
+notifications were not visually inspected. Firefox chrome was subsequently
+reviewed on an isolated virtual display; see FIREFOX.txt. Dunst config reload succeeded; placement/timeouts remain
 unchanged, with critical notifications explicitly labelled CRITICAL.
 
 MANUAL TTY CHECK
@@ -164,7 +259,8 @@ Upstream references:
 
 STATUS
 Charcoal selected for optional review. No refresh failures are recorded.
-Firefox chrome is staged pending the explicit manual opt-in described above.
+Firefox chrome and its enabling preference are installed; restart normally to activate.
+Firefox 157 browser-chrome review is recorded in FIREFOX.txt and review/firefox/.
 
 YAZI STATUS COLOR UPDATE — 2026-10-05
 See YAZI-COLOURS.txt for bone/mauve colors, scoped application and a

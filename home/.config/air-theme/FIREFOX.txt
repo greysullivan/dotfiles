@@ -1,0 +1,113 @@
+FIREFOX / ARCH AIR — 2026-10-06
+
+INSTALLED
+
+Firefox 157 browser chrome now follows the shared Arch palette: black, white,
+greys and #FF3D00. JetBrains Mono 13px, square corners, 32px tabs, a charcoal
+active tab with a 2px orange marker, 34px address field, orange focus and black
+text on orange menu/address selections. Native navigation-row padding remains
+around the compact controls to avoid clipping. Menus, panels, find bar and
+native sidebar consume matching tokens. Website CSS and profile data remain
+unchanged. No new packages, extensions or runtime scripts were installed.
+
+COMMANDS
+
+  air-theme charcoal --only firefox
+    Generate/apply only the Firefox CSS and its enabling user.js preference.
+    Other desktop components are not reloaded. Full air-theme charcoal also
+    regenerates this Firefox theme from the same source.
+
+  air-theme status
+    Report applied Firefox configuration and refresh requirements.
+
+  web [URL]
+    Alias for firefox-detached, which uses the existing detached launcher.
+    Open a new Zsh shell or run source ~/.zshrc to load the alias.
+
+Activation requires Firefox's next normal restart. Current tabs, music and
+browser processes were kept running. Launching web while Firefox is already
+running does not reload CSS. Exit/restart normally when convenient.
+
+SOURCE / TOUCHED FILES
+
+  ~/.config/air-theme/palette.json
+    Existing colour source; not modified by this pass.
+  ~/.config/air-theme/firefox-chrome.css.in
+    New native chrome template, including Firefox 157 URL-bar and panel tokens.
+  ~/.local/bin/air-theme
+    Firefox renderer, scoped application/status and new-file baseline enrolment.
+    Existing independent i3 accent generation is preserved.
+  ~/.config/mozilla/firefox/59y3la6e.default-release/chrome/userChrome.css
+    Generated live chrome stylesheet.
+  ~/.config/mozilla/firefox/59y3la6e.default-release/user.js
+    Managed toolkit.legacyUserProfileCustomizations.stylesheets=true entry.
+    prefs.js was not directly edited.
+  ~/.zshrc
+    Added alias web='firefox-detached'.
+  ~/.config/air-theme/README.txt and FIREFOX.txt
+    Updated browser instructions and this report.
+  ~/.config/air-theme/generated/ and ~/.local/state/air-theme/last/
+    Firefox CSS/user.js generation and merge tracking only.
+  ~/.local/state/air-theme/baseline.json and original backup manifest
+    Enrolled the previously unmanaged user.js without replacing existing entries.
+  ~/.local/state/air-theme/state.json
+    Firefox component status/hash tracking; removed the obsolete manual-opt-in note.
+  ~/.local/bin/firefox-theme-rollback
+    Preflight conflict-aware restoration helper.
+
+ROLLBACK
+
+  firefox-theme-rollback --check
+    Validate restoration without changing live files.
+  firefox-theme-rollback
+    Restore the pre-restyle generator, Firefox CSS/user.js, alias, documentation
+    and relevant tracking metadata. Mergeable unrelated edits are preserved.
+    An overlapping edit or changed symlink aborts before any live restoration.
+    Both versions of a conflicting file are retained privately in the backup.
+
+The original preference was unset. If Firefox has loaded this theme, reset
+  toolkit.legacyUserProfileCustomizations.stylesheets
+in about:config after rollback, then restart normally. Removing user.js does
+not erase a preference already persisted by Firefox. air-theme original is
+whole-desktop baseline restoration; it is not the pre-restyle browser rollback.
+
+PRIVATE BACKUP
+
+/home/grey/.local/state/air-theme/firefox-before-20261006-155305
+
+The backup records original existence, permissions, symlink targets, hashes
+and preference state. applied.json records the restoration merge base. The
+saved plan remains at ~/Drive/test/firefox-wrapper-plan.txt after rollback.
+
+VERIFICATION
+
+PASS: installed Firefox 157 on a disposable profile and isolated Xvfb display;
+1440x900 full-width and 700px-wide browser window; 32px tab, 34px address field;
+black surfaces, exact orange active-tab/focus marker, square corners and font.
+PASS: actual Ctrl+L keyboard focus; address suggestion selection and menu hover
+computed as black text on orange; popup menus, find bar, bookmarks sidebar,
+pinned tabs, tab overflow and empty downloads panel inspected in screenshots.
+PASS: ordinary page retained its white background, serif font and own text colour.
+PASS: repeated scoped application is idempotent and leaves non-Firefox files
+untouched; old/new renderer comparison preserves every non-Firefox output.
+PASS: rollback preflight, preservation of unrelated edits and overlapping-edit
+refusal; Zsh syntax, alias expansion and argument forwarding through a mock.
+
+Not visually exercised: permission prompts, site-specific security states,
+active/completed/failed download rows, third-party sidebar content, and the
+existing user profile after its next normal restart. Live rollback was not
+performed because that would undo the installed theme. Tests used no personal
+profile or authentication data. Disposable Firefox/Xvfb processes were closed.
+
+Screenshots and report:
+  ~/.config/air-theme/review/firefox/
+Reproducible isolated review script:
+  ~/.config/air-theme/review/firefox/review.py
+The remote-control indicator in review screenshots belongs to browser test
+instrumentation and is not a decoration added by this theme.
+
+MAINTENANCE
+
+Firefox userChrome.css is advanced customization that Mozilla does not support.
+Selectors and native tokens may require review after browser updates.
+https://support.mozilla.org/en-US/kb/firefox-advanced-customization-and-configuration

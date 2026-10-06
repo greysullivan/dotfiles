@@ -17,5 +17,6 @@
   "yazi_status": "#000000",
   "notification_background": "#000000",
   "notification_foreground": "#FFFFFF",
-  "notification_muted": "#A3A3A3"
+  "notification_muted": "#A3A3A3",
+  "i3_accent": "#FF3D00"
 }

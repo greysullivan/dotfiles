@@ -8,5 +8,6 @@
     "ncspot",
     "spotify"
   ],
-  "sound_file": "/home/grey/.local/share/codex-alerts/gong.wav"
+  "sound_file": "/home/grey/.local/share/codex-alerts/gong.wav",
+  "ding_file": "/home/grey/.local/share/codex-alerts/ding.wav"
 }

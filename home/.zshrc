@@ -25,10 +25,10 @@ unset _zsh_cache
 # Sane zsh options
 setopt autocd              # cd by typing directory name
 setopt correct             # spell correction for commands
-setopt correctall          # spell correction for arguments too
+unsetopt correctall        # leave filenames and arguments as typed
 setopt extendedglob        # extended globbing
 setopt histignorealldups   # no duplicate entries in history
-setopt incappendhistory    # write to history immediately
+unsetopt incappendhistory  # sharehistory already writes and imports entries
 setopt sharehistory        # share history across sessions
 setopt histreduceblanks    # remove extra blanks from history
 setopt interactivecomments # allow comments in interactive shell
@@ -37,13 +37,10 @@ setopt numericglobsort     # sort numerically when relevant
 unsetopt beep              # no beeping
 
 # SluntShack presentation
-source ~/.config/air-theme/shell-colours.zsh
+[[ -r ~/.config/air-theme/shell-colours.zsh ]] && source ~/.config/air-theme/shell-colours.zsh
 
 # Completions: readable selection
 zmodload zsh/complist
-zstyle ':completion:*' menu select
-# Selection highlight (black on orange)
-zstyle ':completion:*' list-colors 'ma=0;38;2;0;0;0;48;2;255;61;0'
 # If you use autosuggestions (faint grey) bump it up:
 # (this only works if zsh-autosuggestions is installed)
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=250'
@@ -75,14 +72,16 @@ zstyle ':completion:*:warnings' format '%F{#A3A3A3}-- no matches --%f'
 
 bindkey -e  # emacs mode
 
-# History search on up/down
-bindkey '^[[A' history-beginning-search-backward
-bindkey '^[[B' history-beginning-search-forward
-
 # Home/End keys
 bindkey '^[[H' beginning-of-line
 bindkey '^[[F' end-of-line
 bindkey '^[[3~' delete-char
+
+# Use the terminal's actual sequences (Linux console and tmux differ).
+zmodload zsh/terminfo
+[[ -n ${terminfo[khome]:-} ]] && bindkey "$terminfo[khome]" beginning-of-line
+[[ -n ${terminfo[kend]:-} ]] && bindkey "$terminfo[kend]" end-of-line
+[[ -n ${terminfo[kdch1]:-} ]] && bindkey "$terminfo[kdch1]" delete-char
 
 # Ctrl+arrow word navigation
 bindkey '^[[1;5C' forward-word
@@ -128,7 +127,26 @@ alias update='sudo pacman -Syu'
 alias install='sudo pacman -S'
 alias remove='sudo pacman -Rns'
 alias search='pacman -Ss'
-alias cleanup='sudo pacman -Rns $(pacman -Qdtq)'
+
+# Remove orphan packages only when the query succeeds and finds packages.
+cleanup() {
+    local orphan_output orphan_result
+    local -a orphan_packages
+    orphan_output=$(command pacman -Qdtq 2>&1)
+    orphan_result=$?
+    # Pacman returns 1, without output, when there are no matching packages.
+    if (( orphan_result != 0 )) && ! [[ $orphan_result == 1 && -z $orphan_output ]]; then
+        print -u2 -- "$orphan_output"
+        return "$orphan_result"
+    fi
+    orphan_packages=("${(@f)orphan_output}")
+    orphan_packages=("${(@)orphan_packages:#}")
+    if (( ${#orphan_packages} == 0 )); then
+        print 'No orphan packages.'
+        return 0
+    fi
+    command sudo pacman -Rns -- "${orphan_packages[@]}"
+}
 
 # Desktop, wallpaper, and old script aliases are deferred; see REVIEW.md.
 
@@ -146,7 +164,10 @@ ncspot() {
 }
 
 # Create directory and cd into it
-mkcd() { mkdir -p -- "$1" && cd -- "$1"; }
+mkcd() {
+    (( $# == 1 )) || { print -u2 'usage: mkcd <directory>'; return 2; }
+    command mkdir -p -- "$1" && builtin cd -- "$1"
+}
 
 # Launch a GUI app in a new session so it survives this terminal.
 # Routine output is retained in one small state log for troubleshooting.
@@ -171,17 +192,24 @@ launch() {
 # Firefox is a desktop app: detach it so closing the terminal does not stop it.
 firefox() { launch firefox "$@"; }
 firefox-detached() { firefox "$@"; }
+# Open the themed browser through the detached desktop launcher.
+alias web='firefox-detached'
 
 # Quick help - tldr or man
 help() { tldr "$1" 2>/dev/null || man "$1"; }
 
 # Preview files with bat, or dir contents with eza
 peek() {
+    (( $# == 1 )) || { print -u2 'usage: peek <path>'; return 2; }
     if [[ -d "$1" ]]; then
-        eza -la --icons=auto --git "$1"
+        if (( $+commands[eza] )); then
+            command eza -la --icons=auto --git -- "$1"
+        else
+            command ls -la -- "$1"
+        fi
     else
         if (( $+commands[bat] )); then
-            bat --style=numbers,changes "$1"
+            command bat --style=numbers,changes -- "$1"
         else
             command cat -- "$1"
         fi
@@ -190,24 +218,28 @@ peek() {
 
 # Extract common archives
 extract() {
+    (( $# == 1 )) || { print -u2 'usage: extract <archive>'; return 2; }
+    local archive="$1"
+    [[ $archive == -* ]] && archive="./$archive"
     if [[ -f "$1" ]]; then
-        case "$1" in
-            *.tar.bz2) tar xjf "$1" ;;
-            *.tar.gz)  tar xzf "$1" ;;
-            *.tar.xz)  tar xJf "$1" ;;
-            *.bz2)     bunzip2 "$1" ;;
-            *.gz)      gunzip "$1" ;;
-            *.tar)     tar xf "$1" ;;
-            *.tbz2)    tar xjf "$1" ;;
-            *.tgz)     tar xzf "$1" ;;
-            *.zip)     unzip "$1" ;;
-            *.Z)       uncompress "$1" ;;
-            *.7z)      7z x "$1" ;;
-            *.rar)     unrar x "$1" ;;
-            *)         echo "Unknown archive format: $1" ;;
+        case "$archive" in
+            *.tar.bz2) tar xjf "$archive" ;;
+            *.tar.gz)  tar xzf "$archive" ;;
+            *.tar.xz)  tar xJf "$archive" ;;
+            *.bz2)     bunzip2 "$archive" ;;
+            *.gz)      gunzip "$archive" ;;
+            *.tar)     tar xf "$archive" ;;
+            *.tbz2)    tar xjf "$archive" ;;
+            *.tgz)     tar xzf "$archive" ;;
+            *.zip)     unzip "$archive" ;;
+            *.Z)       uncompress "$archive" ;;
+            *.7z)      7z x "$archive" ;;
+            *.rar)     unrar x "$archive" ;;
+            *)         print -u2 "Unknown archive format: $1"; return 2 ;;
         esac
     else
-        echo "File not found: $1"
+        print -u2 "File not found: $1"
+        return 1
     fi
 }
 
@@ -228,6 +260,13 @@ if [[ -f /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substri
     source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
     bindkey '^[[A' history-substring-search-up
     bindkey '^[[B' history-substring-search-down
+    [[ -n ${terminfo[kcuu1]:-} ]] && bindkey "$terminfo[kcuu1]" history-substring-search-up
+    [[ -n ${terminfo[kcud1]:-} ]] && bindkey "$terminfo[kcud1]" history-substring-search-down
+else
+    bindkey '^[[A' history-beginning-search-backward
+    bindkey '^[[B' history-beginning-search-forward
+    [[ -n ${terminfo[kcuu1]:-} ]] && bindkey "$terminfo[kcuu1]" history-beginning-search-backward
+    [[ -n ${terminfo[kcud1]:-} ]] && bindkey "$terminfo[kcud1]" history-beginning-search-forward
 fi
 
 # =========================================
@@ -240,21 +279,28 @@ if (( $+commands[fzf] )); then
 fi
 
 # FZF defaults - use fd for speed
-export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .git'
+if (( $+commands[fd] )); then
+    export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .git'
+fi
 
 # Zoxide (smart cd)
 command -v zoxide &>/dev/null && eval "$(zoxide init zsh)"
 
 # Let Yazi return its final directory to this shell.
 y() {
-    local cwd_file cwd
+    local cwd_file cwd yazi_result
     cwd_file=$(mktemp -t yazi-cwd.XXXXXX) || return 1
     command yazi "$@" --cwd-file="$cwd_file"
+    yazi_result=$?
     IFS= read -r cwd < "$cwd_file"
     command rm -f -- "$cwd_file"
-    [[ -n $cwd && $cwd != $PWD ]] && builtin cd -- "$cwd"
+    (( yazi_result == 0 )) || return "$yazi_result"
+    if [[ -n $cwd && $cwd != $PWD ]]; then
+        builtin cd -- "$cwd" || return $?
+    fi
+    return 0
 }
 
 
@@ -278,14 +324,7 @@ if (( ! $+commands[neofetch] && $+commands[neowofetch] )); then
     alias neofetch='neowofetch'
 fi
 
-# Show Neowofetch once in a fresh interactive terminal. Nested shells inherit
-# FETCH_SHOWN; scripts, pipes, Codex subprocesses and opt-out shells skip it.
-if [[ -o interactive && -t 0 && -t 1 && -z ${SKIP_FETCH:-} && -z ${FETCH_SHOWN:-} \
-        && -z ${CODEX_SESSION_ID:-} && -z ${CODEX_THREAD_ID:-} ]] \
-        && (( $+commands[neowofetch] )); then
-    export FETCH_SHOWN=1
-    neowofetch --stdout=off
-fi
+# System overview is manual: neofetch here, or Super-Space from i3.
 
 # =========================================
 # J) COLORED MAN PAGES

@@ -12,3 +12,6 @@ __pycache__/
 **/userstate.cbor
 **/auth.json
 **/credentials*
+**/backup-password
+**/evidence/
+tools/external-drive-report/data/

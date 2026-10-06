@@ -154,7 +154,7 @@ def describe(item):
     return f"{item['kind'].upper():5}  {line(item['title'])}  | {line(item['source'])}  | why: {line(item['reason'])}" + (f'  | {info}' if info else '')
 
 
-def choose(rows, header, expect='ctrl-l,ctrl-x,ctrl-t,ctrl-r,ctrl-o'):
+def choose(rows, header, expect='ctrl-l,ctrl-x,ctrl-t,ctrl-r,ctrl-o,ctrl-y,ctrl-a,ctrl-s'):
     env = dict(os.environ)
     env.pop('FZF_DEFAULT_OPTS', None)
     env.pop('FZF_DEFAULT_OPTS_FILE', None)
@@ -207,7 +207,41 @@ def archive_search(query):
     return items
 
 
-def collect(config, refresh=False, query=None):
+def youtube_search(query):
+    missing = [dep for dep in ('yt-dlp', 'node') if not shutil.which(dep)]
+    if missing: raise RuntimeError('YouTube search needs: ' + ', '.join(missing))
+    result = subprocess.run([
+        'yt-dlp', '--ignore-config', '--flat-playlist', '--js-runtimes', 'node',
+        '--socket-timeout', '10', '--extractor-retries', '1', '--retries', '1',
+        '--dump-single-json', '--', 'ytsearch20:' + query,
+    ], capture_output=True, text=True, timeout=60)
+    if result.returncode: raise RuntimeError(line(result.stderr[-500:]))
+    data = json.loads(result.stdout)
+    items = []
+    for index, entry in enumerate(data.get('entries') or []):
+        if not entry or not re.fullmatch(r'[A-Za-z0-9_-]{11}', entry.get('id', '')): continue
+        if entry.get('live_status') in ('is_live', 'is_upcoming'): continue
+        items.append(dict(id='youtube:' + entry['id'], platform='youtube', kind='video',
+                          title=line(entry.get('title')), source=line(entry.get('channel') or entry.get('uploader') or 'YouTube'),
+                          url='https://www.youtube.com/watch?v=' + entry['id'], duration=entry.get('duration'),
+                          relevance=1 / (index + 1), topic='search', reason='your YouTube search: ' + query))
+    return items
+
+
+def search_results(items, config, state, query=None):
+    if query is None: return rank(items, config, state, limit=30)
+    # Explicit searches retain source order and allow revisiting watched items.
+    seen, results = set(), []
+    for item in items:
+        if item['id'] not in seen and item['id'] not in state['hidden']:
+            results.append(item)
+            seen.add(item['id'])
+    return results
+
+
+def collect(config, refresh=False, query=None, source='archive'):
+    if source == 'youtube':
+        return cached('youtube-search:' + query, lambda: youtube_search(query), refresh)
     topics = [t for t in config['topics'] if t.get('enabled', True)]
     if query:
         query = '(mediatype:audio OR mediatype:texts OR mediatype:movies) AND (' + query + ')'
@@ -260,6 +294,12 @@ def page(text):
 
 
 def open_item(item):
+    if item.get('platform') == 'youtube':
+        if not (HOME / '.config/mpv/youtube-art.conf').is_file():
+            raise RuntimeError('Missing YouTube art playback profile.')
+        started = time.monotonic()
+        result = subprocess.run(['mpv', '--profile=youtube-art', '--', item['url']])
+        return result.returncode == 0 and time.monotonic() - started >= 10
     data = metadata(item['archive_id'])
     if not data:
         raise RuntimeError('Archive metadata unavailable; try again online.')
@@ -286,19 +326,32 @@ def open_item(item):
     return result.returncode == 0 and time.monotonic() - started >= 10
 
 
-def interactive(config, items, state, query=None):
+def interactive(config, items, state, query=None, source='archive'):
     while True:
-        feed = rank(items, config, state, limit=30)
+        feed = search_results(items, config, state, query)
         rows = [('liked  ' if i['id'] in state['liked'] else '') + describe(i) for i in feed]
-        header = 'Enter open | Ctrl-L like | Ctrl-X hide | Ctrl-W wrap\nCtrl-T topics | Ctrl-R refresh | Ctrl-O Firefox | Esc quit'
+        context = 'YouTube: ' + query if source == 'youtube' else ('Archive: ' + query if query else 'Your Archive feed')
+        header = line(context) + '\nEnter open | Ctrl-L like | Ctrl-X hide | Ctrl-W wrap\nCtrl-Y YouTube | Ctrl-S search | Ctrl-A Archive feed\nCtrl-T topics | Ctrl-R refresh | Ctrl-O Firefox | Esc quit'
         if WARNINGS: header += '\nSome sources unavailable; cached results remain available.'
         key, index = choose(rows or ['No unseen results; Ctrl-R refresh or Ctrl-T topics'], header)
         if key == 'quit': return 0
+        if key in ('ctrl-y', 'ctrl-s', 'ctrl-a'):
+            next_source = 'youtube' if key == 'ctrl-y' else source
+            next_query = None
+            if key != 'ctrl-a':
+                next_query = input(('YouTube' if next_source == 'youtube' else 'Archive') + ' search (blank cancels): ').strip()
+                if not next_query: continue
+            else: next_source = 'archive'
+            source, query = next_source, next_query
+            WARNINGS.clear()
+            print('Searching ' + source + '…', file=sys.stderr)
+            items = collect(config, query=query, source=source)
+            continue
         if key in ('ctrl-r', 'ctrl-t'):
             if key == 'ctrl-t': topics_menu(config)
             WARNINGS.clear()
-            print('Updating Archive feed…', file=sys.stderr)
-            items = collect(config, refresh=key == 'ctrl-r', query=query)
+            print('Updating ' + source + '…', file=sys.stderr)
+            items = collect(config, refresh=key == 'ctrl-r', query=query, source=source)
             continue
         if index is None or index >= len(feed): continue
         item = feed[index]
@@ -320,7 +373,7 @@ def interactive(config, items, state, query=None):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('words', nargs='*', help='search WORDS, topics, or an Archive item URL')
+    parser.add_argument('words', nargs='*', help='youtube WORDS, search WORDS (Archive), topics, or an Archive item URL')
     parser.add_argument('--check', action='store_true')
     parser.add_argument('--list', action='store_true')
     parser.add_argument('--json', action='store_true')
@@ -338,8 +391,14 @@ def main():
         else:
             for t in config['topics']: print(t['id'] + ': ' + t['label'])
         return 0
-    query = None
-    if args.words:
+    query, source = None, 'archive'
+    if args.words and args.words[0] in ('youtube', 'yt'):
+        source = 'youtube'
+        query = ' '.join(args.words[1:]).strip()
+        if not query and sys.stdin.isatty() and not (args.list or args.json):
+            query = input('YouTube search: ').strip()
+        if not query: parser.error('youtube needs search words')
+    if args.words and source == 'archive':
         if len(args.words) == 1 and args.words[0].startswith(('http://','https://')):
             url = urllib.parse.urlsplit(args.words[0])
             match = re.fullmatch(r'/details/([A-Za-z0-9_.-]+)/?', url.path)
@@ -355,14 +414,14 @@ def main():
         if not words: parser.error('search needs words')
         query = ' '.join(words)
     if not (args.list or args.json) and not sys.stdin.isatty(): parser.error('Use a terminal, or ty --list')
-    print('Loading your Archive feed…', file=sys.stderr)
-    items = collect(config,args.refresh,query)
+    print('Loading ' + ('YouTube results…' if source == 'youtube' else 'your Archive feed…'), file=sys.stderr)
+    items = collect(config,args.refresh,query,source)
     for warning in WARNINGS: print('Source unavailable: ' + warning,file=sys.stderr)
-    feed = rank(items,config,state,limit=30)
+    feed = search_results(items,config,state,query)
     if args.json: print(json.dumps(feed,ensure_ascii=False,indent=2))
     elif args.list:
         for item in feed: print(describe(item)+'\n  '+item['url'])
-    else: return interactive(config,items,state,query)
+    else: return interactive(config,items,state,query,source)
     return 0 if feed else 1
 
 

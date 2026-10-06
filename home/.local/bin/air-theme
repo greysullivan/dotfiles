@@ -2,6 +2,7 @@
 """Small native theme generator and conflict-aware appearance switcher."""
 import datetime, fcntl, hashlib, json, os, re, shutil, subprocess, sys, tempfile
 from pathlib import Path
+from string import Template
 import tomllib
 import xml.etree.ElementTree as ET
 
@@ -18,7 +19,7 @@ FILES = ['.config/i3/config', '.config/i3status/config', XML,
          '.config/kitty/theme.conf', '.config/starship.toml',
          '.config/nvim/init.lua', '.config/nvim/colors/charcoal.lua',
          '.config/gtk-3.0/settings.ini', '.config/gtk-3.0/gtk.css',
-         PROFILE + '/chrome/userChrome.css', '.tmux.conf']
+         PROFILE + '/chrome/userChrome.css', PROFILE + '/user.js', '.tmux.conf']
 
 def run(args, **kw):
     return subprocess.run(args, capture_output=True, text=True, timeout=15, **kw)
@@ -36,7 +37,25 @@ def savejson(path, obj):
 def snapshot():
     ref = STATE / 'baseline.json'
     if ref.exists():
-        return json.loads(ref.read_text())
+        meta = json.loads(ref.read_text())
+        # Enrol newly managed files once, without replacing the existing baseline.
+        added = False
+        for rel in FILES:
+            if rel in meta['entries']: continue
+            p = HOME / rel
+            exists = p.exists()
+            meta['entries'][rel] = {'exists': exists, 'link': os.readlink(p) if p.is_symlink() else None,
+                                    'mode': (p.stat().st_mode & 0o7777) if exists else 0o600,
+                                    'hash': digest(p.read_bytes()) if exists else None}
+            if exists:
+                b = Path(meta['backup']) / rel
+                b.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+                b.write_bytes(p.read_bytes()); b.chmod(0o600)
+            added = True
+        if added:
+            savejson(Path(meta['backup']) / 'manifest.json', meta)
+            savejson(ref, meta)
+        return meta
     backup = STATE / ('original-' + datetime.datetime.now().strftime('%Y%m%d-%H%M%S'))
     backup.mkdir(mode=0o700)
     entries = {}
@@ -62,8 +81,14 @@ def original(meta, rel):
     p = Path(meta['backup']) / rel
     return p.read_text() if meta['entries'][rel]['exists'] else ''
 
-def render(meta):
-    p = json.loads((ROOT / 'palette.json').read_text())
+def selection_foreground(colour):
+    channels = [int(colour[i:i+2], 16) / 255 for i in (1, 3, 5)]
+    linear = [c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4 for c in channels]
+    luminance = sum(c * weight for c, weight in zip(linear, (0.2126, 0.7152, 0.0722)))
+    return '#000000' if (luminance + 0.05) / 0.05 >= 1.05 / (luminance + 0.05) else '#FFFFFF'
+
+def render(meta, palette=None):
+    p = palette if palette is not None else json.loads((ROOT / 'palette.json').read_text())
     assert p['accent'].lower() == '#ff3d00', 'Accent must be exactly #FF3D00'
     assert all(re.fullmatch(r'#[0-9a-fA-F]{6}', v) for v in p.values())
     out = {}
@@ -82,6 +107,13 @@ def render(meta):
     s = re.sub(r"xsetroot -solid '[^']+'", "xsetroot -solid '" + p['desktop'] + "'", s)
     s = re.sub(r'i3lock -c [0-9a-fA-F]{6}', 'i3lock -c ' + p['desktop'][1:], s)
     s = s.replace('separator ' + p['surface'], 'separator ' + p['divider'])
+    accent = p.get('i3_accent', p['accent']).upper()
+    s = re.sub(r'(?m)^set \$accent .*$', 'set $accent '+accent+'\nset $selection_fg '+selection_foreground(accent), s)
+    s = re.sub(r"(-sb )'#[0-9a-fA-F]{6}'", r"\1'$accent'", s)
+    s = re.sub(r"(-sf )'#[0-9a-fA-F]{6}'", r"\1'$selection_fg'", s)
+    s = re.sub(r'(?m)^(\s*(?:focused_workspace|binding_mode) \$accent \$accent) \$bg$', r'\1 $selection_fg', s)
+    # A changed command makes i3bar restart i3status when i3 is reloaded.
+    s = re.sub(r'(?m)^(\s*status_command )(.+)$', r'\1env AIR_THEME_I3_ACCENT=$accent \2', s)
     out['.config/i3/config'] = s
     # Focus and selection use orange; ordinary labels remain neutral.
     s = out['.config/fastfetch/config.jsonc']
@@ -313,19 +345,11 @@ window, dialog {{ background-color: {p['background']}; color: {p['foreground']};
 button, entry {{ border-radius: 0; border-color: {p['divider']}; }}
 selection {{ background-color: {p['accent']}; color: {p['desktop']}; }}
 '''
-    # Stage chrome CSS without altering the persistent Firefox preference database.
-    out[PROFILE+'/chrome/userChrome.css'] = original(meta,PROFILE+'/chrome/userChrome.css') + f'''
-/* air-theme: browser chrome only */
-:root {{ --toolbar-bgcolor: {p['background']} !important;
- --toolbar-color: {p['foreground']} !important;
- --lwt-accent-color: {p['desktop']} !important;
- --lwt-text-color: {p['foreground']} !important;
- --tab-selected-bgcolor: {p['surface']} !important;
- --tab-selected-textcolor: {p['foreground']} !important; }}
-#navigator-toolbox, #TabsToolbar {{ background: {p['background']} !important; color: {p['foreground']} !important; }}
-.tab-background {{ border-radius: 0 !important; }}
-.tabbrowser-tab[selected] .tab-background {{ border-top: 2px solid {p['accent']} !important; }}
-#urlbar-background {{ background: {p['surface']} !important; border-radius: 0 !important; border-color: {p['divider']} !important; }}
+    # Browser chrome only; shared semantic colours are substituted into native CSS.
+    out[PROFILE+'/chrome/userChrome.css'] = original(meta, PROFILE+'/chrome/userChrome.css') + '\n' + Template((ROOT/'firefox-chrome.css.in').read_text()).substitute(p)
+    out[PROFILE+'/user.js'] = original(meta, PROFILE+'/user.js') + '''
+// air-theme: enable Firefox chrome styles on the next normal restart.
+user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);
 '''
     out['.tmux.conf'] = original(meta,'.tmux.conf') + f'''
 # air-theme appearance
@@ -337,7 +361,7 @@ set -g message-style 'fg={p['foreground']},bg={p['surface']}'
 set -g mode-style 'fg={p['desktop']},bg={p['accent']}'
 '''
     s = out['.config/i3status/config']
-    s = re.sub(r'(?m)^(\s*color_degraded = ).*$', lambda m: m[1]+'"'+p['accent']+'"', s)
+    s = re.sub(r'(?m)^(\s*color_degraded = ).*$', lambda m: m[1]+'"'+p.get('i3_accent', p['accent']).upper()+'"', s)
     out['.config/i3status/config'] = s
     out['.config/aerc/stylesets/charcoal'] = out['.config/aerc/stylesets/charcoal'].replace('*warning.fg = '+p['warning'], '*warning.fg = '+p['accent'])
     out['.config/yazi/theme.toml'] = out['.config/yazi/theme.toml'].replace('title_warn = { fg = "'+p['warning']+'" }', 'title_warn = { fg = "'+p['accent']+'" }')
@@ -365,7 +389,8 @@ set -g mode-style 'fg={p['desktop']},bg={p['accent']}'
     out['.config/ncspot/config.toml'] = s
     s = out['.config/fastfetch/config.jsonc']
     obj = json.loads(s)
-    obj['logo']['color'] = {k:p['muted'] for k in obj['logo']['color']}
+    # Keep the orange accent on the lower section of the Fastfetch logo.
+    obj['logo']['color'] = {k:p['accent'] if k == '2' else p['foreground'] for k in obj['logo']['color']}
     out['.config/fastfetch/config.jsonc'] = json.dumps(obj,indent=2)+'\n'
     s = out['.config/aerc/stylesets/charcoal']
     s = s.replace('diff_del.fg = '+p['error'], 'diff_del.fg = '+p['muted']).replace('diff_whitespace.bg = '+p['error'], 'diff_whitespace.bg = '+p['surface'])
@@ -417,13 +442,6 @@ check:checked, radio:checked, switch:checked {{ background-color: {p['accent']};
 .warning {{ color: {p['accent']}; }}
 .success {{ color: {p['foreground']}; }}
 """
-    out[PROFILE+'/chrome/userChrome.css'] += f"""
-:root {{ --focus-outline-color: {p['accent']} !important;
- --link-color: {p['foreground']} !important;
- --link-color-visited: {p['muted']} !important; }}
-#urlbar[focused] #urlbar-background {{ border-color: {p['accent']} !important; }}
-toolbarbutton[checked] {{ outline-color: {p['accent']} !important; }}
-"""
     return out
 
 def merge(current, base, target, rel):
@@ -449,11 +467,47 @@ def validate(out):
         if rel.endswith('.toml'): tomllib.loads(s)
         elif rel.endswith('.jsonc'): json.loads(s) # Existing fastfetch file is strict JSON.
         elif rel == XML: ET.fromstring(s)
+    if '.config/i3status/config' in out:
+        with tempfile.NamedTemporaryFile(mode='w',dir=STATE) as t:
+            t.write(out['.config/i3status/config']); t.flush()
+            child = subprocess.Popen(['i3status','--config',t.name], stdout=subprocess.PIPE,
+                                     stderr=subprocess.PIPE, text=True)
+            try:
+                stdout, stderr = child.communicate(timeout=1)
+            except subprocess.TimeoutExpired:
+                child.terminate()
+                try:
+                    stdout, stderr = child.communicate(timeout=2)
+                except subprocess.TimeoutExpired:
+                    child.kill()
+                    stdout, stderr = child.communicate()
+            # The protocol header is emitted after native configuration parsing.
+            # Module availability can fail later in a TTY or sandbox.
+            try:
+                header = json.loads(stdout.splitlines()[0])
+            except (IndexError, ValueError):
+                raise ValueError('i3status validation: '+stderr.strip())
+            if header.get('version') != 1:
+                raise ValueError('i3status validation: expected i3bar output_format')
     if '.config/i3/config' not in out: return
-    with tempfile.NamedTemporaryFile(mode='w',dir=STATE) as t:
-        t.write(out['.config/i3/config']); t.flush()
-        r = run(['i3','-C','-c',t.name])
+    with tempfile.TemporaryDirectory(dir=STATE) as td:
+        config = Path(td) / 'config'
+        config.write_text(out['.config/i3/config'])
+        env = dict(os.environ, XDG_RUNTIME_DIR=td)
+        r = run(['i3','-C','-c',str(config)], env=env)
         if r.returncode: raise ValueError('i3 validation: '+r.stderr+r.stdout)
+
+def reload_i3():
+    if not os.environ.get('DISPLAY') and not os.environ.get('I3SOCK'):
+        return [], 'Live refresh skipped; configuration saved for the next i3 session.'
+    try:
+        r = run(['i3-msg','reload'])
+        replies = json.loads(r.stdout or '[]')
+        if r.returncode or not replies or not all(x.get('success') for x in replies):
+            return ['i3 reload failed: '+(r.stderr.strip() or r.stdout.strip())], 'Files applied; rerun the accent command to retry refresh.'
+    except (OSError, ValueError, subprocess.TimeoutExpired) as e:
+        return ['i3 reload failed: '+str(e)], 'Files applied; rerun the accent command to retry refresh.'
+    return [], 'i3 reloaded; i3bar will restart i3status when its accent changes.'
 
 def sync_terminal(meta, mode):
     if not os.environ.get('DISPLAY'): return []
@@ -491,7 +545,7 @@ def refresh(meta, mode):
     notes.append('Reopen TUIs, Kitty, Firefox and GTK apps; existing sessions are kept running.')
     notes.append('ncspot supports :reload. Reopen existing Neovim/tmux sessions to pick up the selected appearance; see README for manual refresh.')
     if mode == 'charcoal':
-        notes.append('Firefox chrome CSS is staged; enable toolkit.legacyUserProfileCustomizations.stylesheets in about:config only if wanted, then restart Firefox.')
+        notes.append('Firefox chrome CSS and enabling preference applied; restart Firefox normally to activate. After original restoration, reset toolkit.legacyUserProfileCustomizations.stylesheets in about:config if it was previously unset.')
     return failures, notes
 
 def main():
@@ -500,37 +554,52 @@ def main():
     lock = (STATE/'lock').open('w')
     fcntl.flock(lock,fcntl.LOCK_EX)
     args = sys.argv[1:]
-    component = args[2] if len(args)==3 and args[:2]==['charcoal','--only'] and args[2] in ['yazi','dunst'] else None
+    palette = None
+    accent_request = len(args)==2 and args[0]=='accent'
+    if accent_request:
+        if not re.fullmatch(r'#?[0-9a-fA-F]{6}', args[1]):
+            raise ValueError('Accent must be six hexadecimal digits, optionally prefixed with #.')
+        palette = json.loads((ROOT/'palette.json').read_text())
+        palette['i3_accent'] = '#'+args[1].lstrip('#').upper()
+    component = args[2] if len(args)==3 and args[:2]==['charcoal','--only'] and args[2] in ['yazi','dunst','i3','firefox'] else None
+    if accent_request: component = 'i3'
     scoped = component is not None
-    cmd = args[0] if len(args)==1 or scoped else ''
+    cmd = 'charcoal' if accent_request else args[0] if len(args)==1 or scoped else ''
     statefile = STATE/'state.json'
     state = json.loads(statefile.read_text()) if statefile.exists() else {'selected':'original','failures':[]}
     if scoped and state.get('selected') == 'partial' and state.get('requested') == 'charcoal --only '+component:
         state = state.get('previous_state', {'selected':'unknown','failures':[]})
     if cmd == 'status':
         print('Selected theme:',state['selected'])
+        p = json.loads((ROOT/'palette.json').read_text())
+        print('Requested i3 accent:', p.get('i3_accent',p['accent']))
+        config = HOME/'.config/i3/config'
+        match = re.search(r'(?m)^set \$accent (#[0-9a-fA-F]{6})$',config.read_text()) if config.exists() else None
+        print('Configured i3 accent:',match[1] if match else 'not found')
+        if state.get('i3_notes'): print(state['i3_notes'])
+        for failure in state.get('i3_failures',[]): print(failure)
         if state['selected'] == 'charcoal': print('Colour grammar: SluntShack — black/white/greys; orange attention; red faults. Notes: '+str(ROOT/'SLUNTSHACK.txt'))
         if (STATE/'baseline.json').exists(): print('Original backup:',json.loads((STATE/'baseline.json').read_text())['backup'])
         for item in state.get('failures',[]) + state.get('notes',[]): print(item)
         if state.get('yazi_notes'): print(state['yazi_notes'])
         if state.get('yazi_selected'): print('Yazi selection:',state['yazi_selected'])
         if state.get('dunst_notes'): print(state['dunst_notes'])
+        if state.get('firefox_notes'): print(state['firefox_notes'])
+        if state.get('firefox_selected'): print('Firefox selection:', state['firefox_selected'])
         last = STATE/'last'
         drift = [r for r,h in state.get('hashes',{}).items() if (digest((HOME/r).read_bytes()) if (HOME/r).exists() else None) != h]
         if drift: print('Changed since last selection:',', '.join(drift))
         return
     if cmd not in ['charcoal','original']:
-        raise ValueError('Usage: air-theme charcoal|original|status [charcoal also accepts --only yazi|dunst]')
+        raise ValueError('Usage: air-theme accent HEX | charcoal [--only i3|yazi|dunst|firefox] | original | status')
     meta = snapshot()
     # Restoration must work even if the palette was edited incorrectly.
-    themed = render(meta) if cmd == 'charcoal' else {r:original(meta,r) for r in FILES}
-    active_files = [{'yazi':'.config/yazi/theme.toml','dunst':'.config/dunst/dunstrc'}[component]] if scoped else FILES
+    themed = render(meta,palette) if cmd == 'charcoal' else {r:original(meta,r) for r in FILES}
+    active_files = {'yazi':['.config/yazi/theme.toml'],'dunst':['.config/dunst/dunstrc'],
+                    'i3':['.config/i3/config','.config/i3status/config'],
+                    'firefox':[PROFILE+'/chrome/userChrome.css', PROFILE+'/user.js']}[component] if scoped else FILES
     themed = {r:themed[r] for r in active_files}
     validate({r:s for r,s in themed.items() if s})
-    if cmd == 'charcoal':
-        generated = ROOT/'generated'
-        for rel,s in themed.items():
-            q = generated/rel; q.parent.mkdir(parents=True,exist_ok=True,mode=0o700); q.write_text(s)
     last = STATE/'last'
     proposed = {}; conflicts = []
     for rel in active_files:
@@ -545,7 +614,8 @@ def main():
         except ValueError as e: conflicts.append(str(e))
     # Stage and validate merged files before any live write.
     if conflicts:
-        state['failures'] = conflicts; savejson(statefile,state)
+        state['i3_failures' if component == 'i3' else 'failures'] = conflicts
+        savejson(statefile,state)
         raise ValueError('\n'.join(conflicts))
     validate({r:s for r,s in proposed.items() if s})
     # Save truthful progress before live writes; a failed operation remains partial.
@@ -554,6 +624,11 @@ def main():
     pending.update({'selected':'partial', 'requested':'charcoal --only '+component if scoped else cmd,
                     'failures':['Application in progress; rerun the requested selection if interrupted.']})
     savejson(statefile, pending)
+    if palette is not None: savejson(ROOT/'palette.json',palette)
+    if cmd == 'charcoal':
+        generated = ROOT/'generated'
+        for rel,s in themed.items():
+            q = generated/rel; q.parent.mkdir(parents=True,exist_ok=True,mode=0o700); q.write_text(s)
     for rel,s in proposed.items():
         p = HOME/rel; entry = meta['entries'][rel]
         if cmd=='original' and not entry['exists'] and not s:
@@ -580,11 +655,21 @@ def main():
                     note = 'Dunst files applied, reload failed: '+r.stderr.strip()
                     state.setdefault('failures',[]).append(note)
                 else: note = 'Dunst colors applied and safely reloaded; other components were not reloaded.'
+        if component == 'firefox':
+            note = 'Firefox chrome and enabling preference applied; restart Firefox normally to activate. Existing Firefox sessions are kept running.'
+            state['notes'] = [n for n in state.get('notes', []) if not n.startswith('Firefox chrome CSS is staged;')]
+        if component == 'i3':
+            failures, note = reload_i3()
+            state['i3_failures'] = failures
+            print('i3 accent:',(palette or json.loads((ROOT/'palette.json').read_text())).get('i3_accent','#FF3D00'))
+            print('Files applied: i3 and i3status.')
+            for failure in failures: print(failure)
         state[component+'_notes'] = note
         state[component+'_selected'] = 'charcoal'
         savejson(statefile,state)
         print(note)
         if component == 'dunst' and os.environ.get('DISPLAY') and r.returncode: sys.exit(2)
+        if component == 'i3' and failures: sys.exit(2)
         return
     try:
         failures,notes = refresh(meta,cmd)

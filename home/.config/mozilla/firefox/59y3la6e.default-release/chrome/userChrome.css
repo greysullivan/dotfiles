@@ -1,18 +1,248 @@
 
-/* air-theme: browser chrome only */
-:root { --toolbar-bgcolor: #000000 !important;
- --toolbar-color: #FFFFFF !important;
- --lwt-accent-color: #000000 !important;
- --lwt-text-color: #FFFFFF !important;
- --tab-selected-bgcolor: #191919 !important;
- --tab-selected-textcolor: #FFFFFF !important; }
-#navigator-toolbox, #TabsToolbar { background: #000000 !important; color: #FFFFFF !important; }
-.tab-background { border-radius: 0 !important; }
-.tabbrowser-tab[selected] .tab-background { border-top: 2px solid #FF3D00 !important; }
-#urlbar-background { background: #191919 !important; border-radius: 0 !important; border-color: #343434 !important; }
+/* air-theme: Firefox 157 chrome. Colours come from palette.json. */
+:root {
+  --air-background: #000000;
+  --air-surface: #191919;
+  --air-foreground: #FFFFFF;
+  --air-muted: #A3A3A3;
+  --air-divider: #343434;
+  --air-accent: #FF3D00;
+  --toolbar-bgcolor: #000000 !important;
+  --toolbar-color: #FFFFFF !important;
+  --toolbar-background-color: #000000 !important;
+  --toolbar-text-color: #FFFFFF !important;
+  --toolbarbutton-icon-fill: currentColor !important;
+  --toolbar-field-background-color: #191919 !important;
+  --toolbar-field-color: #FFFFFF !important;
+  --toolbar-field-border-color: #343434 !important;
+  --toolbar-field-focus-background-color: #191919 !important;
+  --toolbar-field-focus-color: #FFFFFF !important;
+  --toolbar-field-background-color-focus: #191919 !important;
+  --toolbar-field-text-color: #FFFFFF !important;
+  --toolbar-field-text-color-focus: #FFFFFF !important;
+  --toolbar-field-border-color-focus: #FF3D00 !important;
+  --lwt-accent-color: #000000 !important;
+  --lwt-text-color: #FFFFFF !important;
+  --tab-selected-bgcolor: #191919 !important;
+  --tab-selected-textcolor: #FFFFFF !important;
+  --tab-min-height: 32px !important;
+  --tab-border-radius: 0px !important;
+  --tab-margin-block: 0px !important;
+  --toolbarbutton-border-radius: 0px !important;
+  --toolbarbutton-hover-background: #191919 !important;
+  --toolbarbutton-active-background: #191919 !important;
+  --urlbar-min-height: 34px !important;
+  --urlbar-container-height: 34px !important;
+  --urlbar-height: 34px !important;
+  --urlbar-background-border-radius: 0px !important;
+  --urlbarview-border-radius: 0px !important;
+  --urlbar-box-background-color: #191919 !important;
+  --urlbar-box-background-color-focus: #191919 !important;
+  --urlbarView-highlight-background: #FF3D00 !important;
+  --urlbarView-highlight-color: #000000 !important;
+  --arrowpanel-background: #191919 !important;
+  --arrowpanel-color: #FFFFFF !important;
+  --arrowpanel-border-color: #343434 !important;
+  --arrowpanel-border-radius: 0px !important;
+  --panel-border-radius: 0px !important;
+  --panel-menuitem-border-radius: 0px !important;
+  --panel-separator-color: #343434 !important;
+  --panel-item-hover-bgcolor: #FF3D00 !important;
+  --panel-item-active-bgcolor: #FF3D00 !important;
+  --sidebar-background-color: #000000 !important;
+  --sidebar-text-color: #FFFFFF !important;
+  --focus-outline-color: #FF3D00 !important;
+  --focus-outline: 2px solid #FF3D00 !important;
+  --link-color: #FFFFFF !important;
+  --link-color-visited: #A3A3A3 !important;
+  --border-radius-small: 0px !important;
+  --border-radius-medium: 0px !important;
+  --border-radius-large: 0px !important;
+  --border-radius-xlarge: 0px !important;
+  --background-color-canvas: #000000 !important;
+  --background-color-box: #191919 !important;
+  --text-color: #FFFFFF !important;
+  --text-color-deemphasized: #A3A3A3 !important;
+  --border-color: #343434 !important;
+  --color-accent-primary: #FF3D00 !important;
+  --color-accent-primary-hover: #FF3D00 !important;
+  --color-accent-primary-active: #FF3D00 !important;
+  --selected-item-color: #000000 !important;
+  --selected-item-background-color: #FF3D00 !important;
+  --button-background-color-selected: #FF3D00 !important;
+  --button-text-color-selected: #000000 !important;
+  --button-background-color-primary: #FF3D00 !important;
+  --button-background-color-primary-hover: #FF3D00 !important;
+  --button-background-color-primary-active: #FF3D00 !important;
+  --button-text-color-primary: #000000 !important;
+  --button-text-color-primary-hover: #000000 !important;
+  --button-text-color-primary-active: #000000 !important;
+  --button-border-radius: 0px !important;
+  --button-background-color: #191919 !important;
+  --button-text-color: #FFFFFF !important;
+  --button-background-color-hover: #191919 !important;
+  --button-text-color-hover: #FFFFFF !important;
+  --button-background-color-active: #FF3D00 !important;
+  --button-text-color-active: #000000 !important;
+  --button-background-color-toolbar: transparent !important;
+  --button-text-color-toolbar: #FFFFFF !important;
+  --button-background-color-toolbar-hover: #191919 !important;
+  --button-text-color-toolbar-hover: #FFFFFF !important;
+  --button-background-color-toolbar-active: #FF3D00 !important;
+  --button-text-color-toolbar-active: #000000 !important;
+  --button-background-color-toolbar-selected: #FF3D00 !important;
+  --button-text-color-toolbar-selected: #000000 !important;
+  --button-background-color-menu: transparent !important;
+  --button-text-color-menu: #FFFFFF !important;
+  --button-background-color-menu-hover: #FF3D00 !important;
+  --button-text-color-menu-hover: #000000 !important;
+  --button-background-color-menu-active: #FF3D00 !important;
+  --button-text-color-menu-active: #000000 !important;
+  --button-background-color-menu-selected: #FF3D00 !important;
+  --button-text-color-menu-selected: #000000 !important;
+  --button-background-color-muted: #191919 !important;
+  --button-text-color-muted: #FFFFFF !important;
+  --button-background-color-muted-hover: #191919 !important;
+  --button-text-color-muted-hover: #FFFFFF !important;
+  font-family: "JetBrains Mono", monospace !important;
+  font-size: 13px !important;
+  color-scheme: dark;
+}
 
-:root { --focus-outline-color: #FF3D00 !important;
- --link-color: #FFFFFF !important;
- --link-color-visited: #A3A3A3 !important; }
-#urlbar[focused] #urlbar-background { border-color: #FF3D00 !important; }
-toolbarbutton[checked] { outline-color: #FF3D00 !important; }
+/* Native controls inherit typography; webpage documents are untouched. */
+#navigator-toolbox, #browser, #sidebar-box, #sidebar-main,
+sidebar-main,
+toolbar, panel, menupopup, menu, menuitem, findbar {
+  font-family: "JetBrains Mono", monospace !important;
+  font-size: 13px !important;
+}
+#navigator-toolbox, #TabsToolbar, #nav-bar, #PersonalToolbar,
+#toolbar-menubar, #sidebar-box, #sidebar-main {
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
+  box-shadow: none !important;
+}
+sidebar-main { background-color: #000000 !important; color: #FFFFFF !important; }
+::selection { background: #FF3D00 !important; color: #000000 !important; }
+#navigator-toolbox { border-bottom: 1px solid #343434 !important; }
+#nav-bar { padding-block: 0 !important; }
+#urlbar-container, #search-container { margin-block: 0 !important; }
+#nav-bar .toolbarbutton-1 { min-height: 34px !important; padding-block: 0 !important; }
+#nav-bar .toolbarbutton-1 > .toolbarbutton-icon,
+#nav-bar .toolbarbutton-1 > .toolbarbutton-badge-stack {
+  padding: 6px !important;
+  width: 28px !important;
+  height: 28px !important;
+}
+#urlbar, #searchbar { font-family: "JetBrains Mono", monospace !important; font-size: 13px !important; }
+
+.tab-background {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  border-top: 2px solid transparent !important;
+}
+.tabbrowser-tab { color: #A3A3A3 !important; }
+.tabbrowser-tab[selected] { color: #FFFFFF !important; }
+.tabbrowser-tab .tab-label { color: #A3A3A3 !important; }
+.tabbrowser-tab[selected] .tab-label { color: #FFFFFF !important; }
+.tabbrowser-tab[selected] .tab-background {
+  background: #191919 !important;
+  border-top-color: #FF3D00 !important;
+}
+.tabbrowser-tab:not([selected]):hover .tab-background { background: #191919 !important; }
+.tabbrowser-tab:focus-visible .tab-content { outline: 2px solid #FF3D00 !important; outline-offset: -2px !important; }
+
+#urlbar-background, .urlbar-background, #searchbar {
+  background-color: #191919 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #343434 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+#urlbar[focused] :is(#urlbar-background, .urlbar-background), #searchbar:focus-within { border-color: #FF3D00 !important; }
+.urlbarView { color: #FFFFFF !important; }
+.urlbarView-url, .urlbarView-action { color: #A3A3A3 !important; }
+.urlbarView-row[selected] .urlbarView-row-inner,
+.urlbarView-row:hover .urlbarView-row-inner {
+  background: #FF3D00 !important;
+  color: #000000 !important;
+  border-radius: 0 !important;
+}
+.urlbarView-row:is([selected], :hover) :is(.urlbarView-title, .urlbarView-url, .urlbarView-action) {
+  color: #000000 !important;
+}
+
+panel, menupopup {
+  --panel-background: #191919 !important;
+  --panel-background-color: #191919 !important;
+  --panel-color: #FFFFFF !important;
+  --panel-text-color: #FFFFFF !important;
+  --panel-border-color: #343434 !important;
+  --panel-border-radius: 0px !important;
+  color-scheme: dark;
+}
+#appMenu-menu-message, #PanelUI-fxa-menu-message {
+  --panel-banner-item-background-color: #191919 !important;
+  --panel-banner-item-color: #FFFFFF !important;
+  --promo-background-color-vibrant: #191919 !important;
+  --background-color-information: #191919 !important;
+  --button-text-color: #FFFFFF !important;
+}
+#appMenu-fxa-sign-in-promo, #PanelUI-fxa-menu-sign-in-promo {
+  background-color: #191919 !important;
+  color: #FFFFFF !important;
+  border-radius: 0 !important;
+}
+input, textbox, search-textbox {
+  border-radius: 0 !important;
+  background-color: #191919 !important;
+  color: #FFFFFF !important;
+}
+.urlbar-input::selection, input::selection {
+  background-color: #FF3D00 !important;
+  color: #000000 !important;
+}
+menupopup > :is(menu, menuitem) {
+  border-radius: 0 !important;
+  color: #FFFFFF !important;
+}
+menupopup > :is(menu, menuitem)[_moz-menuactive="true"]:not([disabled="true"]),
+.subviewbutton:not([disabled="true"]):is(:hover, :active, :focus-visible),
+.panel-subview-body .toolbarbutton-1:not([disabled="true"]):is(:hover, :focus-visible) {
+  background: #FF3D00 !important;
+  color: #000000 !important;
+  border-radius: 0 !important;
+}
+.subviewbutton:not([disabled="true"]):is(:hover, :active, :focus-visible) .toolbarbutton-accel,
+menupopup > :is(menu, menuitem)[_moz-menuactive="true"]:not([disabled="true"]) .menu-accel {
+  color: #000000 !important;
+}
+menupopup > :is(menu, menuitem)[disabled="true"], .subviewbutton[disabled="true"] {
+  color: #A3A3A3 !important;
+}
+#downloadsListBox richlistitem[selected] {
+  background: #FF3D00 !important;
+  color: #000000 !important;
+}
+#downloadsListBox richlistitem[selected] :is(.downloadTarget, .downloadDetails) { color: #000000 !important; }
+
+findbar {
+  background: #191919 !important;
+  color: #FFFFFF !important;
+  border-top: 1px solid #343434 !important;
+}
+.findbar-textbox {
+  background: #000000 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #343434 !important;
+  border-radius: 0 !important;
+}
+.findbar-textbox:focus { border-color: #FF3D00 !important; }
+.findbar-textbox[status="notfound"] { border-color: #D88C8C !important; }
+.findbar-find-status[status="notfound"] { color: #D88C8C !important; }
+#sidebar-header { border-bottom: 1px solid #343434 !important; }
+#sidebar-splitter { border-color: #343434 !important; }
+toolbarbutton:focus-visible, button:focus-visible, input:focus-visible {
+  outline: 2px solid #FF3D00 !important;
+  outline-offset: -2px !important;
+}

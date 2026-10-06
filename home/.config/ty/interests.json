@@ -16,7 +16,7 @@
       "id": "print",
       "label": "Photocopy, collage and thermal printing",
       "weight": 3,
-      "enabled": false,
+      "enabled": true,
       "queries": [
         "mediatype:texts AND (title:printing OR title:bookbinding) AND year:[1850 TO 1930]"
       ],
@@ -49,7 +49,7 @@
       "id": "guitar",
       "label": "Experimental sound and field recordings",
       "weight": 2,
-      "enabled": false,
+      "enabled": true,
       "queries": [
         "mediatype:audio AND (subject:\"experimental music\" OR subject:\"field recordings\")"
       ],

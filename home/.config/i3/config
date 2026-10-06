@@ -5,6 +5,7 @@ set $bg #000000
 set $surface #191919
 set $fg #FFFFFF
 set $accent #FF3D00
+set $selection_fg #000000
 set $inactive #191919
 set $urgent #D88C8C
 
@@ -17,7 +18,8 @@ client.background       $bg
 gaps inner 8
 gaps outer 4
 smart_gaps off
-default_border none
+# A thin border shows which tiled window receives keyboard input.
+default_border pixel 1
 default_floating_border none
 floating_modifier $mod
 focus_follows_mouse no
@@ -40,7 +42,7 @@ for_window [class="(?i)^ueberzugpp$"] floating enable, border none, sticky enabl
 for_window [class="(?i)^firefox$" window_role="^browser$"] fullscreen enable
 
 set $term xfce4-terminal
-set $menu dmenu_run -fn 'JetBrains Mono-10' -nb '#191919' -nf '#FFFFFF' -sb '#FF3D00' -sf '#000000'
+set $menu dmenu_run -fn 'JetBrains Mono-10' -nb '#191919' -nf '#FFFFFF' -sb '$accent' -sf '$selection_fg'
 bindsym $mod+space exec --no-startup-id xfce4-terminal --title='System overview' --execute ~/.local/bin/fastfetch-shell
 bindsym $mod+Return exec --no-startup-id $term
 bindsym $mod+Shift+Return exec --no-startup-id kitty
@@ -70,6 +72,11 @@ bindsym $mod+Shift+h move left
 bindsym $mod+Shift+j move down
 bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
+# Arrow alternatives keep movement consistent with focus navigation.
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
 bindsym $mod+b split h
 bindsym $mod+v split v
 bindsym $mod+s layout stacking
@@ -80,42 +87,57 @@ bindsym $mod+Shift+space floating toggle
 bindsym $mod+Mod1+Left workspace prev
 bindsym $mod+Mod1+Right workspace next
 
+# Super+Shift moves and follows; add Control to send without following.
 set $ws1 "1:work"
 bindsym $mod+1 workspace $ws1
 bindsym $mod+Shift+1 move container to workspace $ws1; workspace $ws1
+bindsym $mod+Shift+Control+1 move container to workspace $ws1
 set $ws2 "2:web"
 bindsym $mod+2 workspace $ws2
 bindsym $mod+Shift+2 move container to workspace $ws2; workspace $ws2
+bindsym $mod+Shift+Control+2 move container to workspace $ws2
 set $ws3 "3:btop"
 bindsym $mod+3 workspace $ws3
 bindsym $mod+Shift+3 move container to workspace $ws3; workspace $ws3
+bindsym $mod+Shift+Control+3 move container to workspace $ws3
 set $ws4 "4:ncspot"
 bindsym $mod+4 workspace $ws4
 bindsym $mod+Shift+4 move container to workspace $ws4; workspace $ws4
+bindsym $mod+Shift+Control+4 move container to workspace $ws4
 set $ws5 "5:yazi"
 bindsym $mod+5 workspace $ws5
 bindsym $mod+Shift+5 move container to workspace $ws5; workspace $ws5
+bindsym $mod+Shift+Control+5 move container to workspace $ws5
 set $ws6 "6"
 bindsym $mod+6 workspace $ws6
 bindsym $mod+Shift+6 move container to workspace $ws6; workspace $ws6
+bindsym $mod+Shift+Control+6 move container to workspace $ws6
 set $ws7 "7"
 bindsym $mod+7 workspace $ws7
 bindsym $mod+Shift+7 move container to workspace $ws7; workspace $ws7
+bindsym $mod+Shift+Control+7 move container to workspace $ws7
 set $ws8 "8"
 bindsym $mod+8 workspace $ws8
 bindsym $mod+Shift+8 move container to workspace $ws8; workspace $ws8
+bindsym $mod+Shift+Control+8 move container to workspace $ws8
 set $ws9 "9"
 bindsym $mod+9 workspace $ws9
 bindsym $mod+Shift+9 move container to workspace $ws9; workspace $ws9
+bindsym $mod+Shift+Control+9 move container to workspace $ws9
 set $ws10 "10"
 bindsym $mod+0 workspace $ws10
 bindsym $mod+Shift+0 move container to workspace $ws10; workspace $ws10
+bindsym $mod+Shift+Control+0 move container to workspace $ws10
 
 mode "resize" {
     bindsym h resize shrink width 10 px or 10 ppt
     bindsym j resize grow height 10 px or 10 ppt
     bindsym k resize shrink height 10 px or 10 ppt
     bindsym l resize grow width 10 px or 10 ppt
+    bindsym Left resize shrink width 10 px or 10 ppt
+    bindsym Down resize grow height 10 px or 10 ppt
+    bindsym Up resize shrink height 10 px or 10 ppt
+    bindsym Right resize grow width 10 px or 10 ppt
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
@@ -143,16 +165,16 @@ bindsym --release XF86PowerOff exec --no-startup-id ~/.local/bin/power-button-ho
 
 bar {
     position bottom
-    status_command i3status --config ~/.config/i3status/config
+    status_command env AIR_THEME_I3_ACCENT=$accent i3status --config ~/.config/i3status/config
     font pango:JetBrains Mono 10
     colors {
         background $bg
         statusline $fg
         separator #343434
-        focused_workspace $accent $accent $bg
+        focused_workspace $accent $accent $selection_fg
         active_workspace $inactive $surface $fg
         inactive_workspace $bg $bg #A3A3A3
         urgent_workspace $urgent $urgent $bg
-        binding_mode $accent $accent $bg
+        binding_mode $accent $accent $selection_fg
     }
 }

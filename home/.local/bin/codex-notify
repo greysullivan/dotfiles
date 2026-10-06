@@ -145,7 +145,9 @@ def worker(config=None,force=False):
                     if d and d.owned:d.current()
                     time.sleep(.05)
                 if play.poll() is None:play.terminate();result['gong']='timeout'
-                else:result['gong']='played' if play.returncode==0 else 'playback-failed'
+                else:
+                    result['gong']='played' if play.returncode==0 else 'playback-failed'
+                    gong_finished=time.monotonic()
             result['outcome']='completed'
         except Interrupted:result['outcome']='interrupted'
         except (OSError,ValueError,subprocess.TimeoutExpired):result['outcome']='audio-unavailable'
@@ -165,6 +167,16 @@ def worker(config=None,force=False):
                 except (OSError,ValueError,subprocess.TimeoutExpired):result['ducking']='recovery-pending'
             else:result.setdefault('ducking','no-active-unmuted-music')
             for sig,handler in old_handlers.items():signal.signal(sig,handler)
+            save('last-sound.json',result)
+        if result.get('gong')=='played' and result.get('outcome')=='completed':
+            try:
+                time.sleep(max(0,gong_finished+5-time.monotonic()))
+                ding=subprocess.run(['paplay','--client-name=Codex alerts','--stream-name=Codex ding',
+                    '--property=media.role=event','--property=module-stream-restore.id=codex-ding',
+                    '--volume='+str(round(65536*p['gong_volume'])),p['ding_file']],
+                    stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=2)
+                result['ding']='played' if ding.returncode==0 else 'playback-failed'
+            except (OSError,ValueError,subprocess.TimeoutExpired):result['ding']='audio-unavailable'
             save('last-sound.json',result)
         return result
 

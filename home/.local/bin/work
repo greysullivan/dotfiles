@@ -1,0 +1,94 @@
+#!/bin/sh
+# Keep console workspaces separate from desktop tmux and generated themes.
+usage() {
+    cat <<'EOF'
+Console workspace
+
+  work          Open or resume the main session.
+  work NAME     Open or resume another session (letters, digits, _ and -).
+  work --list   List sessions on the console workspace server.
+  work --help   Show this guide.
+
+For each tmux shortcut, press Ctrl+B, RELEASE both keys, then press:
+
+  c             New window in the current directory
+  1 through 9   Select a window
+  n / p         Next / previous window
+  ,             Rename the current window
+  |             Split side by side (usually Shift+backslash)
+  -             Split top and bottom
+  Arrow         Move to the pane in that direction
+  Ctrl+Arrow    Resize the pane (after releasing Ctrl+B)
+  z             Expand the current pane / restore its layout
+  [             Enter scrollback: arrows and Page Up/Down scroll; q exits
+  ]             Paste text copied inside tmux
+  s             Choose a session or window; arrows select, Enter opens
+  d             Detach, leaving programs running
+  ?             Show all tmux key bindings; q exits
+  r             Reload the console configuration
+
+Copy text: Ctrl+B then [, move to the start, press Space, use arrows to
+select text, then Enter to copy. Paste with Ctrl+B then ]. This uses
+tmux's own buffer; it does not require a desktop clipboard.
+
+Try it:
+  1. Run work. Press Ctrl+B then c to create another window.
+  2. Press Ctrl+B then | to split it. Use Ctrl+B then arrows to move.
+  3. Press Ctrl+B then d. You are back in your ordinary shell.
+  4. Run work again. Your windows and programs are still there.
+  5. Outside tmux, run work research for a second session.
+     Inside tmux, use Ctrl+B then s to switch between sessions.
+
+Console basics:
+  Ctrl+Alt+F1, F2, ... switch Linux consoles. Each has its own login.
+  Your desktop, if running, occupies one of these consoles too.
+  Ctrl+C interrupts the foreground command (including inside tmux).
+  Ctrl+L redraws the shell screen; reset can repair garbled output.
+  exit closes this pane's shell. Closing the last pane ends its session.
+  Detach with Ctrl+B then d when you want programs to keep running.
+
+Sessions survive detaching and switching consoles while this computer
+stays on. They do not survive reboot. Logout persistence also depends
+on the system's login policy. Two consoles attached to the same session
+share its windows; use different session names for independent work.
+
+The server is named grey-console. For direct administration use:
+  tmux -L grey-console list-sessions
+EOF
+}
+
+if [ "$#" -gt 1 ]; then
+    printf '%s\n' 'Usage: work [NAME | --list | --help]' >&2
+    exit 2
+fi
+case "${1:-main}" in
+    --help|-h) usage; exit 0 ;;
+    --list) action=list ;;
+    ''|-*|*[!a-zA-Z0-9_-]*)
+        printf '%s\n' 'work: session names must contain only letters, digits, _ and -.' >&2
+        exit 2 ;;
+    *) action=open; session=${1:-main} ;;
+esac
+
+if ! command -v tmux >/dev/null 2>&1; then
+    printf '%s\n' 'work: tmux is missing. Install it with sudo pacman -S tmux.' >&2
+    exit 127
+fi
+if [ "$action" = list ]; then
+    exec tmux -L grey-console list-sessions
+fi
+if [ -n "${TMUX:-}" ]; then
+    printf '%s\n' 'work: already inside tmux. Use Ctrl+B then s to choose a session.' \
+        'To open a new named console session, detach with Ctrl+B then d first.' >&2
+    exit 1
+fi
+if [ ! -t 0 ] || [ ! -t 1 ]; then
+    printf '%s\n' 'work: run this command in an interactive terminal.' >&2
+    exit 1
+fi
+console_config=$HOME/.config/tmux/console.conf
+if [ ! -r "$console_config" ]; then
+    printf 'work: cannot read configuration: %s\n' "$console_config" >&2
+    exit 1
+fi
+exec tmux -L grey-console -f "$console_config" new-session -A -s "$session"

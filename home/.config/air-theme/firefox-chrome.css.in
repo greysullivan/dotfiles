@@ -1,0 +1,247 @@
+/* air-theme: Firefox 157 chrome. Colours come from palette.json. */
+:root {
+  --air-background: $background;
+  --air-surface: $surface;
+  --air-foreground: $foreground;
+  --air-muted: $muted;
+  --air-divider: $divider;
+  --air-accent: $accent;
+  --toolbar-bgcolor: $background !important;
+  --toolbar-color: $foreground !important;
+  --toolbar-background-color: $background !important;
+  --toolbar-text-color: $foreground !important;
+  --toolbarbutton-icon-fill: currentColor !important;
+  --toolbar-field-background-color: $surface !important;
+  --toolbar-field-color: $foreground !important;
+  --toolbar-field-border-color: $divider !important;
+  --toolbar-field-focus-background-color: $surface !important;
+  --toolbar-field-focus-color: $foreground !important;
+  --toolbar-field-background-color-focus: $surface !important;
+  --toolbar-field-text-color: $foreground !important;
+  --toolbar-field-text-color-focus: $foreground !important;
+  --toolbar-field-border-color-focus: $accent !important;
+  --lwt-accent-color: $background !important;
+  --lwt-text-color: $foreground !important;
+  --tab-selected-bgcolor: $surface !important;
+  --tab-selected-textcolor: $foreground !important;
+  --tab-min-height: 32px !important;
+  --tab-border-radius: 0px !important;
+  --tab-margin-block: 0px !important;
+  --toolbarbutton-border-radius: 0px !important;
+  --toolbarbutton-hover-background: $surface !important;
+  --toolbarbutton-active-background: $surface !important;
+  --urlbar-min-height: 34px !important;
+  --urlbar-container-height: 34px !important;
+  --urlbar-height: 34px !important;
+  --urlbar-background-border-radius: 0px !important;
+  --urlbarview-border-radius: 0px !important;
+  --urlbar-box-background-color: $surface !important;
+  --urlbar-box-background-color-focus: $surface !important;
+  --urlbarView-highlight-background: $accent !important;
+  --urlbarView-highlight-color: $desktop !important;
+  --arrowpanel-background: $surface !important;
+  --arrowpanel-color: $foreground !important;
+  --arrowpanel-border-color: $divider !important;
+  --arrowpanel-border-radius: 0px !important;
+  --panel-border-radius: 0px !important;
+  --panel-menuitem-border-radius: 0px !important;
+  --panel-separator-color: $divider !important;
+  --panel-item-hover-bgcolor: $accent !important;
+  --panel-item-active-bgcolor: $accent !important;
+  --sidebar-background-color: $background !important;
+  --sidebar-text-color: $foreground !important;
+  --focus-outline-color: $accent !important;
+  --focus-outline: 2px solid $accent !important;
+  --link-color: $foreground !important;
+  --link-color-visited: $muted !important;
+  --border-radius-small: 0px !important;
+  --border-radius-medium: 0px !important;
+  --border-radius-large: 0px !important;
+  --border-radius-xlarge: 0px !important;
+  --background-color-canvas: $background !important;
+  --background-color-box: $surface !important;
+  --text-color: $foreground !important;
+  --text-color-deemphasized: $muted !important;
+  --border-color: $divider !important;
+  --color-accent-primary: $accent !important;
+  --color-accent-primary-hover: $accent !important;
+  --color-accent-primary-active: $accent !important;
+  --selected-item-color: $desktop !important;
+  --selected-item-background-color: $accent !important;
+  --button-background-color-selected: $accent !important;
+  --button-text-color-selected: $desktop !important;
+  --button-background-color-primary: $accent !important;
+  --button-background-color-primary-hover: $accent !important;
+  --button-background-color-primary-active: $accent !important;
+  --button-text-color-primary: $desktop !important;
+  --button-text-color-primary-hover: $desktop !important;
+  --button-text-color-primary-active: $desktop !important;
+  --button-border-radius: 0px !important;
+  --button-background-color: $surface !important;
+  --button-text-color: $foreground !important;
+  --button-background-color-hover: $surface !important;
+  --button-text-color-hover: $foreground !important;
+  --button-background-color-active: $accent !important;
+  --button-text-color-active: $desktop !important;
+  --button-background-color-toolbar: transparent !important;
+  --button-text-color-toolbar: $foreground !important;
+  --button-background-color-toolbar-hover: $surface !important;
+  --button-text-color-toolbar-hover: $foreground !important;
+  --button-background-color-toolbar-active: $accent !important;
+  --button-text-color-toolbar-active: $desktop !important;
+  --button-background-color-toolbar-selected: $accent !important;
+  --button-text-color-toolbar-selected: $desktop !important;
+  --button-background-color-menu: transparent !important;
+  --button-text-color-menu: $foreground !important;
+  --button-background-color-menu-hover: $accent !important;
+  --button-text-color-menu-hover: $desktop !important;
+  --button-background-color-menu-active: $accent !important;
+  --button-text-color-menu-active: $desktop !important;
+  --button-background-color-menu-selected: $accent !important;
+  --button-text-color-menu-selected: $desktop !important;
+  --button-background-color-muted: $surface !important;
+  --button-text-color-muted: $foreground !important;
+  --button-background-color-muted-hover: $surface !important;
+  --button-text-color-muted-hover: $foreground !important;
+  font-family: "JetBrains Mono", monospace !important;
+  font-size: 13px !important;
+  color-scheme: dark;
+}
+
+/* Native controls inherit typography; webpage documents are untouched. */
+#navigator-toolbox, #browser, #sidebar-box, #sidebar-main,
+sidebar-main,
+toolbar, panel, menupopup, menu, menuitem, findbar {
+  font-family: "JetBrains Mono", monospace !important;
+  font-size: 13px !important;
+}
+#navigator-toolbox, #TabsToolbar, #nav-bar, #PersonalToolbar,
+#toolbar-menubar, #sidebar-box, #sidebar-main {
+  background-color: $background !important;
+  color: $foreground !important;
+  box-shadow: none !important;
+}
+sidebar-main { background-color: $background !important; color: $foreground !important; }
+::selection { background: $accent !important; color: $desktop !important; }
+#navigator-toolbox { border-bottom: 1px solid $divider !important; }
+#nav-bar { padding-block: 0 !important; }
+#urlbar-container, #search-container { margin-block: 0 !important; }
+#nav-bar .toolbarbutton-1 { min-height: 34px !important; padding-block: 0 !important; }
+#nav-bar .toolbarbutton-1 > .toolbarbutton-icon,
+#nav-bar .toolbarbutton-1 > .toolbarbutton-badge-stack {
+  padding: 6px !important;
+  width: 28px !important;
+  height: 28px !important;
+}
+#urlbar, #searchbar { font-family: "JetBrains Mono", monospace !important; font-size: 13px !important; }
+
+.tab-background {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  border-top: 2px solid transparent !important;
+}
+.tabbrowser-tab { color: $muted !important; }
+.tabbrowser-tab[selected] { color: $foreground !important; }
+.tabbrowser-tab .tab-label { color: $muted !important; }
+.tabbrowser-tab[selected] .tab-label { color: $foreground !important; }
+.tabbrowser-tab[selected] .tab-background {
+  background: $surface !important;
+  border-top-color: $accent !important;
+}
+.tabbrowser-tab:not([selected]):hover .tab-background { background: $surface !important; }
+.tabbrowser-tab:focus-visible .tab-content { outline: 2px solid $accent !important; outline-offset: -2px !important; }
+
+#urlbar-background, .urlbar-background, #searchbar {
+  background-color: $surface !important;
+  color: $foreground !important;
+  border: 1px solid $divider !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+#urlbar[focused] :is(#urlbar-background, .urlbar-background), #searchbar:focus-within { border-color: $accent !important; }
+.urlbarView { color: $foreground !important; }
+.urlbarView-url, .urlbarView-action { color: $muted !important; }
+.urlbarView-row[selected] .urlbarView-row-inner,
+.urlbarView-row:hover .urlbarView-row-inner {
+  background: $accent !important;
+  color: $desktop !important;
+  border-radius: 0 !important;
+}
+.urlbarView-row:is([selected], :hover) :is(.urlbarView-title, .urlbarView-url, .urlbarView-action) {
+  color: $desktop !important;
+}
+
+panel, menupopup {
+  --panel-background: $surface !important;
+  --panel-background-color: $surface !important;
+  --panel-color: $foreground !important;
+  --panel-text-color: $foreground !important;
+  --panel-border-color: $divider !important;
+  --panel-border-radius: 0px !important;
+  color-scheme: dark;
+}
+#appMenu-menu-message, #PanelUI-fxa-menu-message {
+  --panel-banner-item-background-color: $surface !important;
+  --panel-banner-item-color: $foreground !important;
+  --promo-background-color-vibrant: $surface !important;
+  --background-color-information: $surface !important;
+  --button-text-color: $foreground !important;
+}
+#appMenu-fxa-sign-in-promo, #PanelUI-fxa-menu-sign-in-promo {
+  background-color: $surface !important;
+  color: $foreground !important;
+  border-radius: 0 !important;
+}
+input, textbox, search-textbox {
+  border-radius: 0 !important;
+  background-color: $surface !important;
+  color: $foreground !important;
+}
+.urlbar-input::selection, input::selection {
+  background-color: $accent !important;
+  color: $desktop !important;
+}
+menupopup > :is(menu, menuitem) {
+  border-radius: 0 !important;
+  color: $foreground !important;
+}
+menupopup > :is(menu, menuitem)[_moz-menuactive="true"]:not([disabled="true"]),
+.subviewbutton:not([disabled="true"]):is(:hover, :active, :focus-visible),
+.panel-subview-body .toolbarbutton-1:not([disabled="true"]):is(:hover, :focus-visible) {
+  background: $accent !important;
+  color: $desktop !important;
+  border-radius: 0 !important;
+}
+.subviewbutton:not([disabled="true"]):is(:hover, :active, :focus-visible) .toolbarbutton-accel,
+menupopup > :is(menu, menuitem)[_moz-menuactive="true"]:not([disabled="true"]) .menu-accel {
+  color: $desktop !important;
+}
+menupopup > :is(menu, menuitem)[disabled="true"], .subviewbutton[disabled="true"] {
+  color: $muted !important;
+}
+#downloadsListBox richlistitem[selected] {
+  background: $accent !important;
+  color: $desktop !important;
+}
+#downloadsListBox richlistitem[selected] :is(.downloadTarget, .downloadDetails) { color: $desktop !important; }
+
+findbar {
+  background: $surface !important;
+  color: $foreground !important;
+  border-top: 1px solid $divider !important;
+}
+.findbar-textbox {
+  background: $background !important;
+  color: $foreground !important;
+  border: 1px solid $divider !important;
+  border-radius: 0 !important;
+}
+.findbar-textbox:focus { border-color: $accent !important; }
+.findbar-textbox[status="notfound"] { border-color: $error !important; }
+.findbar-find-status[status="notfound"] { color: $error !important; }
+#sidebar-header { border-bottom: 1px solid $divider !important; }
+#sidebar-splitter { border-color: $divider !important; }
+toolbarbutton:focus-visible, button:focus-visible, input:focus-visible {
+  outline: 2px solid $accent !important;
+  outline-offset: -2px !important;
+}
