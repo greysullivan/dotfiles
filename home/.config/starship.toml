@@ -9,7 +9,7 @@ $character"""
 add_newline = false
 
 [character]
-success_symbol = "[>](bold #FF3D00)"
+success_symbol = "[>](bold #DFA0A0)"
 error_symbol = "[>](bold #D88C8C)"
 
 [directory]

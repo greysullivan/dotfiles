@@ -15,3 +15,10 @@ __pycache__/
 **/backup-password
 **/evidence/
 tools/external-drive-report/data/
+**/hosts.yml
+**/isyncrc
+**/.ssh/
+**/.codex/
+**/*history
+**/migration-private/
+**/restic/

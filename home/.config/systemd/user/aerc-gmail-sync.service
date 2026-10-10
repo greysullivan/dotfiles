@@ -1,0 +1,8 @@
+[Unit]
+Description=Sync Gmail to local Maildir for aerc
+
+[Service]
+Type=oneshot
+ExecStart=/home/grey/.local/bin/aerc-gmail-sync
+UMask=0077
+TimeoutStartSec=30min

@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """Small native theme generator and conflict-aware appearance switcher."""
-import datetime, fcntl, hashlib, json, os, re, shutil, subprocess, sys, tempfile
+import datetime, fcntl, hashlib, json, os, plistlib, re, shutil, stat, subprocess, sys, tempfile
 from pathlib import Path
 from string import Template
 import tomllib
@@ -11,6 +11,11 @@ ROOT = HOME / '.config/air-theme'
 STATE = HOME / '.local/state/air-theme'
 XML = '.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-terminal.xml'
 PROFILE = '.config/mozilla/firefox/59y3la6e.default-release'
+ACCENT_FILES = ['.local/bin/ty', '.local/bin/capture',
+               '.config/mpv/youtube-art.conf',
+               '.config/nvim/lua/minimal/init.lua', '.config/nvim/lua/minimal/picker.lua',
+               '.codex/themes/sluntshack.tmTheme', '.zshrc']
+CURSOR_FILES = [XML, '.config/kitty/theme.conf', '.codex/themes/sluntshack.tmTheme']
 FILES = ['.config/i3/config', '.config/i3status/config', XML,
          '.config/fastfetch/config.jsonc', '.config/btop/btop.conf',
          '.config/btop/themes/charcoal.theme', '.config/aerc/aerc.conf',
@@ -19,7 +24,7 @@ FILES = ['.config/i3/config', '.config/i3status/config', XML,
          '.config/kitty/theme.conf', '.config/starship.toml',
          '.config/nvim/init.lua', '.config/nvim/colors/charcoal.lua',
          '.config/gtk-3.0/settings.ini', '.config/gtk-3.0/gtk.css',
-         PROFILE + '/chrome/userChrome.css', PROFILE + '/user.js', '.tmux.conf']
+         PROFILE + '/chrome/userChrome.css', PROFILE + '/user.js', '.tmux.conf'] + ACCENT_FILES
 
 def run(args, **kw):
     return subprocess.run(args, capture_output=True, text=True, timeout=15, **kw)
@@ -89,7 +94,6 @@ def selection_foreground(colour):
 
 def render(meta, palette=None):
     p = palette if palette is not None else json.loads((ROOT / 'palette.json').read_text())
-    assert p['accent'].lower() == '#ff3d00', 'Accent must be exactly #FF3D00'
     assert all(re.fullmatch(r'#[0-9a-fA-F]{6}', v) for v in p.values())
     out = {}
     # Existing native fragments: replace only appearance colours, keeping structure.
@@ -115,7 +119,7 @@ def render(meta, palette=None):
     # A changed command makes i3bar restart i3status when i3 is reloaded.
     s = re.sub(r'(?m)^(\s*status_command )(.+)$', r'\1env AIR_THEME_I3_ACCENT=$accent \2', s)
     out['.config/i3/config'] = s
-    # Focus and selection use orange; ordinary labels remain neutral.
+    # Focus and selection use the accent; ordinary labels remain neutral.
     s = out['.config/fastfetch/config.jsonc']
     s = s.replace('"keys": "'+p['accent']+'"', '"keys": "'+p['foreground']+'"')
     s = s.replace('"user": "'+p['accent']+'"', '"user": "'+p['foreground']+'"')
@@ -123,7 +127,7 @@ def render(meta, palette=None):
     s = out['.config/ncspot/config.toml']
     s = s.replace('title = "'+p['accent']+'"', 'title = "'+p['foreground']+'"')
     s = s.replace('highlight_inactive_bg = "'+p['surface']+'"', 'highlight_inactive_bg = "'+p['accent']+'"')
-    # Progress is a filled control: use dark text over its orange fill.
+    # Progress is a filled control: use dark text over its accent fill.
     s = s.replace('statusbar_progress = "'+p['accent']+'"', 'statusbar_progress = "'+p['desktop']+'"')
     s = s.replace('statusbar_progress_bg = "'+p['surface']+'"', 'statusbar_progress_bg = "'+p['accent']+'"')
     out['.config/ncspot/config.toml'] = s
@@ -219,7 +223,7 @@ rules = [
     ansi = [p[k] for k in ['surface','error','success','warning','info','violet','cyan','foreground',
                            'muted','error','success','warning','info','violet','cyan','foreground']]
     values = {'color-use-theme': ('bool','false'), 'color-foreground': ('string',p['foreground']),
-              'color-background': ('string',p['background']), 'color-cursor': ('string',p['accent']),
+              'color-background': ('string',p['background']), 'color-cursor': ('string',p.get('cursor',p['accent'])),
               'color-cursor-use-default': ('bool','false'), 'color-selection-use-default': ('bool','false'),
               'color-selection': ('string',p['desktop']), 'color-selection-background': ('string',p['accent']),
               'color-palette': ('string',';'.join(ansi)), 'background-mode': ('string','TERMINAL_BACKGROUND_SOLID')}
@@ -231,7 +235,7 @@ rules = [
         else: s = s.replace('</channel>', '  '+line+'\n</channel>')
     out[XML] = s
     s = original(meta, '.config/kitty/theme.conf')
-    kitty = {'foreground':p['foreground'], 'background':p['background'], 'cursor':p['accent'],
+    kitty = {'foreground':p['foreground'], 'background':p['background'], 'cursor':p.get('cursor',p['accent']),
              'selection_foreground':p['desktop'], 'selection_background':p['accent'],
              'active_border_color':p['accent'], 'inactive_border_color':p['divider'], 'bell_border_color':p['error'],
              'active_tab_foreground':p['desktop'], 'active_tab_background':p['accent'],
@@ -365,7 +369,7 @@ set -g mode-style 'fg={p['desktop']},bg={p['accent']}'
     out['.config/i3status/config'] = s
     out['.config/aerc/stylesets/charcoal'] = out['.config/aerc/stylesets/charcoal'].replace('*warning.fg = '+p['warning'], '*warning.fg = '+p['accent'])
     out['.config/yazi/theme.toml'] = out['.config/yazi/theme.toml'].replace('title_warn = { fg = "'+p['warning']+'" }', 'title_warn = { fg = "'+p['accent']+'" }')
-    # SluntShack: information uses luminance; orange means attention, red means fault.
+    # SluntShack: information uses luminance; the accent means attention, red means fault.
     s = out['.config/yazi/theme.toml']
     s = re.sub(r'(?m)^unset_(main|alt) = .*$', lambda m: 'unset_'+m[1]+' = { fg = "'+(p['desktop'] if m[1]=='main' else p['accent'])+'", bg = "'+(p['accent'] if m[1]=='main' else p['background'])+'" }', s)
     s = re.sub(r'(?m)^select_main = .*$', 'select_main = { fg = "'+p['desktop']+'", bg = "'+p['accent']+'", bold = true }', s)
@@ -389,8 +393,8 @@ set -g mode-style 'fg={p['desktop']},bg={p['accent']}'
     out['.config/ncspot/config.toml'] = s
     s = out['.config/fastfetch/config.jsonc']
     obj = json.loads(s)
-    # Keep the orange accent on the lower section of the Fastfetch logo.
-    obj['logo']['color'] = {k:p['accent'] if k == '2' else p['foreground'] for k in obj['logo']['color']}
+    # Keep the Fastfetch logo muted throughout.
+    obj['logo']['color'] = {k:p['muted'] for k in obj['logo']['color']}
     out['.config/fastfetch/config.jsonc'] = json.dumps(obj,indent=2)+'\n'
     s = out['.config/aerc/stylesets/charcoal']
     s = s.replace('diff_del.fg = '+p['error'], 'diff_del.fg = '+p['muted']).replace('diff_whitespace.bg = '+p['error'], 'diff_whitespace.bg = '+p['surface'])
@@ -442,11 +446,59 @@ check:checked, radio:checked, switch:checked {{ background-color: {p['accent']};
 .warning {{ color: {p['accent']}; }}
 .success {{ color: {p['foreground']}; }}
 """
+    # Enrolled native colour literals are rendered from their captured originals.
+    # No global search/replace: only these reviewed accent consumers are managed.
+    for rel in ACCENT_FILES:
+        s = original(meta, rel)
+        s = re.sub(r'#ff3d00\b', lambda m: p['accent'], s, flags=re.I)
+        if rel == '.codex/themes/sluntshack.tmTheme':
+            s = re.sub(r'(<key>caret</key>\s*<string>)#[0-9a-fA-F]{6}(</string>)',
+                       lambda m: m[1]+p.get('cursor',p['accent'])+m[2], s)
+        if rel == '.zshrc':
+            rgb = ';'.join(str(int(p['accent'][i:i+2], 16)) for i in (1, 3, 5))
+            s = s.replace('ma=0;38;2;0;0;0;48;2;255;61;0',
+                          'ma=0;38;2;0;0;0;48;2;'+rgb)
+        out[rel] = s
     return out
+
+def merge_terminal(current, base, target):
+    """Merge independent flat Xfce properties, preserving current formatting."""
+    roots = [ET.fromstring(s) for s in (current, base, target)]
+    if any(root.tag != roots[1].tag or root.attrib != roots[1].attrib for root in roots):
+        return None
+    if any(child.tag != 'property' or len(child) for root in roots for child in root):
+        return None
+    pattern = r'<property\b[^>]*/>'
+    records = []
+    for s,root in zip((current, base, target), roots):
+        props = {}
+        for match in re.finditer(pattern, s):
+            attrs = ET.fromstring(match[0]).attrib
+            name = attrs.get('name')
+            if name is None or name in props: return None
+            props[name] = (attrs, match[0])
+        if len(props) != len(root): return None
+        records.append(props)
+    live, old, wanted = records
+    result = current
+    for name in sorted(old.keys() | wanted.keys()):
+        previous, requested, actual = old.get(name), wanted.get(name), live.get(name)
+        attrs = lambda item: item[0] if item else None
+        if attrs(previous) == attrs(requested) or attrs(actual) == attrs(requested):
+            continue
+        if attrs(actual) != attrs(previous): return None
+        if actual:
+            result = result.replace(actual[1], requested[1] if requested else '', 1)
+        elif requested:
+            result = result.replace('</channel>', '  '+requested[1]+'\n</channel>', 1)
+    return result
 
 def merge(current, base, target, rel):
     if current == base: return target
     if current == target or base == target: return current
+    if rel == XML and all((current, base, target)):
+        result = merge_terminal(current, base, target)
+        if result is not None: return result
     if base and current.startswith(base): return target + current[len(base):]
     if base and current.endswith(base): return current[:-len(base)] + target
     with tempfile.TemporaryDirectory(dir=STATE) as td:
@@ -467,6 +519,19 @@ def validate(out):
         if rel.endswith('.toml'): tomllib.loads(s)
         elif rel.endswith('.jsonc'): json.loads(s) # Existing fastfetch file is strict JSON.
         elif rel == XML: ET.fromstring(s)
+        elif rel.endswith('.tmTheme'): plistlib.loads(s.encode())
+        elif rel in ['.local/bin/ty', '.local/bin/capture']: compile(s, rel, 'exec')
+        elif rel == '.zshrc':
+            r = run(['zsh', '-n'], input=s)
+            if r.returncode: raise ValueError('zsh validation: '+r.stderr.strip())
+    if shutil.which('nvim'):
+        with tempfile.TemporaryDirectory(dir=STATE) as td:
+            for rel,s in out.items():
+                if not rel.endswith('.lua'): continue
+                q = Path(td)/'check.lua'; q.write_text(s)
+                check = 'lua local f,e=loadfile('+json.dumps(str(q))+'); if not f then io.stderr:write(e); vim.cmd("cquit 1") end'
+                r = run(['nvim', '--headless', '-u', 'NONE', '-i', 'NONE', '-n', '-c', check, '-c', 'qa!'])
+                if r.returncode: raise ValueError('Lua validation '+rel+': '+r.stderr.strip())
     if '.config/i3status/config' in out:
         with tempfile.NamedTemporaryFile(mode='w',dir=STATE) as t:
             t.write(out['.config/i3status/config']); t.flush()
@@ -509,10 +574,10 @@ def reload_i3():
         return ['i3 reload failed: '+str(e)], 'Files applied; rerun the accent command to retry refresh.'
     return [], 'i3 reloaded; i3bar will restart i3status when its accent changes.'
 
-def sync_terminal(meta, mode):
+def sync_terminal(meta, mode, keys=None):
     if not os.environ.get('DISPLAY'): return []
     desired = ET.fromstring((HOME/XML).read_text())
-    keys = ['background-mode','color-use-theme','color-foreground','color-background','color-cursor',
+    keys = keys if keys is not None else ['background-mode','color-use-theme','color-foreground','color-background','color-cursor',
             'color-cursor-use-default','color-selection-use-default','color-selection',
             'color-selection-background','color-palette']
     attrs = {x.attrib['name']:x.attrib for x in desired}
@@ -521,17 +586,70 @@ def sync_terminal(meta, mode):
         a = attrs.get(key)
         args = ['xfconf-query','-c','xfce4-terminal','-p','/'+key]
         if a:
+            if key == 'color-cursor':
+                # XML can be updated before xfconfd starts; an equal-value set
+                # then emits no notification to an existing terminal's cache.
+                # Ensure both existing and newly opened screens receive a change.
+                current = run(args)
+                if current.returncode == 0 and current.stdout.strip().upper() == a['value'].upper():
+                    pulse = '#000000' if a['value'].upper() != '#000000' else '#FFFFFF'
+                    r = run(args+['--create','-t',a['type'],'-s',pulse])
+                    if r.returncode: failures.append('terminal cursor notification: '+r.stderr.strip())
             r = run(args+['--create','-t',a['type'],'-s',a['value']])
         else:
             r = run(args+['--reset'])
         if r.returncode: failures.append('terminal '+key+': '+r.stderr.strip())
     return failures
 
+def terminal_ptys():
+    """Find this user's terminal children without reading their input or commands."""
+    processes = {}
+    for path in Path('/proc').iterdir():
+        if not path.name.isdigit(): continue
+        try:
+            if path.stat().st_uid != os.getuid(): continue
+            fields = (path/'stat').read_text().rsplit(')', 1)[1].split()
+            processes[int(path.name)] = (int(fields[1]), (path/'comm').read_text().strip())
+        except (OSError, ValueError, IndexError): continue
+    terminals = {pid for pid,(_,name) in processes.items() if name in ['xfce4-terminal', 'kitty']}
+    ttys = set()
+    for pid,(parent,_) in processes.items():
+        if parent not in terminals: continue
+        try: tty = os.readlink('/proc/'+str(pid)+'/fd/0')
+        except OSError: continue
+        if re.fullmatch(r'/dev/pts/[0-9]+', tty): ttys.add(tty)
+    return sorted(ttys)
+
+def refresh_terminal_cursors(colour):
+    """Update only terminal output; OSC 12 sets the cursor, OSC 112 resets it."""
+    if colour is not None and not re.fullmatch(r'#[0-9a-fA-F]{6}', colour):
+        raise ValueError('Invalid terminal cursor colour')
+    sequence = ('\x1b]12;'+colour+'\x07' if colour else '\x1b]112\x07').encode()
+    updated, failures = 0, []
+    for tty in terminal_ptys():
+        try:
+            fd = os.open(tty, os.O_WRONLY | os.O_NOCTTY | os.O_NONBLOCK | os.O_CLOEXEC)
+            try:
+                info = os.fstat(fd)
+                if not stat.S_ISCHR(info.st_mode) or info.st_uid != os.getuid():
+                    raise ValueError('Not an owned terminal')
+                if os.write(fd, sequence) != len(sequence): raise OSError('Incomplete cursor update')
+            finally: os.close(fd)
+            updated += 1
+        except (OSError, ValueError) as e:
+            failures.append('Terminal cursor '+tty+': '+str(e))
+    return updated, failures
+
 def refresh(meta, mode):
     if not os.environ.get('DISPLAY'):
-        return [], ['TTY: graphical reloads skipped']
+        return [], ['TTY: graphical reloads skipped; reopen apps and shells to load the selected colours.']
     failures = sync_terminal(meta,mode)
     notes = []
+    p = json.loads((ROOT/'palette.json').read_text())
+    colour = p.get('cursor',p['accent']) if mode == 'charcoal' else None
+    updated, cursor_failures = refresh_terminal_cursors(colour)
+    failures.extend(cursor_failures)
+    if updated: notes.append('Text cursor refreshed in '+str(updated)+' running terminal sessions.')
     r = run(['i3-msg','reload'])
     if r.returncode or not all(x.get('success') for x in json.loads(r.stdout or '[{}]')):
         failures.append('i3 reload: '+r.stderr.strip())
@@ -542,7 +660,7 @@ def refresh(meta, mode):
     if shutil.which('dunstctl'):
         r = run(['dunstctl','reload'])
         if r.returncode: failures.append('Dunst reload: '+r.stderr.strip())
-    notes.append('Reopen TUIs, Kitty, Firefox and GTK apps; existing sessions are kept running.')
+    notes.append('Reopen TUIs, Kitty, Firefox, GTK apps and zsh shells; existing sessions are kept running. New ty/capture menus and mpv instances use the selected accent.')
     notes.append('ncspot supports :reload. Reopen existing Neovim/tmux sessions to pick up the selected appearance; see README for manual refresh.')
     if mode == 'charcoal':
         notes.append('Firefox chrome CSS and enabling preference applied; restart Firefox normally to activate. After original restoration, reset toolkit.legacyUserProfileCustomizations.stylesheets in about:config if it was previously unset.')
@@ -555,16 +673,20 @@ def main():
     fcntl.flock(lock,fcntl.LOCK_EX)
     args = sys.argv[1:]
     palette = None
-    accent_request = len(args)==2 and args[0]=='accent'
-    if accent_request:
+    whole_desktop = len(args)==3 and args[0]=='accent' and args[2]=='--all'
+    accent_request = (len(args)==2 and args[0]=='accent') or whole_desktop
+    cursor_request = len(args)==2 and args[0]=='cursor'
+    if accent_request or cursor_request:
         if not re.fullmatch(r'#?[0-9a-fA-F]{6}', args[1]):
-            raise ValueError('Accent must be six hexadecimal digits, optionally prefixed with #.')
+            raise ValueError('Colour must be six hexadecimal digits, optionally prefixed with #.')
         palette = json.loads((ROOT/'palette.json').read_text())
-        palette['i3_accent'] = '#'+args[1].lstrip('#').upper()
-    component = args[2] if len(args)==3 and args[:2]==['charcoal','--only'] and args[2] in ['yazi','dunst','i3','firefox'] else None
-    if accent_request: component = 'i3'
+        palette['cursor' if cursor_request else 'i3_accent'] = '#'+args[1].lstrip('#').upper()
+        if whole_desktop: palette['accent'] = palette['i3_accent']
+    component = args[2] if len(args)==3 and args[:2]==['charcoal','--only'] and args[2] in ['yazi','dunst','i3','firefox','cursor'] else None
+    if accent_request and not whole_desktop: component = 'i3'
+    if cursor_request: component = 'cursor'
     scoped = component is not None
-    cmd = 'charcoal' if accent_request else args[0] if len(args)==1 or scoped else ''
+    cmd = 'charcoal' if accent_request or cursor_request else args[0] if len(args)==1 or scoped else ''
     statefile = STATE/'state.json'
     state = json.loads(statefile.read_text()) if statefile.exists() else {'selected':'original','failures':[]}
     if scoped and state.get('selected') == 'partial' and state.get('requested') == 'charcoal --only '+component:
@@ -572,13 +694,15 @@ def main():
     if cmd == 'status':
         print('Selected theme:',state['selected'])
         p = json.loads((ROOT/'palette.json').read_text())
+        print('Global accent:', p['accent'])
+        print('Text cursor:', p.get('cursor',p['accent']))
         print('Requested i3 accent:', p.get('i3_accent',p['accent']))
         config = HOME/'.config/i3/config'
         match = re.search(r'(?m)^set \$accent (#[0-9a-fA-F]{6})$',config.read_text()) if config.exists() else None
         print('Configured i3 accent:',match[1] if match else 'not found')
         if state.get('i3_notes'): print(state['i3_notes'])
         for failure in state.get('i3_failures',[]): print(failure)
-        if state['selected'] == 'charcoal': print('Colour grammar: SluntShack — black/white/greys; orange attention; red faults. Notes: '+str(ROOT/'SLUNTSHACK.txt'))
+        if state['selected'] == 'charcoal': print('Colour grammar: SluntShack — black/white/greys; '+p['accent']+' attention; red faults. Notes: '+str(ROOT/'SLUNTSHACK.txt'))
         if (STATE/'baseline.json').exists(): print('Original backup:',json.loads((STATE/'baseline.json').read_text())['backup'])
         for item in state.get('failures',[]) + state.get('notes',[]): print(item)
         if state.get('yazi_notes'): print(state['yazi_notes'])
@@ -586,18 +710,21 @@ def main():
         if state.get('dunst_notes'): print(state['dunst_notes'])
         if state.get('firefox_notes'): print(state['firefox_notes'])
         if state.get('firefox_selected'): print('Firefox selection:', state['firefox_selected'])
+        if state.get('cursor_notes'): print(state['cursor_notes'])
+        for failure in state.get('cursor_failures',[]): print(failure)
         last = STATE/'last'
         drift = [r for r,h in state.get('hashes',{}).items() if (digest((HOME/r).read_bytes()) if (HOME/r).exists() else None) != h]
         if drift: print('Changed since last selection:',', '.join(drift))
         return
     if cmd not in ['charcoal','original']:
-        raise ValueError('Usage: air-theme accent HEX | charcoal [--only i3|yazi|dunst|firefox] | original | status')
+        raise ValueError('Usage: air-theme accent HEX [--all] | cursor HEX | charcoal [--only i3|yazi|dunst|firefox|cursor] | original | status')
     meta = snapshot()
     # Restoration must work even if the palette was edited incorrectly.
     themed = render(meta,palette) if cmd == 'charcoal' else {r:original(meta,r) for r in FILES}
     active_files = {'yazi':['.config/yazi/theme.toml'],'dunst':['.config/dunst/dunstrc'],
                     'i3':['.config/i3/config','.config/i3status/config'],
-                    'firefox':[PROFILE+'/chrome/userChrome.css', PROFILE+'/user.js']}[component] if scoped else FILES
+                    'firefox':[PROFILE+'/chrome/userChrome.css', PROFILE+'/user.js'],
+                    'cursor':CURSOR_FILES}[component] if scoped else FILES
     themed = {r:themed[r] for r in active_files}
     validate({r:s for r,s in themed.items() if s})
     last = STATE/'last'
@@ -621,7 +748,7 @@ def main():
     # Save truthful progress before live writes; a failed operation remains partial.
     pending = dict(state) if scoped else {}
     if scoped: pending['previous_state'] = state
-    pending.update({'selected':'partial', 'requested':'charcoal --only '+component if scoped else cmd,
+    pending.update({'selected':'partial', 'requested':'charcoal --only '+component if scoped else 'accent '+palette['accent']+' --all' if whole_desktop else cmd,
                     'failures':['Application in progress; rerun the requested selection if interrupted.']})
     savejson(statefile, pending)
     if palette is not None: savejson(ROOT/'palette.json',palette)
@@ -664,12 +791,27 @@ def main():
             print('i3 accent:',(palette or json.loads((ROOT/'palette.json').read_text())).get('i3_accent','#FF3D00'))
             print('Files applied: i3 and i3status.')
             for failure in failures: print(failure)
+        if component == 'cursor':
+            p = palette or json.loads((ROOT/'palette.json').read_text())
+            colour = p.get('cursor',p['accent'])
+            failures = []
+            note = 'Text cursor saved as '+colour+'; live refresh skipped outside the desktop.'
+            if os.environ.get('DISPLAY'):
+                failures = sync_terminal(meta,cmd,keys=['color-cursor','color-cursor-use-default'])
+                updated, cursor_failures = refresh_terminal_cursors(colour)
+                failures.extend(cursor_failures)
+                note = 'Text cursor '+colour+' applied to terminal defaults and '+str(updated)+' running sessions.'
+            state['cursor_failures'] = failures
+            state['notes'] = [n for n in state.get('notes',[]) if not n.startswith('Text cursor refreshed')]
+            print('Desktop accent:',p['accent'])
+            for failure in failures: print(failure)
         state[component+'_notes'] = note
         state[component+'_selected'] = 'charcoal'
         savejson(statefile,state)
         print(note)
         if component == 'dunst' and os.environ.get('DISPLAY') and r.returncode: sys.exit(2)
         if component == 'i3' and failures: sys.exit(2)
+        if component == 'cursor' and failures: sys.exit(2)
         return
     try:
         failures,notes = refresh(meta,cmd)
@@ -678,6 +820,9 @@ def main():
     hashes = {r:digest((HOME/r).read_bytes()) if (HOME/r).exists() else None for r in FILES}
     savejson(statefile,{'selected':cmd,'failures':failures,'notes':notes,'hashes':hashes})
     print('Selected theme:',cmd)
+    if whole_desktop:
+        print('Global and i3 accent:', palette['accent'])
+        print('Files applied:', len(active_files), 'desktop theme components.')
     for msg in failures+notes: print(msg)
     if failures: sys.exit(2)
 

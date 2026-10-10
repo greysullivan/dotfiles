@@ -1,0 +1,3 @@
+#!/bin/sh
+cd "$HOME/src/arch-audio-live" || exit 1
+exec python live.py "$@"

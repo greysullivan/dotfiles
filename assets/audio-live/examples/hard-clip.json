@@ -1,0 +1,22 @@
+{
+  "sample_rate": 24000,
+  "channels": 1,
+  "source": "sine",
+  "modulation": "frequency",
+  "output": "dry_plus_echo",
+  "max_delay_seconds": 1,
+  "controls": {
+    "frequency": 220,
+    "mod_rate": 2,
+    "mod_depth": 0,
+    "delay_ms": 350,
+    "dry": 0.7,
+    "echo": 0.4,
+    "level": 0.1
+  },
+  "waveshaping": {
+    "kind": "hard_clip",
+    "drive": 4,
+    "mix": 0.75
+  }
+}

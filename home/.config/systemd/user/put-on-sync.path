@@ -1,0 +1,9 @@
+[Unit]
+Description=Notice new weekly playlist folders
+
+[Path]
+PathChanged=%h/Music/playlists
+Unit=put-on-sync.service
+
+[Install]
+WantedBy=default.target

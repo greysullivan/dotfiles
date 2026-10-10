@@ -5,7 +5,7 @@
   "foreground": "#FFFFFF",
   "muted": "#A3A3A3",
   "divider": "#343434",
-  "accent": "#FF3D00",
+  "accent": "#DFA0A0",
   "error": "#D88C8C",
   "success": "#FFFFFF",
   "warning": "#A3A3A3",
@@ -18,5 +18,6 @@
   "notification_background": "#000000",
   "notification_foreground": "#FFFFFF",
   "notification_muted": "#A3A3A3",
-  "i3_accent": "#FF3D00"
+  "i3_accent": "#DFA0A0",
+  "cursor": "#DFA0A0"
 }

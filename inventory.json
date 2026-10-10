@@ -1,0 +1,4654 @@
+{
+  "captured_utc": "2026-10-10T01:13:10.455050+00:00",
+  "source_model": "MacBookAir7,2",
+  "packages": [
+    {
+      "name": "7zip",
+      "version": "26.03-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "abseil-cpp",
+      "version": "20260817.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "acl",
+      "version": "2.4.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "ada",
+      "version": "4.0.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "adwaita-cursors",
+      "version": "50.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "adwaita-fonts",
+      "version": "51.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "adwaita-icon-theme",
+      "version": "50.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "adwaita-icon-theme-legacy",
+      "version": "46.2-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "aerc",
+      "version": "0.22.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "alsa-card-profiles",
+      "version": "1:1.6.9-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "alsa-lib",
+      "version": "1.2.16.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "alsa-topology-conf",
+      "version": "1.2.5.1-4",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "alsa-ucm-conf",
+      "version": "1.2.16.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "alsa-utils",
+      "version": "1.2.16-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "aom",
+      "version": "3.15.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "archlinux-keyring",
+      "version": "20260909-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "at-spi2-core",
+      "version": "2.60.7-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "attr",
+      "version": "2.6.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "audit",
+      "version": "4.2.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "autoconf",
+      "version": "2.73-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "automake",
+      "version": "1.19-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "avahi",
+      "version": "1:0.9rc5-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "base",
+      "version": "3-3",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "base-devel",
+      "version": "1-2",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "bash",
+      "version": "5.3.20-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "bat",
+      "version": "0.26.1-3",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "binutils",
+      "version": "2.47-4",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "bison",
+      "version": "3.8.2-8",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "blas",
+      "version": "3.12.1-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "bluez-libs",
+      "version": "5.87-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "boost-libs",
+      "version": "1.92.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "brightnessctl",
+      "version": "0.5.1-3",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "broadcom-wl-dkms",
+      "version": "6.30.223.271-50",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": true
+    },
+    {
+      "name": "brotli",
+      "version": "1.2.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "btop",
+      "version": "1.4.7-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "bubblewrap",
+      "version": "0.13.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "bzip2",
+      "version": "1.0.8-6",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "c-ares",
+      "version": "1.34.8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "ca-certificates",
+      "version": "20240618-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "ca-certificates-mozilla",
+      "version": "3.130-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "ca-certificates-utils",
+      "version": "20240618-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "cairo",
+      "version": "1.18.6-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "cairomm-1.16",
+      "version": "1.18.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "cava",
+      "version": "1.0.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "cblas",
+      "version": "3.12.1-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "cdparanoia",
+      "version": "10.2-10",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "cfitsio",
+      "version": "1:4.7.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "chafa",
+      "version": "1.18.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "compiler-rt",
+      "version": "23.1.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "confuse",
+      "version": "3.4-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "coreutils",
+      "version": "9.12-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "cpio",
+      "version": "2.15-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "cryptsetup",
+      "version": "2.8.8-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "curl",
+      "version": "8.22.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "dav1d",
+      "version": "1.5.4-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "db5.3",
+      "version": "5.3.28-7",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "dbus",
+      "version": "1.16.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "dbus-broker",
+      "version": "37-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "dbus-broker-units",
+      "version": "37-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "dbus-units",
+      "version": "37-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "dconf",
+      "version": "0.49.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "debugedit",
+      "version": "5.3-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "default-cursors",
+      "version": "3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "deno",
+      "version": "2.9.7-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "desktop-file-utils",
+      "version": "0.28-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "device-mapper",
+      "version": "2.03.42-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "diffutils",
+      "version": "3.12-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "dkms",
+      "version": "3.4.3-2",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "dmenu",
+      "version": "5.4-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "dosfstools",
+      "version": "4.2-5",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "double-conversion",
+      "version": "3.4.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "duktape",
+      "version": "2.7.0-7",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "dunst",
+      "version": "1.13.2-2",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "e2fsprogs",
+      "version": "1.47.4-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "elfutils",
+      "version": "0.196-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "exfatprogs",
+      "version": "1.4.3-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "expat",
+      "version": "2.8.5-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "eza",
+      "version": "0.23.5-2",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "fakeroot",
+      "version": "1:1.37.2-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "fastfetch",
+      "version": "2.69.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "fd",
+      "version": "10.5.0-3",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "ffmpeg",
+      "version": "2:9.0.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "fftw",
+      "version": "3.3.11-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "file",
+      "version": "5.48-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "filesystem",
+      "version": "2025.10.12-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "findutils",
+      "version": "4.11.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "firefox",
+      "version": "157.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "flac",
+      "version": "1.5.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "flameshot",
+      "version": "14.0.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "flex",
+      "version": "2.6.4-6",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "fmt",
+      "version": "12.2.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "fontconfig",
+      "version": "2:2.18.3-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "freetype2",
+      "version": "2.14.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "fribidi",
+      "version": "1.0.17-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "fuse-common",
+      "version": "3.18.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "fuse3",
+      "version": "3.18.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "fzf",
+      "version": "0.74.4-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gawk",
+      "version": "5.4.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gc",
+      "version": "8.2.12-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gcc",
+      "version": "16.2.1+r23+gd564253eb6c8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gcc-libs",
+      "version": "16.2.1+r23+gd564253eb6c8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gdb",
+      "version": "18.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gdb-common",
+      "version": "18.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gdbm",
+      "version": "1.26-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gdk-pixbuf2",
+      "version": "2.44.7-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gettext",
+      "version": "1.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "giflib",
+      "version": "6.1.3-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "git",
+      "version": "2.56.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "github-cli",
+      "version": "2.102.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "glib-networking",
+      "version": "1:2.80.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "glib2",
+      "version": "2.88.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "glibc",
+      "version": "2.44+r50+g1848099f063e-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "glibmm-2.68",
+      "version": "2.88.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "glslang",
+      "version": "1:1.4.357.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "glycin",
+      "version": "2.1.5-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gmime3",
+      "version": "3.2.15-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gmp",
+      "version": "6.3.0-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gnulib-l10n",
+      "version": "20241231-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gnupg",
+      "version": "2.4.9-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gnutls",
+      "version": "3.8.13-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gobject-introspection-runtime",
+      "version": "1.86.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gperftools",
+      "version": "2.18.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gpgme",
+      "version": "2.2.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gpgmepp",
+      "version": "2.2.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gpm",
+      "version": "1.20.7.r38.ge82d1a6-7",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "graphene",
+      "version": "1.10.8-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "graphite",
+      "version": "1:1.3.15-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "grep",
+      "version": "3.12-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "groff",
+      "version": "1.24.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gsettings-desktop-schemas",
+      "version": "50.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gsettings-system-schemas",
+      "version": "50.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gsm",
+      "version": "1.0.24-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gssdp",
+      "version": "1.6.6-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gst-plugins-bad-libs",
+      "version": "1.28.7-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gst-plugins-base",
+      "version": "1.28.7-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gst-plugins-base-libs",
+      "version": "1.28.7-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gstreamer",
+      "version": "1.28.7-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gtest",
+      "version": "1.18.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gtk-layer-shell",
+      "version": "0.10.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gtk-update-icon-cache",
+      "version": "1:4.22.5-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gtk3",
+      "version": "1:3.24.52-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gtk4",
+      "version": "1:4.22.5-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gtkmm-4.0",
+      "version": "4.22.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "guile",
+      "version": "3.0.11-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gupnp",
+      "version": "1:1.6.10-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gupnp-igd",
+      "version": "1.6.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "gzip",
+      "version": "1.15-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "harfbuzz",
+      "version": "14.5.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "hdf5",
+      "version": "2.2.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "hicolor-icon-theme",
+      "version": "0.18-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "hidapi",
+      "version": "0.15.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "highway",
+      "version": "1.4.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "hwdata",
+      "version": "0.411-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "hwloc",
+      "version": "2.14.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "hyfetch",
+      "version": "2.1.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "i3-wm",
+      "version": "4.25.1-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "i3lock",
+      "version": "2.16-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "i3status",
+      "version": "2.15-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "iana-etc",
+      "version": "20260617-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "icu",
+      "version": "78.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "imagemagick",
+      "version": "7.1.2.32-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "imath",
+      "version": "3.2.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "iniparser",
+      "version": "4.3.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "intel-gmmlib",
+      "version": "22.10.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "intel-media-driver",
+      "version": "26.3.5-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "intel-ucode",
+      "version": "20260925-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "iproute2",
+      "version": "7.2.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "iptables",
+      "version": "1:1.8.13-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "iputils",
+      "version": "20250605-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "iso-codes",
+      "version": "4.20.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "isync",
+      "version": "1.5.1-2",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "jansson",
+      "version": "2.15.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "jbigkit",
+      "version": "2.1-8",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "jemalloc",
+      "version": "1:5.4.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "jq",
+      "version": "1.8.2-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "json-c",
+      "version": "0.19-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "json-glib",
+      "version": "1.10.8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "kbd",
+      "version": "2.10.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "keyutils",
+      "version": "1.6.3-4",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "kguiaddons",
+      "version": "6.30.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "kitty",
+      "version": "0.49.2-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "kitty-shell-integration",
+      "version": "0.49.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "kitty-terminfo",
+      "version": "0.49.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "kmod",
+      "version": "34.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "krb5",
+      "version": "1.22.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "l-smash",
+      "version": "2.14.5-4",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "lame",
+      "version": "4.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "lapack",
+      "version": "3.12.1-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "lcms2",
+      "version": "2.19.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "leancrypto",
+      "version": "1.9.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "less",
+      "version": "1:710-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libaec",
+      "version": "1.1.7-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libarchive",
+      "version": "3.8.9-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libasan",
+      "version": "16.2.1+r23+gd564253eb6c8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libass",
+      "version": "0.17.5-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libassuan",
+      "version": "3.0.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libasyncns",
+      "version": "1:0.8+r3+g68cd5af-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libatomic",
+      "version": "16.2.1+r23+gd564253eb6c8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libavc1394",
+      "version": "0.5.4-7",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libavif",
+      "version": "1.4.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libb2",
+      "version": "0.98.1-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libbluray",
+      "version": "1.5.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libbpf",
+      "version": "1.7.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libbs2b",
+      "version": "3.1.0-10",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libbsd",
+      "version": "0.12.2-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libcanberra",
+      "version": "1:0.30+r2+gc0620e4-6",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libcap",
+      "version": "2.78-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libcap-ng",
+      "version": "0.9.6-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libcdio",
+      "version": "2.4.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libcdio-paranoia",
+      "version": "10.2+2.0.2-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libcgif",
+      "version": "0.5.4-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libcloudproviders",
+      "version": "0.4.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libcolord",
+      "version": "1.4.8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libconfig",
+      "version": "1.8.2-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libcups",
+      "version": "2:2.4.19-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libdaemon",
+      "version": "0.14-6",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libdatrie",
+      "version": "0.2.14-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libdc1394",
+      "version": "2.2.7-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libde265",
+      "version": "1.1.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libdeflate",
+      "version": "1.26-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libdisplay-info",
+      "version": "0.3.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libdovi",
+      "version": "3.4.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libdrm",
+      "version": "2.4.134-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libdvdnav",
+      "version": "7.0.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libdvdread",
+      "version": "7.1.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libebur128",
+      "version": "1.2.6-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libedit",
+      "version": "20260512_3.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libelf",
+      "version": "0.196-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libepoxy",
+      "version": "1.5.10-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libev",
+      "version": "4.33-5",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libevdev",
+      "version": "1.13.7-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libevent",
+      "version": "2.1.13-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libexif",
+      "version": "0.6.26-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libfdk-aac",
+      "version": "2.0.3-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libffi",
+      "version": "3.8.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libfontenc",
+      "version": "1.1.9-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libfreeaptx",
+      "version": "0.2.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libgcc",
+      "version": "16.2.1+r23+gd564253eb6c8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libgcrypt",
+      "version": "1.12.4-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libgfortran",
+      "version": "16.2.1+r23+gd564253eb6c8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libgirepository",
+      "version": "1.86.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libgit2",
+      "version": "1:1.9.7-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libglvnd",
+      "version": "1.7.0-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libgomp",
+      "version": "16.2.1+r23+gd564253eb6c8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libgpg-error",
+      "version": "1.61-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libgtop",
+      "version": "2.41.3-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libgudev",
+      "version": "238-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libheif",
+      "version": "1.23.5-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libhwasan",
+      "version": "16.2.1+r23+gd564253eb6c8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libice",
+      "version": "1.1.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libidn2",
+      "version": "2.3.8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libiec61883",
+      "version": "1.2.0-9",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libimagequant",
+      "version": "4.4.1-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libinput",
+      "version": "1.32.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libisl",
+      "version": "0.28-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libjpeg-turbo",
+      "version": "3.2.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libjxl",
+      "version": "0.12.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libksba",
+      "version": "1.8.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "liblc3",
+      "version": "1.1.3-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libldac",
+      "version": "2.0.2.6-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libldap",
+      "version": "2.7.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "liblqr",
+      "version": "0.4.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "liblsan",
+      "version": "16.2.1+r23+gd564253eb6c8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libluv",
+      "version": "1.52.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libmakepkg-dropins",
+      "version": "20-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libmatio",
+      "version": "1.5.30-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libmd",
+      "version": "1.3.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libmm-glib",
+      "version": "1.24.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libmnl",
+      "version": "1.0.5-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libmodplug",
+      "version": "0.8.9.0-7",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libmpc",
+      "version": "1.4.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libmysofa",
+      "version": "1.3.5-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libndp",
+      "version": "1.9-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libnetfilter_conntrack",
+      "version": "1.1.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libnewt",
+      "version": "0.52.25-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libnfnetlink",
+      "version": "1.0.2-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libnftnl",
+      "version": "1.3.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libnghttp2",
+      "version": "1.70.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libnghttp3",
+      "version": "1.18.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libngtcp2",
+      "version": "1.25.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libnice",
+      "version": "0.1.24-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libnl",
+      "version": "3.12.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libnm",
+      "version": "1.58.1-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libnotify",
+      "version": "0.8.8-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libnsl",
+      "version": "2.0.1-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libobjc",
+      "version": "16.2.1+r23+gd564253eb6c8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libogg",
+      "version": "1.3.6-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libopenmpt",
+      "version": "0.8.9-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libp11-kit",
+      "version": "0.26.5-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libpcap",
+      "version": "1.11.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libpciaccess",
+      "version": "0.19-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libpgm",
+      "version": "5.3.128-4",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libpipeline",
+      "version": "1.5.8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libpipewire",
+      "version": "1:1.6.9-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libplacebo",
+      "version": "7.360.1-6",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libpng",
+      "version": "1.6.59-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libproxy",
+      "version": "0.5.12-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libpsl",
+      "version": "0.21.5-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libpulse",
+      "version": "17.0+r98+gb096704c0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libquadmath",
+      "version": "16.2.1+r23+gd564253eb6c8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libraqm",
+      "version": "0.11.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libraw",
+      "version": "0.22.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libraw1394",
+      "version": "2.1.2-4",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "librsvg",
+      "version": "2:2.62.4-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "librsync",
+      "version": "1:2.3.4-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libsamplerate",
+      "version": "0.2.2-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libsasl",
+      "version": "2.1.28-5",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libseccomp",
+      "version": "2.6.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libsecret",
+      "version": "0.21.8.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libsigc++-3.0",
+      "version": "3.8.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libsixel",
+      "version": "1.10.5-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libsm",
+      "version": "1.2.6-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libsndfile",
+      "version": "1.2.2-4",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libsodium",
+      "version": "1.0.22-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libsoup3",
+      "version": "3.6.6-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libsoxr",
+      "version": "0.1.3-5",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libssh",
+      "version": "0.12.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libssh2",
+      "version": "1.11.1-7",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libstdc++",
+      "version": "16.2.1+r23+gd564253eb6c8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libstemmer",
+      "version": "3.1.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libsysprof-capture",
+      "version": "50.0-6",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libtasn1",
+      "version": "4.21.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libteam",
+      "version": "1.32-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libthai",
+      "version": "0.1.30-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libtheora",
+      "version": "1.2.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libtiff",
+      "version": "4.7.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libtirpc",
+      "version": "1.3.8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libtool",
+      "version": "2.6.2-5",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libtsan",
+      "version": "16.2.1+r23+gd564253eb6c8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libubsan",
+      "version": "16.2.1+r23+gd564253eb6c8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libunibreak",
+      "version": "7.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libunistring",
+      "version": "1.4.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libunwind",
+      "version": "1.8.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "liburing",
+      "version": "2.15-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libusb",
+      "version": "1.0.30-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libutempter",
+      "version": "1.2.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libutf8proc",
+      "version": "2.11.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libuv",
+      "version": "1.52.1-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libva",
+      "version": "2.24.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libva-utils",
+      "version": "2.24.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libvdpau",
+      "version": "1.5-4",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libverto",
+      "version": "0.3.2-6",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libvips",
+      "version": "8.18.7-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libvorbis",
+      "version": "1.3.7-4",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libvpl",
+      "version": "2.17.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libvpx",
+      "version": "1.17.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libvterm",
+      "version": "0.3.3-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libwacom",
+      "version": "2.20.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libwebp",
+      "version": "1.6.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libwireplumber",
+      "version": "0.5.18-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libx11",
+      "version": "1.8.13-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxau",
+      "version": "1.0.12-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxcb",
+      "version": "1.17.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxcomposite",
+      "version": "0.4.7-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxcrypt",
+      "version": "4.5.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxcursor",
+      "version": "1.2.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxcvt",
+      "version": "0.1.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxdamage",
+      "version": "1.1.7-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxdmcp",
+      "version": "1.1.5-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxext",
+      "version": "1.3.7-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxfce4ui",
+      "version": "4.20.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxfce4util",
+      "version": "4.20.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxfixes",
+      "version": "6.0.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxfont2",
+      "version": "2.0.9-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxft",
+      "version": "2.3.9-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxi",
+      "version": "1.8.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxinerama",
+      "version": "1.1.6-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxkbcommon",
+      "version": "1.13.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxkbcommon-x11",
+      "version": "1.13.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxkbfile",
+      "version": "1.2.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxml2",
+      "version": "2.15.4-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxmu",
+      "version": "1.3.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxpresent",
+      "version": "1.0.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxrandr",
+      "version": "1.5.5-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxrender",
+      "version": "0.9.12-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxshmfence",
+      "version": "1.3.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxslt",
+      "version": "1.1.45-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxss",
+      "version": "1.2.5-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxt",
+      "version": "1.3.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxtst",
+      "version": "1.2.5-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxv",
+      "version": "1.0.13-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libxxf86vm",
+      "version": "1.1.7-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "libyuv",
+      "version": "r2921+644251f25-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "licenses",
+      "version": "20240728-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "lilv",
+      "version": "0.28.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "linux",
+      "version": "7.2.8.arch1-2",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "linux-api-headers",
+      "version": "7.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "linux-firmware",
+      "version": "20260916-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "linux-firmware-amd",
+      "version": "20260916-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "linux-firmware-amdgpu",
+      "version": "20260916-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "linux-firmware-atheros",
+      "version": "20260916-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "linux-firmware-broadcom",
+      "version": "20260916-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "linux-firmware-cirrus",
+      "version": "20260916-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "linux-firmware-intel",
+      "version": "20260916-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "linux-firmware-mediatek",
+      "version": "20260916-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "linux-firmware-nvidia",
+      "version": "20260916-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "linux-firmware-other",
+      "version": "20260916-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "linux-firmware-radeon",
+      "version": "20260916-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "linux-firmware-realtek",
+      "version": "20260916-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "linux-firmware-ti",
+      "version": "20260916-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "linux-firmware-whence",
+      "version": "20260916-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "linux-headers",
+      "version": "7.2.8.arch1-2",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "linux-lts",
+      "version": "6.18.54-2",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "linux-lts-headers",
+      "version": "6.18.54-2",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "lld",
+      "version": "23.1.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "llhttp",
+      "version": "9.3.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "llvm-libs",
+      "version": "23.1.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "lm_sensors",
+      "version": "1:3.6.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "lmdb",
+      "version": "0.9.35-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "lua",
+      "version": "5.5.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "lua51-lpeg",
+      "version": "1.1.0-5",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "lua54",
+      "version": "5.4.9-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "luajit",
+      "version": "2.1.1788856981+c6ffc14-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "lv2",
+      "version": "1.18.10-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "lz4",
+      "version": "1:1.10.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "lzo",
+      "version": "2.10-5",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "m4",
+      "version": "1.4.21-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "mailcap",
+      "version": "2.1.54-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "make",
+      "version": "4.4.1-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "man-db",
+      "version": "2.13.1-2",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "man-pages",
+      "version": "6.19-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "md4c",
+      "version": "0.6.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "mesa",
+      "version": "1:26.2.4-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "mkinitcpio",
+      "version": "42.2-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "mkinitcpio-busybox",
+      "version": "1.36.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "mobile-broadband-provider-info",
+      "version": "20251101-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "mpdecimal",
+      "version": "4.0.1-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "mpfr",
+      "version": "4.2.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "mpg123",
+      "version": "1.33.7-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "mpv",
+      "version": "1:0.41.0-6",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "msgpack-c",
+      "version": "7.0.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "mtdev",
+      "version": "1.1.7-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "mujs",
+      "version": "1.3.10-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "nano",
+      "version": "9.2-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "ncspot",
+      "version": "1.4.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "ncurses",
+      "version": "6.6-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "neovim",
+      "version": "0.12.5-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "nettle",
+      "version": "4.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "networkmanager",
+      "version": "1.58.1-2",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "nftables",
+      "version": "1:1.1.7-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "node-gyp",
+      "version": "13.1.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "nodejs",
+      "version": "26.10.0-2",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "nodejs-nopt",
+      "version": "10.0.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "notmuch-runtime",
+      "version": "0.40-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "npm",
+      "version": "12.2.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "npth",
+      "version": "1.8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "nspr",
+      "version": "4.40-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "nss",
+      "version": "3.130-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "numactl",
+      "version": "2.0.19-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "ocl-icd",
+      "version": "2.3.5-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "onetbb",
+      "version": "2023.1.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "oniguruma",
+      "version": "6.9.10-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "openal",
+      "version": "1.25.2-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "opencore-amr",
+      "version": "0.1.6-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "opencv",
+      "version": "5.0.0-12",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "openexr",
+      "version": "3.5.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "openh264",
+      "version": "2.6.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "openjpeg2",
+      "version": "2.5.4-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "openjph",
+      "version": "0.32.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "openssh",
+      "version": "10.5p1-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "openssl",
+      "version": "3.6.5-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "opus",
+      "version": "1.6.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "orc",
+      "version": "0.4.44-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "p11-kit",
+      "version": "0.26.5-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pacman",
+      "version": "7.1.0.r9.g54d9411-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pacman-contrib",
+      "version": "1.13.1-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pacman-mirrorlist",
+      "version": "20260610-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pahole",
+      "version": "1:1.32-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pam",
+      "version": "1.7.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pambase",
+      "version": "20260616-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pango",
+      "version": "1:1.58.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pangomm-2.48",
+      "version": "2.58.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "patch",
+      "version": "2.8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pavucontrol",
+      "version": "1:6.2-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pciutils",
+      "version": "3.15.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pcre",
+      "version": "8.45-5",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pcre2",
+      "version": "10.49-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pcsclite",
+      "version": "2.5.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "perl",
+      "version": "5.42.2-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "perl-error",
+      "version": "0.17030-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "perl-mailtools",
+      "version": "2.22-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "perl-timedate",
+      "version": "2.35-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "picom",
+      "version": "13-2",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pinentry",
+      "version": "1.3.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pipewire",
+      "version": "1:1.6.9-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pipewire-alsa",
+      "version": "1:1.6.9-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pipewire-audio",
+      "version": "1:1.6.9-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pipewire-jack",
+      "version": "1:1.6.9-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pipewire-pulse",
+      "version": "1:1.6.9-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pipewire-session-manager",
+      "version": "1:1.6.9-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pixman",
+      "version": "0.46.4-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pkgconf",
+      "version": "3.0.7-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "playerctl",
+      "version": "2.4.1-5",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "polkit",
+      "version": "127-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "poppler",
+      "version": "26.08.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "popt",
+      "version": "1.19-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "portaudio",
+      "version": "1:19.7.0-4",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "procps-ng",
+      "version": "4.0.7-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "protobuf",
+      "version": "36.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "psmisc",
+      "version": "23.7-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "pugixml",
+      "version": "1.16-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "python",
+      "version": "3.14.7-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "python-certifi",
+      "version": "2026.07.22-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "python-cffi",
+      "version": "2.1.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "python-charset-normalizer",
+      "version": "3.5.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "python-colorama",
+      "version": "0.4.6-6",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "python-gobject",
+      "version": "3.56.3-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "python-idna",
+      "version": "3.20-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "python-pycparser",
+      "version": "3.00-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "python-requests",
+      "version": "2.34.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "python-shtab",
+      "version": "1.12.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "python-srt",
+      "version": "3.5.3-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "python-termcolor",
+      "version": "3.3.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "python-tqdm",
+      "version": "4.70.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "python-urllib3",
+      "version": "2.7.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "python-vosk",
+      "version": "0.3.50-7",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "python-websockets",
+      "version": "16.1.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "qt6-base",
+      "version": "6.11.2-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "qt6-svg",
+      "version": "6.11.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "qt6-translations",
+      "version": "6.11.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "rav1e",
+      "version": "0.8.1-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "rclone",
+      "version": "1.75.1-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "readline",
+      "version": "8.3.6-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "restic",
+      "version": "0.19.1-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "resvg",
+      "version": "0.48.1-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "ripgrep",
+      "version": "15.2.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "rubberband",
+      "version": "4.0.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "rust",
+      "version": "1:1.99.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "sbc",
+      "version": "2.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "sdl2-compat",
+      "version": "2.32.72-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "sdl3",
+      "version": "3.4.16-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "sed",
+      "version": "4.10-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "semver",
+      "version": "7.8.5-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "serd",
+      "version": "0.32.10-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "sfsexp",
+      "version": "1.4.1-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "shaderc",
+      "version": "2026.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "shadow",
+      "version": "4.20.0.arch1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "shared-mime-info",
+      "version": "2.5.1-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "simdjson",
+      "version": "1:5.0.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "slang",
+      "version": "2.3.3-4",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "smartmontools",
+      "version": "7.5-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "snappy",
+      "version": "1.2.2-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "sndio",
+      "version": "1.10.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "sord",
+      "version": "0.16.22-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "sound-theme-freedesktop",
+      "version": "0.8-6",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "source-highlight",
+      "version": "3.1.9-19",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "spandsp",
+      "version": "0.0.6-7",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "spdlog",
+      "version": "1.17.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "speex",
+      "version": "1.2.1-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "speexdsp",
+      "version": "1.2.1-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "spirv-tools",
+      "version": "1:1.4.357.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "sqlite",
+      "version": "3.53.4-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "sratom",
+      "version": "0.6.22-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "srt",
+      "version": "1.5.7-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "starship",
+      "version": "1.26.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "startup-notification",
+      "version": "0.12-9",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "sudo",
+      "version": "1.9.17.p2-6",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "svt-av1",
+      "version": "4.2.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "systemd",
+      "version": "262-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "systemd-libs",
+      "version": "262-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "systemd-sysvcompat",
+      "version": "262-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "talloc",
+      "version": "2.5.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "tar",
+      "version": "1.35-5",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "tdb",
+      "version": "1.4.15-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "texinfo",
+      "version": "7.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "tinysparql",
+      "version": "3.11.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "tldr",
+      "version": "3.4.4-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "tmux",
+      "version": "3.7_c-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "touchegg",
+      "version": "2.0.18-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "tpm2-tss",
+      "version": "4.2.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "tree-sitter",
+      "version": "0.26.9-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "tree-sitter-c",
+      "version": "0.24.1-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "tree-sitter-lua",
+      "version": "0.5.0-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "tree-sitter-markdown",
+      "version": "0.5.3-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "tree-sitter-query",
+      "version": "0.8.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "tree-sitter-vim",
+      "version": "0.8.1-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "tree-sitter-vimdoc",
+      "version": "4.1.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "tslib",
+      "version": "1.24-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "ttf-dejavu",
+      "version": "2.37+18+g9b5d1b2f-8",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "ttf-jetbrains-mono",
+      "version": "2.304-2",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "tzdata",
+      "version": "2026e-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "uchardet",
+      "version": "0.0.8-4",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "ueberzugpp",
+      "version": "2.9.10-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "unclutter",
+      "version": "1:1.6-4",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "unibilium",
+      "version": "2.1.4-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "unzip",
+      "version": "6.0-23",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "usbutils",
+      "version": "019-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "util-linux",
+      "version": "2.42.4-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "util-linux-libs",
+      "version": "2.42.4-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "v4l-utils",
+      "version": "1.32.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "vapoursynth",
+      "version": "80-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "verdict",
+      "version": "1.4.5-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "vid.stab",
+      "version": "1.1.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "vmaf",
+      "version": "3.2.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "vosk-api",
+      "version": "0.3.50-7",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "vte-common",
+      "version": "0.84.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "vte3",
+      "version": "0.84.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "vulkan-icd-loader",
+      "version": "1.4.357.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "w3m",
+      "version": "0.5.6-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "wayland",
+      "version": "1.26.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "webrtc-audio-processing-1",
+      "version": "1.3-5",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "which",
+      "version": "2.25-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "wireplumber",
+      "version": "0.5.18-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "wpa_supplicant",
+      "version": "2:2.12-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "x264",
+      "version": "3:0.165.r3222.b35605a-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "x265",
+      "version": "4.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xapian-core",
+      "version": "1:2.1.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xcb-proto",
+      "version": "1.17.0-4",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xcb-util",
+      "version": "0.4.1-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xcb-util-cursor",
+      "version": "0.1.6-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xcb-util-errors",
+      "version": "1.0.1-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xcb-util-image",
+      "version": "0.4.1-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xcb-util-keysyms",
+      "version": "0.4.1-5",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xcb-util-renderutil",
+      "version": "0.3.10-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xcb-util-wm",
+      "version": "0.4.2-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xcb-util-xrm",
+      "version": "1.3-4",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xclip",
+      "version": "0.13-6",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xdg-desktop-portal",
+      "version": "1.22.1-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xdg-desktop-portal-gtk",
+      "version": "1.15.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xdg-utils",
+      "version": "1.2.1-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xdotool",
+      "version": "4.20260303.1-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xf86-input-libinput",
+      "version": "1.5.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xfce4-terminal",
+      "version": "1.2.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xfconf",
+      "version": "4.20.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xkeyboard-config",
+      "version": "2.48-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xorg-fonts-encodings",
+      "version": "1.1.0-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xorg-server",
+      "version": "21.1.24-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xorg-server-common",
+      "version": "21.1.24-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xorg-server-xvfb",
+      "version": "21.1.24-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xorg-setxkbmap",
+      "version": "1.3.5-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xorg-xauth",
+      "version": "1.1.5-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xorg-xinit",
+      "version": "1.4.4-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xorg-xinput",
+      "version": "1.6.4-2",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xorg-xkbcomp",
+      "version": "1.5.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xorg-xmodmap",
+      "version": "1.0.12-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xorg-xprop",
+      "version": "1.2.8-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xorg-xrandr",
+      "version": "1.5.4-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xorg-xrdb",
+      "version": "1.2.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xorg-xset",
+      "version": "1.2.6-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xorg-xsetroot",
+      "version": "1.1.4-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xorgproto",
+      "version": "2025.1-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xvidcore",
+      "version": "1.3.7-4",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xxhash",
+      "version": "0.8.4-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "xz",
+      "version": "5.8.4-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "yajl",
+      "version": "2.1.0-7",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "yazi",
+      "version": "26.9.1-2",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "yt-dlp",
+      "version": "2026.08.19-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "yt-dlp-ejs",
+      "version": "0.8.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "yyjson",
+      "version": "0.13.0-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "zeromq",
+      "version": "4.3.5-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "zimg",
+      "version": "3.0.6-2",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "zix",
+      "version": "0.8.2-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "zlib",
+      "version": "1:1.3.2-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "zlib-ng",
+      "version": "2.3.3-1",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "zoxide",
+      "version": "0.10.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "zsh",
+      "version": "5.9.2-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "zsh-autosuggestions",
+      "version": "0.7.1-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "zsh-completions",
+      "version": "0.36.0-1",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "zsh-history-substring-search",
+      "version": "1.1.0-2",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "zsh-syntax-highlighting",
+      "version": "0.8.0-2",
+      "explicit": true,
+      "native": true,
+      "source_hardware_only": false
+    },
+    {
+      "name": "zstd",
+      "version": "1.5.7-3",
+      "explicit": false,
+      "native": true,
+      "source_hardware_only": false
+    }
+  ],
+  "non_pacman_software": [
+    {
+      "name": "ncspot",
+      "path": ".local/bin/ncspot",
+      "resolved_path": "~/.local/bin/ncspot",
+      "sha256": "7cb73eb8108dbbb3b889db0a34ce8cb097d50f3cf54618c1296e1f5da10cb452",
+      "distribution": "private backup; not committed"
+    },
+    {
+      "name": "codex",
+      "path": ".local/bin/codex",
+      "resolved_path": "~/.codex/packages/standalone/releases/0.162.0-x86_64-unknown-linux-musl/bin/codex",
+      "sha256": "50ed828f357c655a3c82054d346cab8434f24901f14ec19b8267571bdd008b38",
+      "distribution": "private backup; not committed"
+    }
+  ],
+  "audio_source": {
+    "repository": "https://github.com/greysullivan/yuley",
+    "commit": "c82ee162915e71b46440fa0b80aa4fd5de7af248"
+  },
+  "note": "Versions are an inventory, not pins. Default alignment preserves installed packages."
+}

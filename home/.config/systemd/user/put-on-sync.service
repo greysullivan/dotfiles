@@ -1,0 +1,6 @@
+[Unit]
+Description=Refresh weekly listening forms and playlist feedback
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/put-on --sync

@@ -1,0 +1,83 @@
+#!/usr/bin/python3
+"""Restore the pre-restyle files with a preflight three-way merge."""
+import fcntl
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import tempfile
+
+HOME = Path.home()
+STATE = HOME / '.local/state/air-theme'
+
+def prepare(home, backup, manifest, expected):
+    proposed = {}
+    for rel, entry in manifest['entries'].items():
+        dest = home / rel
+        link = os.readlink(dest) if dest.is_symlink() else None
+        if link != entry['link']:
+            raise ValueError('Symlink changed: ' + str(dest))
+        before = (backup / rel).read_text() if entry['exists'] else ''
+        current = dest.read_text() if dest.exists() else ''
+        applied = expected[rel]
+        if current == applied:
+            merged = before
+        elif current == before or applied == before:
+            merged = current
+        elif applied and current.startswith(applied):
+            merged = before + current[len(applied):]
+        elif applied and current.endswith(applied):
+            merged = current[:-len(applied)] + before
+        else:
+            with tempfile.TemporaryDirectory(dir=backup) as td:
+                files = [Path(td) / str(i) for i in range(3)]
+                for p, s in zip(files, [current, applied, before]): p.write_text(s)
+                result = subprocess.run(['diff3', '-m', *map(str, files)], capture_output=True, text=True)
+            if result.returncode:
+                conflict = backup / 'rollback-conflicts' / rel
+                conflict.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+                conflict.write_text(current)
+                conflict.with_name(conflict.name + '.before').write_text(before)
+                conflict.with_name(conflict.name + '.merge').write_text(result.stdout)
+                raise ValueError('Rollback conflict: ' + str(dest) + '; versions saved under ' + str(conflict.parent))
+            merged = result.stdout
+        proposed[rel] = merged
+    return proposed
+
+def main():
+    os.umask(0o077)
+    if sys.argv[1:] not in [[], ['--check']]:
+        raise ValueError('Usage: firefox-theme-rollback [--check]')
+    with (STATE / 'lock').open('w') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        backup = Path((STATE / 'firefox-backup-path').read_text().strip())
+        manifest = json.loads((backup / 'manifest.json').read_text())
+        expected = json.loads((backup / 'applied.json').read_text())
+        proposed = prepare(HOME, backup, manifest, expected)
+        if sys.argv[1:] == ['--check']:
+            print('Rollback preflight passed; no live files changed.')
+            return
+        for rel, text in proposed.items():
+            dest = HOME / rel
+            entry = manifest['entries'][rel]
+            if not entry['exists'] and not text:
+                if dest.exists(): dest.unlink()
+                continue
+            target = dest.resolve() if dest.is_symlink() else dest
+            target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+            with tempfile.NamedTemporaryFile(mode='w', dir=target.parent, delete=False) as t:
+                t.write(text)
+                tmp = Path(t.name)
+            tmp.chmod(entry['mode'] if entry['exists'] else 0o600)
+            os.replace(tmp, target)
+        previous = manifest['stylesheet_preference']
+        print('Pre-restyle Firefox theme, generator and shell alias restored.')
+        print('In Firefox about:config, ' + ('reset' if previous == 'unset' else 'set to ' + previous) +
+              ' toolkit.legacyUserProfileCustomizations.stylesheets, then restart normally.')
+
+if __name__ == '__main__':
+    try: main()
+    except (ValueError, OSError, KeyError) as e:
+        print(str(e), file=sys.stderr)
+        sys.exit(1)

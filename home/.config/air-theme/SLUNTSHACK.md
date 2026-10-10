@@ -1,3 +1,8 @@
+CURRENT ACCENT TRIAL — 2026-10-09
+The shared desktop accent is lavender #C4B5FD. Change it with
+air-theme accent HEX --all; restore orange with air-theme accent ff3d00 --all.
+The dated design and verification notes below describe the original orange review.
+
 # SLUNTSHACK SYSTEM COLOUR GRAMMAR — 2026-10-05
 
 Source: ~/Drive/Downloads/SluntShack/color-rules.txt

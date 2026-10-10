@@ -1,0 +1,12 @@
+# Dependencies of the installed custom commands; alignment only adds missing packages on request.
+alsa-utils
+gcc
+isync
+restic
+github-cli
+curl
+7zip
+tldr
+man-db
+man-pages
+xdg-utils

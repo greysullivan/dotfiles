@@ -98,7 +98,7 @@ def menu():
                                                '--no-block', 'flameshot-drive-upload.service'),
     }
     result = subprocess.run(['dmenu', '-i', '-p', 'Capture', '-fn', 'JetBrains Mono-10',
-                             '-nb', '#191919', '-nf', '#FFFFFF', '-sb', '#FF3D00',
+                             '-nb', '#191919', '-nf', '#FFFFFF', '-sb', '#DFA0A0',
                              '-sf', '#000000'], input='\n'.join(actions) + '\n',
                             capture_output=True, text=True)
     action = actions.get(result.stdout.strip())

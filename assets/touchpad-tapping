@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+"""Enable tapping on devices that expose libinput's tapping property."""
+import subprocess
+
+devices = subprocess.check_output(['xinput', '--list', '--id-only'], text=True).splitlines()
+for device in devices:
+    properties = subprocess.run(['xinput', '--list-props', device], capture_output=True, text=True)
+    if properties.returncode == 0 and 'libinput Tapping Enabled (' in properties.stdout:
+        subprocess.run(['xinput', 'set-prop', device, 'libinput Tapping Enabled', '1'], check=True)

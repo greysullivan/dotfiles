@@ -14,7 +14,7 @@
     horizontal_padding = 10
     text_icon_padding = 0
     frame_width = 1
-    frame_color = "#FF3D00"
+    frame_color = "#DFA0A0"
     gap_size = 0
     corner_radius = 0
     show_age_threshold = -1
@@ -27,7 +27,7 @@
 [urgency_low]
     background = "#000000"
     foreground = "#FFFFFF"
-    frame_color = "#FF3D00"
+    frame_color = "#DFA0A0"
     timeout = 3
 
 [urgency_normal]
@@ -39,5 +39,5 @@
     format = "<b>CRITICAL: %s</b>\n%b"
     background = "#000000"
     foreground = "#FFFFFF"
-    frame_color = "#FF3D00"
+    frame_color = "#DFA0A0"
     timeout = 15

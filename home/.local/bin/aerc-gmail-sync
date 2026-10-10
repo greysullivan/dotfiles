@@ -1,0 +1,14 @@
+#!/bin/sh
+set -eu
+umask 077
+state=/home/grey/.local/state/aerc-setup
+mkdir -p "$state"
+exec 9>"$state/gmail-sync.lock"
+# A manual refresh joins an in-progress background sync before returning.
+/usr/bin/flock -w 1700 9
+config=/home/grey/.config/isyncrc
+if [ "${1:-}" = --initial ]; then
+    config="$state/gmail-initial.isyncrc"
+    shift
+fi
+exec /usr/bin/mbsync --config "$config" "$@" gmail

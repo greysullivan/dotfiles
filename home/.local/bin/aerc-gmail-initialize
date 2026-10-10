@@ -1,0 +1,59 @@
+#!/usr/bin/python
+"""Finish the initial download before switching aerc to its local mailbox."""
+import configparser
+import json
+import io
+import os
+import subprocess
+from datetime import datetime, timezone
+from pathlib import Path
+
+state = Path('/home/grey/.local/state/aerc-setup')
+status = state / 'maildir-status.json'
+ready = state / 'maildir-ready'
+
+def run(*args):
+    subprocess.run(args, check=True)
+
+def write_atomic(path, text):
+    temporary = path.with_name(path.name + '.tmp')
+    with temporary.open('w') as stream:
+        os.chmod(temporary, 0o600)
+        stream.write(text)
+        stream.flush()
+        os.fsync(stream.fileno())
+    os.replace(temporary, path)
+
+def report(stage):
+    write_atomic(status, json.dumps({'stage': stage, 'updated_utc': datetime.now(timezone.utc).isoformat()}, indent=2) + '\n')
+    print(stage, flush=True)
+
+try:
+    if not ready.exists():
+        report('downloading')
+        run('/home/grey/.local/bin/aerc-gmail-sync', '--initial')
+        report('checking-local-aerc')
+        run('/usr/bin/python', str(state / 'check-local-aerc.py'))
+        report('checking-two-way-sync')
+        run('/home/grey/.local/bin/aerc-gmail-sync', '--dry-run')
+        accounts = Path('/home/grey/.config/aerc/accounts.conf')
+        parser = configparser.ConfigParser(interpolation=None)
+        parser.read(accounts)
+        if parser['Gmail']['source'] != 'maildir:///home/grey/Mail/Gmail':
+            write_atomic(state / 'accounts-before-cutover.conf', accounts.read_text())
+        gmail = parser['Gmail']
+        gmail['source'] = 'maildir:///home/grey/Mail/Gmail'
+        gmail.pop('source-cred-cmd', None)
+        gmail['check-mail'] = '0'
+        gmail['check-mail-cmd'] = '/home/grey/.local/bin/aerc-gmail-sync'
+        gmail['check-mail-timeout'] = '30m'
+        stream = io.StringIO()
+        parser.write(stream)
+        write_atomic(accounts, '# Gmail files SMTP submissions in Sent automatically; copy-to stays empty.\n' + stream.getvalue())
+        write_atomic(ready, datetime.now(timezone.utc).isoformat() + '\n')
+    report('enabling-background-sync')
+    run('/usr/bin/systemctl', '--user', 'enable', '--now', 'aerc-gmail-sync.timer')
+    report('ready')
+except Exception:
+    report('failed-will-retry')
+    raise

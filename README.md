@@ -4,6 +4,20 @@ Current Arch Linux/X11/i3 configuration, shell startup files, theme, custom
 commands, and systemd user units. `home/` mirrors paths under `/home/grey`.
 `manifest.json` explicitly lists every managed file.
 
+## Align an existing MacBook Pro
+
+For the Pro that already runs Arch and the original desktop setup, follow
+[ALIGNMENT.md](ALIGNMENT.md). The current live Air configuration is the reference.
+
+```sh
+./install.sh --align --profile macbookpro11-4          # preview changes and dependencies
+./install.sh --align --profile macbookpro11-4 --apply  # update configs; keep installed packages
+```
+
+Missing packages, private prerequisites, services and administrator settings are
+handled explicitly. The Pro's existing private data, projects and working boot
+setup remain in place. A reviewed archive also works when GitHub cloning fails.
+
 ## Fresh Arch install
 
 Finish your base Arch install (for example with `archinstall`), boot it, and
@@ -11,7 +25,7 @@ log in as your regular user with working networking and sudo. Copy or clone
 this repository, then run:
 
 ```sh
-cd ~/dotfiles
+cd ~/src/dotfiles
 ./install.sh                         # preview
 ./install.sh --apply --zsh           # desktop, configs, zsh login shell
 ./install.sh --apply --extras --zsh  # also mail, music, Drive and dictation dependencies
@@ -40,7 +54,7 @@ and the system-wide power-button/touchpad snippets remain manual choices.
 ## Update from the live setup
 
 ```sh
-cd ~/dotfiles
+cd ~/src/dotfiles
 python3 manage.py snapshot
 git diff
 git add .
@@ -54,6 +68,33 @@ The console workspace is available through `work`; its independent tmux
 configuration is included. Fastfetch uses a white upper Arch logo and orange
 lower section. The Firefox theme template and its enabling preference are
 included alongside the generated stylesheet.
+
+## Neovim and notes
+
+Neovim shows only text and the cursor. Code keeps ordinary Vim editing and
+manual saves; `notes` opens a fresh Markdown draft ready to type. Notes live
+in `~/Notes` and autosave after 750 ms of inactivity, on leaving a buffer,
+and on quitting. Untouched drafts create no files. Filename collisions get
+unique suffixes; write failures and external changes retain unsaved text.
+Persistent undo is enabled. Notes are private user data and are not included
+in this repository.
+
+In a note, Ctrl+N starts another draft, Ctrl+O opens the searchable pool,
+Ctrl+F searches its content, and Ctrl+S saves. Ctrl+Z/Ctrl+Y undo/redo;
+Escape enters Vim normal mode. Tab/Shift+Tab nest/unnest lists, including
+their children; Enter continues lists and checkboxes, or ends an empty item.
+Project Markdown keeps ordinary editing. `:NotesAdd` copies the current
+Markdown buffer into the pool without moving or writing its source file.
+
+In normal mode, Space then `ff` finds project files, `fg` searches content,
+`gr` opens working-tree Git changes, and `gs` opens staged changes. Review
+is read-only: Enter on a hunk opens the file at that line; `q` returns to
+the editor. Space then `nn`/`np`/`ns`/`na` invokes new note/pool/search/add.
+Pickers close with Escape. There are no persistent menus or shortcut hints.
+
+The editing modules load independently of the generated theme. Existing
+Neovim processes need reopening to load this configuration. Git, ripgrep,
+and fzf are already in the desktop package list; no editor plugins are needed.
 
 ## External drive tools
 
@@ -101,6 +142,6 @@ separately; helper scripts reference the private files without storing their con
 The Codex executable is installed separately. Service enablement symlinks are
 also omitted; enable the relevant units explicitly when restoring.
 
-Remote: `https://github.com/greysullivan/dotfiles`, branch `arch-install-20261005`.
-The branch is committed locally; pushing awaits GitHub authentication.
+Remote: `https://github.com/greysullivan/dotfiles`, alignment branch
+`migration-macbookpro11-4` (based on `arch-install-20261005`).
 The existing `master` branch contains the original reference setup.

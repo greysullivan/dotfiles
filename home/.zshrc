@@ -61,7 +61,7 @@ HISTTIMEFORMAT="[%F %T] "
 # Completion styling
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*' # case insensitive + fuzzy
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS} 'ma=0;38;2;0;0;0;48;2;255;61;0'
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS} 'ma=0;38;2;0;0;0;48;2;223;160;160'
 zstyle ':completion:*' special-dirs true
 zstyle ':completion:*:descriptions' format '%F{cyan}-- %d --%f'
 zstyle ':completion:*:warnings' format '%F{#A3A3A3}-- no matches --%f'
@@ -324,7 +324,7 @@ if (( ! $+commands[neofetch] && $+commands[neowofetch] )); then
     alias neofetch='neowofetch'
 fi
 
-# System overview is manual: neofetch here, or Super-Space from i3.
+# System overview is manual: neofetch here, or Super-F from i3.
 
 # =========================================
 # J) COLORED MAN PAGES
@@ -351,3 +351,6 @@ export VISUAL="nvim"
 # Load highlighting last, after all ZLE widgets and integrations.
 [[ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] && \
     source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# Open the latest weekly Spotify listening review in Neovim.
+alias put-on="$HOME/.local/bin/put-on"

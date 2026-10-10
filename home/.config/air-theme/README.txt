@@ -3,6 +3,8 @@ Installed and selected for review: 2026-10-05.
 
 COMMANDS
   air-theme accent HEX Change only the i3/dmenu/i3status accent and reload i3.
+  air-theme accent HEX --all Change the shared desktop and i3 accents together.
+  air-theme cursor HEX Set only the text cursor colour, independently of accents.
   air-theme charcoal   Generate, validate and select charcoal; safe to repeat.
   air-theme original   Restore captured appearance, preserving unrelated edits.
   air-theme status     Show selection, refresh failures and file drift.
@@ -14,6 +16,38 @@ Appearance config changes persist after logout. Starting with startx alone
 will not restore the old theme. Run air-theme original explicitly to restore.
 From a TTY, graphical reloads are skipped; app files are still selected.
 start03 rejects an existing graphical session and a non-console terminal.
+
+WHOLE-DESKTOP ACCENT TRIAL
+  air-theme accent c4b5fd --all    Soft lavender (#C4B5FD).
+  air-theme accent ff3d00 --all    Restore the pre-trial orange (#FF3D00).
+  air-theme status               Report global and configured i3 accents.
+
+The shared palette is ~/.config/air-theme/palette.json. --all changes accent
+and i3_accent together, validates the generated and merged configs before
+applying, and uses supported live reloads. It covers existing themed apps plus
+ty, capture menus, mpv controls, Neovim minimal highlights/pickers, the custom
+editor theme and zsh completion selection. Other settings and independent
+edits are preserved. Colours persist until explicitly switched again.
+Reopen zsh shells, terminal apps, mpv, editors, Firefox and GTK apps to load
+their updated configs; running sessions are kept open. On the Linux console,
+applications retain their existing limited-colour fallbacks.
+The --all rollback above returns to orange while keeping the current desktop
+setup. air-theme original restores the older captured appearance instead.
+Full theme switching also refreshes the text cursor in running Xfce/Kitty
+terminal sessions using OSC 12. This handles a cursor colour retained by an
+already-open terminal. Original restoration resets that override using OSC 112.
+Terminal input and running jobs are untouched. Other app colours can still
+require reopening their sessions as described below.
+
+INDEPENDENT TEXT CURSOR
+  air-theme cursor f2b8d5         Soft pink (#F2B8D5), with lavender accents.
+  air-theme cursor c4b5fd         Return the cursor to lavender.
+  air-theme charcoal --only cursor Reapply saved cursor settings and live refresh.
+The palette's cursor token controls Xfce/Kitty text cursors and the existing
+custom editor theme's caret. Selections, prompts, borders and all other accents
+retain their existing colours. --all preserves an explicitly configured cursor.
+Cursor refresh also sends an Xfconf change notification so an existing Xfce
+terminal daemon does not keep an old cursor default for newly opened windows.
 
 I3 ACCENT SWITCHING
   air-theme accent ff4d00
@@ -95,7 +129,7 @@ ZSH REFERENCE
 Completion is configured once. History remains shared with the current
 100000-entry limits. Command correction remains enabled; argument correction
 is disabled. The prompt, plugins, aliases and completion security checks are
-retained. Shell completion and prompt colours retain their separate accents.
+retained. Shell completion and prompt colours follow the global accent.
 Open a new shell to load the cleanup, or run: exec zsh
 
 PALETTE AND IMPLEMENTATION
@@ -153,6 +187,13 @@ NATIVE FILES (paths relative to home)
   .config/mozilla/firefox/59y3la6e.default-release/chrome/userChrome.css
   .config/mozilla/firefox/59y3la6e.default-release/user.js
   .tmux.conf
+  .local/bin/ty
+  .local/bin/capture
+  .config/mpv/youtube-art.conf
+  .config/nvim/lua/minimal/init.lua
+  .config/nvim/lua/minimal/picker.lua
+  .codex/themes/sluntshack.tmTheme
+  .zshrc
 
 ORIGINAL AND SAFE RESTORATION
 Original appearance backup:

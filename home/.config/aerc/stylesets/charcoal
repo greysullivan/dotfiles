@@ -17,13 +17,13 @@ msglist_deleted.fg = #D88C8C
 msglist_deleted.italic = true
 *error.fg = #D88C8C
 *error.bold = true
-*warning.fg = #FF3D00
+*warning.fg = #DFA0A0
 *warning.bold = true
 *success.fg = #FFFFFF
 *.selected.fg = #000000
-*.selected.bg = #FF3D00
+*.selected.bg = #DFA0A0
 selector_focused.fg = #000000
-selector_focused.bg = #FF3D00
+selector_focused.bg = #DFA0A0
 [viewer]
 *.default = true
 *.normal = true

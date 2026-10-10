@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=ncspot
+Comment=Spotify terminal client with personal Client ID support
+TryExec=/home/grey/.local/bin/ncspot
+Exec=/usr/bin/kitty /home/grey/.local/bin/ncspot
+Icon=ncspot
+Terminal=false
+StartupNotify=false
+Categories=AudioVideo;Audio;Player;ConsoleOnly;
+Keywords=spotify;music;player;

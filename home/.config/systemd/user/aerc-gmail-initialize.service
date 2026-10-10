@@ -1,0 +1,14 @@
+[Unit]
+Description=Download Gmail and switch aerc to local Maildir
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+ExecStart=/home/grey/.local/bin/aerc-gmail-initialize
+UMask=0077
+TimeoutStartSec=infinity
+Restart=on-failure
+RestartSec=5min
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,16 @@
+{
+  ".local/bin/touchpad-tapping": "assets/touchpad-tapping",
+  ".local/share/grey-audio-live/live.py": "assets/audio-live/live.py",
+  ".local/share/grey-audio-live/compiler.py": "assets/audio-live/compiler.py",
+  ".local/share/grey-audio-live/snapshots.py": "assets/audio-live/snapshots.py",
+  ".local/share/grey-audio-live/engine.cpp": "assets/audio-live/engine.cpp",
+  ".local/share/grey-audio-live/dsp-template.hpp": "assets/audio-live/dsp-template.hpp",
+  ".local/share/grey-audio-live/relations.hpp": "assets/audio-live/relations.hpp",
+  ".local/share/grey-audio-live/declaration.json": "assets/audio-live/declaration.json",
+  ".local/share/grey-audio-live/README.md": "assets/audio-live/README.md",
+  ".local/share/grey-audio-live/examples/tanh.json": "assets/audio-live/examples/tanh.json",
+  ".local/share/grey-audio-live/examples/hard-clip.json": "assets/audio-live/examples/hard-clip.json",
+  ".local/share/grey-audio-live/examples/phase-drive.json": "assets/audio-live/examples/phase-drive.json",
+  ".local/share/grey-audio-live/examples/shared-phase.json": "assets/audio-live/examples/shared-phase.json",
+  ".local/share/grey-audio-live/examples/README.md": "assets/audio-live/examples/README.md"
+}

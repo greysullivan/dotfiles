@@ -162,7 +162,7 @@ def choose(rows, header, expect='ctrl-l,ctrl-x,ctrl-t,ctrl-r,ctrl-o,ctrl-y,ctrl-
         'fzf', '--wrap=word', '--wrap-sign=  ', '--bind=ctrl-w:toggle-wrap', '--layout=reverse', '--border=none', '--no-multi', '--no-sort',
         '--delimiter=\t', '--with-nth=2..', '--expect=' + (expect or 'enter'),
         '--prompt=ty > ', '--header=' + header,
-        '--color=bg:#000000,fg:#FFFFFF,bg+:#FF3D00,fg+:#000000,hl:#FF3D00,hl+:#000000,info:#A3A3A3,prompt:#FF3D00,pointer:#000000,header:#A3A3A3',
+        '--color=bg:#000000,fg:#FFFFFF,bg+:#DFA0A0,fg+:#000000,hl:#DFA0A0,hl+:#000000,info:#A3A3A3,prompt:#DFA0A0,pointer:#000000,header:#A3A3A3',
     ], input='\n'.join(f'{i}\t{row}' for i, row in enumerate(rows)), capture_output=True, text=True, env=env)
     if result.returncode in (1, 130):
         return 'quit', None

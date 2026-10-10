@@ -1,0 +1,26 @@
+{
+  "source_model": "MacBookAir7,2",
+  "enabled_user_units": [
+    "put-on-sync.path",
+    "aerc-gmail-initialize.service",
+    "rclone-gdrive.service",
+    "wireplumber.service",
+    "p11-kit-server.socket",
+    "pipewire-pulse.socket",
+    "pipewire.socket",
+    "flameshot-drive-upload.timer",
+    "put-on-sync.timer"
+  ],
+  "enabled_system_units": [
+    "getty@.service",
+    "NetworkManager-dispatcher.service",
+    "NetworkManager-wait-online.service",
+    "NetworkManager.service",
+    "systemd-timesyncd.service",
+    "touchegg.service",
+    "systemd-userdbd.socket",
+    "remote-fs.target",
+    "grey-drive-backup.timer"
+  ],
+  "note": "Reference inventory, not an automatic activation list. align.py gates optional user services on private prerequisites."
+}

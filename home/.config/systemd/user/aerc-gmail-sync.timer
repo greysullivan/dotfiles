@@ -1,0 +1,11 @@
+[Unit]
+Description=Sync Gmail every five minutes
+
+[Timer]
+OnStartupSec=1min
+OnUnitInactiveSec=5min
+AccuracySec=15s
+Unit=aerc-gmail-sync.service
+
+[Install]
+WantedBy=timers.target

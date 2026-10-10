@@ -1,0 +1,418 @@
+#!/usr/bin/env python3
+"""Weekly Spotify listening forms, durable save history, and curation feedback."""
+import argparse
+import contextlib
+import datetime as dt
+import fcntl
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import sqlite3
+import subprocess
+import sys
+import tempfile
+
+ROOT = Path(os.environ.get('PUT_ON_PLAYLIST_ROOT', str(Path.home() / 'Music/playlists')))
+STATE = Path(os.environ.get('PUT_ON_STATE_ROOT', str(Path.home() / '.local/state/put-on')))
+REVIEWS = ROOT / 'reviews'
+INITIAL = ('2026-10-06: About 75% have been good; two I love; only halfway through.\n'
+           'Specific tracks and playlist not yet identified.\n')
+MARKER = re.compile(r'^TRACK \[([^\]\n]+)\]\n', re.M)
+RATINGS = {'love': 3, 'good': 1, 'okay': 0, 'skip': -2}
+REVIEW_FIELDS = ('Thoughts', 'Rating', 'This artist', 'Genre', 'This genre', 'Style', 'This style')
+FIELD_MARKER = re.compile(r'^(' + '|'.join(map(re.escape, REVIEW_FIELDS + ('More / less of',))) + r'):[^\n]*(?:\n|$)', re.M)
+
+
+def review_sections(review):
+    matches = list(FIELD_MARKER.finditer(review))
+    preamble = review[:matches[0].start()] if matches else review
+    sections = []
+    for i, match in enumerate(matches):
+        end = matches[i+1].start() if i+1 < len(matches) else len(review)
+        sections.append((match.group(1), review[match.start():end]))
+    return preamble, sections
+
+
+def normalize_review(review):
+    preamble, sections = review_sections(review)
+    result = []
+    for label in REVIEW_FIELDS:
+        blocks = [block for name, block in sections if name == label]
+        if not blocks:
+            blocks = [label + ': \n']
+        if label == 'Thoughts' and preamble.strip():
+            # Inline notes formerly written after Your review belong with thoughts.
+            blocks[0] = 'Thoughts: ' + preamble.lstrip(' \t').rstrip('\n') + '\n' + blocks[0].split(':', 1)[1]
+        result.extend(block if block.endswith('\n') else block + '\n' for block in blocks)
+    for label, block in sections:
+        if label == 'More / less of' and block.split(':', 1)[1].strip():
+            result.append(block if block.endswith('\n') else block + '\n')
+    return ''.join(result).rstrip('\n') + '\n'
+
+
+def feedback_fields(review):
+    _, sections = review_sections(normalize_review(review))
+    fields = {}
+    for label, block in sections:
+        fields.setdefault(label, block.split(':', 1)[1].strip())
+    raw = fields.get('Rating', '').split('\n', 1)[0].strip().lower()
+    value = None
+    if re.fullmatch(r'(?:\d+(?:\.\d*)?|\.\d+)', raw):
+        number = float(raw)
+        if 0 <= number <= 10:
+            value = number
+    result = dict(rating=raw, rating_value=value, thoughts=fields.get('Thoughts', ''),
+                  genre=fields.get('Genre', ''), style=fields.get('Style', ''))
+    for label, key in (('This artist', 'artist_preference'), ('This genre', 'genre_preference'),
+                       ('This style', 'style_preference')):
+        text = fields.get(label, '')
+        choice = re.match(r'^(more|same|less|explore)\b', text, re.I)
+        result[key] = dict(direction=choice.group(1).lower() if choice else None, notes=text)
+    return result
+
+
+def evaluation(item, key):
+    path = STATE / 'alignment.json'
+    if not path.exists():
+        return None
+    data = json.loads(path.read_text()).get('tracks', {}).get(key)
+    digest = hashlib.sha256(normalize_review(item['review']).encode()).hexdigest()
+    return data if data and data.get('review_digest') == digest else None
+
+
+def now():
+    return dt.datetime.now().astimezone().isoformat(timespec='microseconds')
+
+
+def prepare():
+    for path in (STATE, REVIEWS):
+        path.mkdir(parents=True, exist_ok=True, mode=0o700)
+        path.chmod(0o700)
+
+
+@contextlib.contextmanager
+def lock(name, blocking=True):
+    prepare()
+    with (STATE / name).open('a') as handle:
+        try:
+            fcntl.flock(handle, fcntl.LOCK_EX | (0 if blocking else fcntl.LOCK_NB))
+        except BlockingIOError:
+            yield False
+            return
+        try:
+            yield True
+        finally:
+            fcntl.flock(handle, fcntl.LOCK_UN)
+
+
+def atomic(path, contents):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, temp = tempfile.mkstemp(dir=path.parent, prefix='.' + path.name)
+    try:
+        with os.fdopen(fd, 'w') as out:
+            out.write(contents)
+            out.flush()
+            os.fsync(out.fileno())
+        os.replace(temp, path)
+    finally:
+        if os.path.exists(temp):
+            os.unlink(temp)
+
+
+def connect():
+    db = sqlite3.connect(STATE / 'reviews.sqlite3', timeout=15)
+    db.execute('CREATE TABLE IF NOT EXISTS saves '
+               '(id INTEGER PRIMARY KEY, saved_at TEXT, edition TEXT, digest TEXT, content TEXT)')
+    db.execute('CREATE TABLE IF NOT EXISTS latest '
+               '(edition TEXT PRIMARY KEY, digest TEXT, content TEXT)')
+    db.execute('CREATE TABLE IF NOT EXISTS verdicts '
+               '(edition TEXT, key TEXT, updated_at TEXT, data TEXT, PRIMARY KEY(edition,key))')
+    return db
+
+
+def parse(content):
+    week = re.search(r'^(?:PUT-ON|TUNERS) — (\d{4}-\d{2}-\d{2})$', content, re.M)
+    if not week or '\nYour weekly notes:\n' not in content:
+        raise ValueError('Form header or weekly notes marker missing; original text kept.')
+    notes = content.split('\nYour weekly notes:\n', 1)[1].split('\nPLAYLIST [', 1)[0]
+    tracks = {}
+    matches = list(MARKER.finditer(content))
+    for i, match in enumerate(matches):
+        key = match.group(1)
+        if key in tracks:
+            raise ValueError('Duplicate track marker: ' + key)
+        block = content[match.end():matches[i+1].start() if i+1 < len(matches) else len(content)]
+        block = block.split('\nPLAYLIST [', 1)[0]
+        review_marker = re.search(r'^Your review:[ \t]*([^\n]*)(?:\n|$)', block, re.M)
+        if not review_marker:
+            raise ValueError('Review marker missing for ' + key + '; original text kept.')
+        metadata = block[:review_marker.start()]
+        review = (review_marker.group(1) + '\n' if review_marker.group(1) else '') + block[review_marker.end():]
+        # Assistant interpretation is displayed separately and is never user evidence.
+        review = review.split('\nAssistant reading:\n', 1)[0]
+        review = review.rstrip('\n') + '\n'
+        fields = dict(re.findall(r'^([^:\n]+): (.*)$', metadata, re.M))
+        tracks[key] = dict(review=review, **feedback_fields(review), title=fields.get('Song', ''),
+                           artists=fields.get('Artist', fields.get('Artists', '')),
+                           year=fields.get('Year', fields.get('Release date', '')[:4]),
+                           link=fields.get('Spotify', 'https://open.spotify.com/track/' + key.split(':')[-1]))
+    return week.group(1), notes.rstrip('\n') + '\n', tracks
+
+
+def brief(db):
+    # A track heard across several weeks has one current verdict, by last changed review.
+    current = {}
+    rows = db.execute('SELECT key, updated_at, data FROM verdicts ORDER BY updated_at').fetchall()
+    for key, stamp, data in rows:
+        item = json.loads(data)
+        item.update(feedback_fields(item['review']))
+        reading = evaluation(item, key)
+        if reading:
+            item['assistant_reading'] = reading
+        else:
+            item.pop('assistant_reading', None)
+        if meaningful_review(item):
+            current[key.split(':')[-1]] = dict(item, updated_at=stamp)
+    counts = {rating: 0 for rating in RATINGS}
+    for item in current.values():
+        if item['rating'] in counts:
+            counts[item['rating']] += 1
+    values = [item['rating_value'] for item in current.values() if item['rating_value'] is not None]
+    numeric = dict(count=len(values), average=sum(values) / len(values) if values else None)
+    lines = ['PUT-ON — feedback for the next playlist', '',
+             'Ratings: 0–10, decimals allowed. Blank or n/a means unrated.',
+             'Use written reasons first; scores are preference signals, not a trained model.',
+             'Numeric ratings: ' + str(numeric['count']) + '; average: ' +
+             (f"{numeric['average']:.2f}/10" if values else 'unrated'),
+             'Legacy word ratings: ' + ', '.join(f'{k} {v}' for k, v in counts.items()),
+             'Legacy signal weights: love +3, good +1, okay 0, skip -2.', '',
+             'Future variety: per 15 tracks, aim for 10 connected to existing tastes and 5 broader discoveries.',
+             'Vary artists, genres and styles; respect explicit dislikes and written reasons.',
+             'Artist, genre and style preferences are independent of the song rating.',
+             'More / same / less guide frequency; explore requests related alternatives.',
+             'A low song rating alone does not reject its artist, genre or style.', '',
+             'Weekly impressions (self-reported, not measured accuracy):']
+    for edition, content in db.execute('SELECT edition, content FROM latest ORDER BY edition'):
+        _, notes, _ = parse(content)
+        if notes.strip():
+            lines += [edition, notes.rstrip(), '']
+    alignment_path = STATE / 'alignment.json'
+    if alignment_path.exists():
+        alignment = json.loads(alignment_path.read_text())
+        valid = sum('assistant_reading' in item for item in current.values())
+        if valid:
+            lines += ['Assistant tonal assessment (interpretation of the partial first form):',
+                      'Snapshot: ' + alignment['edition'] + '; original wording remains authoritative.']
+            lines += alignment.get('summary', [])
+            if valid != len(alignment.get('tracks', {})):
+                lines += ['Some assessed reviews have changed; revisit this snapshot before relying on it.']
+            lines += ['']
+    lines += ['Track feedback (most recent review per Spotify track):', '']
+    for item in current.values():
+        if meaningful_review(item):
+            lines += [f"{item['artists']} — {item['title']}", item['link'], item['review'].rstrip(), '']
+            if 'assistant_reading' in item:
+                lines += ['Assistant reading: ' + item['assistant_reading']['reading'], '']
+    atomic(REVIEWS / 'NEXT-PLAYLIST-BRIEF.txt', '\n'.join(lines) + '\n')
+    atomic(STATE / 'profile.json', json.dumps(dict(counts=counts, weights=RATINGS,
+           numeric_ratings=numeric, variety=dict(connected=10, discovery=5, total=15),
+           tracks=current), ensure_ascii=False, indent=2) + '\n')
+
+
+def meaningful_review(item):
+    preamble, sections = review_sections(item['review'])
+    if preamble.strip():
+        return True
+    return any(block.split(':', 1)[1].strip() and
+               not (label == 'Rating' and block.split(':', 1)[1].strip().lower() == 'n/a')
+               for label, block in sections)
+
+
+def record_content(db, content):
+    edition, _, tracks = parse(content)
+    digest = hashlib.sha256(content.encode()).hexdigest()
+    previous = db.execute('SELECT digest FROM latest WHERE edition=?', (edition,)).fetchone()
+    changed = not previous or previous[0] != digest
+    stamp = now()
+    with db:
+        if changed:
+            db.execute('INSERT INTO saves(saved_at,edition,digest,content) VALUES(?,?,?,?)',
+                       (stamp, edition, digest, content))
+            db.execute('INSERT OR REPLACE INTO latest VALUES(?,?,?)', (edition, digest, content))
+        for key, item in tracks.items():
+            data = json.dumps(item, ensure_ascii=False, sort_keys=True)
+            old = db.execute('SELECT data,updated_at FROM verdicts WHERE edition=? AND key=?', (edition,key)).fetchone()
+            if not old or old[0] != data:
+                # A form/schema migration or metadata refresh is not a new opinion.
+                verdict_stamp = old[1] if old and normalize_review(json.loads(old[0])['review']) == normalize_review(item['review']) else stamp
+                db.execute('INSERT OR REPLACE INTO verdicts VALUES(?,?,?,?)', (edition,key,verdict_stamp,data))
+    return changed
+
+
+def record(path):
+    path = Path(path).resolve()
+    if path.parent != REVIEWS.resolve() or not re.fullmatch(r'\d{4}-\d{2}-\d{2}\.txt', path.name):
+        raise ValueError('Record expects a dated form in ' + str(REVIEWS))
+    with lock('state.lock'):
+        with contextlib.closing(connect()) as db:
+            record_content(db, path.read_text())
+            brief(db)
+
+
+def source(directory):
+    edition = directory.name
+    manifest = json.loads((directory / 'manifest.json').read_text())
+    matches = json.loads((directory / 'ncspot-matches.json').read_text())['playlists']
+    imported = json.loads((directory / 'ncspot-import.json').read_text())
+    if manifest['edition'] != edition:
+        raise ValueError('Edition mismatch in ' + str(directory))
+    playlists = []
+    for slug, originals in manifest['playlists'].items():
+        if not re.fullmatch(r'[a-z0-9-]+', slug):
+            raise ValueError('Invalid playlist slug')
+        info = imported[slug]
+        matched = {row['video_id']: row['selected'] for row in matches[slug]}
+        if info['track_count'] != len(originals) or not info.get('verified'):
+            raise ValueError('Playlist import not completely verified: ' + slug)
+        tracks = []
+        for original in originals:
+            selected = matched[original['video_id']]
+            if not re.fullmatch(r'[A-Za-z0-9]{22}', selected['id']):
+                raise ValueError('Invalid Spotify track id')
+            for field in ('title', 'artists', 'duration_seconds', 'album_date', 'album'):
+                if field not in selected:
+                    raise ValueError('Incomplete Spotify metadata')
+            tracks.append(selected)
+        if len({t['id'] for t in tracks}) != len(tracks):
+            raise ValueError('Repeated track in ' + slug)
+        playlists.append((slug, info, tracks))
+    return playlists
+
+
+def render(edition, playlists, old=None):
+    notes = INITIAL if edition == '2026-10-05' else '\n'
+    reviews = {}
+    if old is not None:
+        parsed_edition, notes, reviews = parse(old)
+        if parsed_edition != edition:
+            raise ValueError('Existing form edition mismatch')
+    text = [f'PUT-ON — {edition}', '',
+            'Write your reaction first. What worked or didn’t—lyrics, voice, production, mood or structure?',
+            'Rating: 0–10; decimals allowed. Blank or n/a means unrated. All feedback is optional.',
+            'This artist / genre / style: more / same / less / explore, followed by optional notes.',
+            'Same keeps the balance; explore asks for related alternatives.',
+            'Genre is the category; style is the sound (sparse production, spoken vocals, storytelling).',
+            'Save with :w; quit with :q.',
+            'Keep TRACK markers and Your review markers so notes stay attached to songs.',
+            'Year is from the selected Spotify release and may differ from the original release year.', '',
+            'Your weekly notes:', notes.rstrip('\n')]
+    for slug, info, tracks in playlists:
+        text += ['', f'PLAYLIST [{slug}]', info['name'], info['url'], '']
+        for track in tracks:
+            key = slug + ':' + track['id']
+            text += [f'TRACK [{key}]', 'Artist: ' + ', '.join(track['artists']),
+                     'Song: ' + track['title'], 'Year: ' + track['album_date'][:4], '', 'Your review:',
+                     normalize_review(reviews.get(key, {}).get('review', '')).rstrip('\n'), '']
+            reading = evaluation(reviews.get(key, {'review': ''}), key)
+            if reading:
+                text += ['Assistant reading:', reading['reading'], '']
+    # Keep removed tracks editable as well as preserving all their earlier saves.
+    active = {slug + ':' + t['id'] for slug, _, tracks in playlists for t in tracks}
+    removed = [key for key in reviews if key not in active]
+    if removed:
+        text += ['', 'PLAYLIST [archived]', 'Removed from this week; earlier feedback retained.', '']
+        for key in removed:
+            item = reviews[key]
+            text += [f'TRACK [{key}]', 'Artist: ' + item['artists'], 'Song: ' + item['title'],
+                     'Year: ' + item['year'], '', 'Your review:', normalize_review(item['review']).rstrip('\n'), '']
+            reading = evaluation(item, key)
+            if reading:
+                text += ['Assistant reading:', reading['reading'], '']
+    return '\n'.join(text) + '\n'
+
+
+def sync():
+    with lock('editor.lock', blocking=False) as available:
+        if not available:
+            return False
+        with lock('state.lock'):
+            with contextlib.closing(connect()) as db:
+                for directory in sorted(ROOT.glob('????-??-??')):
+                    if not directory.is_dir():
+                        continue
+                    required = ['manifest.json', 'ncspot-matches.json', 'ncspot-import.json']
+                    if not all((directory / name).exists() for name in required):
+                        continue
+                    playlists = source(directory)  # Validate before touching any existing form.
+                    path = REVIEWS / (directory.name + '.txt')
+                    old = path.read_text() if path.exists() else None
+                    if old is not None:
+                        record_content(db, old)
+                    content = render(directory.name, playlists, old)
+                    if content != old:
+                        atomic(path, content)
+                    record_content(db, content)
+                brief(db)
+    return True
+
+
+def latest_path():
+    paths = sorted(REVIEWS.glob('????-??-??.txt'))
+    if not paths:
+        raise ValueError('No complete Spotify playlist edition found in ' + str(ROOT))
+    return paths[-1]
+
+
+def editor_command(path):
+    command = str(Path(__file__).resolve())
+    lua = ('lua vim.api.nvim_create_autocmd("BufWritePost", {pattern=' + json.dumps(str(path)) +
+           ', callback=function(ev) vim.fn.system({' + json.dumps(command) +
+           ', "--record", ev.file}); if vim.v.shell_error ~= 0 then '
+           'vim.notify("Put-on could not archive this save. Run put-on --record on the form.", '
+           'vim.log.levels.ERROR) end end})')
+    return ['nvim', '--cmd', lua, str(path)]
+
+
+def open_form():
+    sync()
+    with lock('editor.lock'):
+        path = latest_path()
+        subprocess.run(editor_command(path), check=False)
+        record(path)
+    sync()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('--sync', action='store_true', help='refresh forms and feedback without opening editor')
+    group.add_argument('--record', metavar='FORM', help='archive an edited form and refresh feedback')
+    group.add_argument('--path', action='store_true', help='print latest form path')
+    group.add_argument('--profile', action='store_true', help='print feedback brief')
+    group.add_argument('--history', action='store_true', help='list archived saves')
+    args = parser.parse_args()
+    prepare()
+    if args.record:
+        record(args.record)
+    elif args.history:
+        with lock('state.lock'), contextlib.closing(connect()) as db:
+            for row in db.execute('SELECT id,saved_at,edition FROM saves ORDER BY id'):
+                print(*row, sep='  ')
+    elif args.sync:
+        sync()
+    elif args.path or args.profile:
+        sync()
+        print((REVIEWS / 'NEXT-PLAYLIST-BRIEF.txt').read_text() if args.profile else latest_path())
+    else:
+        open_form()
+
+
+if __name__ == '__main__':
+    os.umask(0o077)
+    try:
+        main()
+    except (OSError, ValueError, KeyError, sqlite3.Error) as error:
+        print('put-on: ' + str(error), file=sys.stderr)
+        sys.exit(1)
