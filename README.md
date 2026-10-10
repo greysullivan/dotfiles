@@ -2,7 +2,9 @@
 
 Current Arch Linux/X11/i3 configuration, shell startup files, theme, custom
 commands, and systemd user units. `home/` mirrors paths under `/home/grey`.
-`manifest.json` explicitly lists every managed file.
+`manifest.json` lists live configuration; `asset-manifest.json` lists bundled
+runtime files. `file-modes.json` retains configuration permissions across Git
+clones and archive transfers.
 
 ## Align an existing MacBook Pro
 
@@ -55,7 +57,7 @@ and the system-wide power-button/touchpad snippets remain manual choices.
 
 ```sh
 cd ~/src/dotfiles
-python3 manage.py snapshot
+python3 capture.py
 git diff
 git add .
 git commit -m "Update dotfiles"

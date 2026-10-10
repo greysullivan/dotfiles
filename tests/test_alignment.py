@@ -56,6 +56,7 @@ class AlignmentTests(unittest.TestCase):
         userjs = active / 'user.js'
         original = 'user_pref("custom.setting", 42);\nuser_pref("toolkit.legacyUserProfileCustomizations.stylesheets", false); // keep comment\n'
         userjs.write_text(original)
+        userjs.chmod(0o600)
         config = self.home / '.config/i3/config'
         config.parent.mkdir(parents=True)
         config.write_text('original target desktop\n')
@@ -68,6 +69,7 @@ class AlignmentTests(unittest.TestCase):
         self.assertEqual((backups[0] / userjs.relative_to(self.home)).read_text(), original)
         self.assertIn('custom.setting', userjs.read_text())
         self.assertIn('true); // keep comment', userjs.read_text())
+        self.assertEqual(userjs.stat().st_mode & 0o777, 0o600)
         self.assertTrue((active / 'chrome/userChrome.css').is_file())
         self.assertFalse((active.parent / 'old.default/chrome').exists())
         sound = '.local/share/codex-alerts/gong.wav'

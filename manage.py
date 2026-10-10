@@ -104,6 +104,8 @@ def main():
         parser.error('--profile requires restore --portable')
     home = args.home.expanduser().resolve()
     paths = json.loads((REPO / 'manifest.json').read_text())
+    permissions_file = REPO / 'file-modes.json'
+    permissions = json.loads(permissions_file.read_text()) if permissions_file.exists() else {}
     firefox = None
     if args.portable:
         if args.action != 'restore':
@@ -134,9 +136,15 @@ def main():
         if target.exists() and not target.is_file():
             raise SystemExit(f'Destination is not a regular file: {target}')
         data = source.read_bytes()
+        mode = source.stat().st_mode & 0o777
+        if args.action == 'restore':
+            mode = permissions.get(rel, mode)
+        if not isinstance(mode, int) or mode < 0 or mode > 0o777:
+            raise SystemExit(f'Invalid file mode: {rel}')
         if args.portable:
             data = portable_data(rel, data, home, firefox, args.profile)
             if rel.endswith('/user.js') and target.is_file():
+                mode = target.stat().st_mode & 0o777
                 existing = target.read_text()
                 preference = 'user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);'
                 pattern = r'user_pref\([ \t]*"toolkit\.legacyUserProfileCustomizations\.stylesheets"[ \t]*,[ \t]*(?:true|false)[ \t]*\);'
@@ -145,7 +153,7 @@ def main():
                 else:
                     existing = existing.rstrip() + '\n' + data.decode('utf-8')
                 data = existing.encode('utf-8')
-        operations.append((rel, source, target, data, source.stat().st_mode & 0o777))
+        operations.append((rel, source, target, data, mode))
     if args.action == 'restore':
         for rel, asset in json.loads((REPO / 'asset-manifest.json').read_text()).items():
             for value in (rel, asset):

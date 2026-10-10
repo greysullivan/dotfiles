@@ -50,6 +50,7 @@ def main():
         if source.is_symlink() or not source.is_file():
             raise SystemExit(f'Unavailable reviewed source: {source}')
     (REPO / 'manifest.json').write_text(json.dumps(paths, indent=2) + '\n')
+    (REPO / 'file-modes.json').write_text(json.dumps({rel: (HOME / rel).stat().st_mode & 0o777 for rel in paths}, indent=2) + '\n')
     subprocess.run(['python3', str(REPO / 'manage.py'), 'snapshot'], check=True)
     assets = {'.local/bin/touchpad-tapping': 'assets/touchpad-tapping'}
     for relative in AUDIO_FILES:

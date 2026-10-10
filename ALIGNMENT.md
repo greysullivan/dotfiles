@@ -59,6 +59,8 @@ The profile's bookmarks, passwords, extensions and other browser data are untouc
 Log out of i3 and run `startx` again to pick up the full session configuration.
 Restart Firefox and terminals. Existing configs are backed up under
 `~/.local/state/dotfiles/backups/<timestamp>/`, preserving permissions.
+Recorded configuration modes survive Git clones; existing Firefox preference
+file permissions are retained.
 Identical files are left untouched. All managed destinations are checked before
 writing; symlink destinations are refused.
 
